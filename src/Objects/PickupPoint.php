@@ -1,8 +1,8 @@
 <?php
 
-namespace Monta\MontaProcessing\Objects;
+namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\MontaProcessing\Objects\OpeningTime;
+use Monta\CheckoutApiWrapper\Objects\OpeningTime;
 
 /**
  * Class PickupPoint

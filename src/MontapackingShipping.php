@@ -1,13 +1,13 @@
 <?php
 
-namespace Monta\MontaProcessing;
+namespace Monta\CheckoutApiWrapper;
 
-use Monta\MontaProcessing\Objects\Address as MontaCheckout_Address;
-use Monta\MontaProcessing\Objects\Order as MontaCheckout_Order;
-use Monta\MontaProcessing\Objects\Product as MontaCheckout_Product;
-use Monta\MontaProcessing\Objects\Settings;
-use Monta\MontaProcessing\Objects\TimeFrame as MontaCheckout_TimeFrame;
-use Monta\MontaProcessing\Objects\PickupPoint as MontaCheckout_PickupPoint;
+use Monta\CheckoutApiWrapper\Objects\Address as MontaCheckout_Address;
+use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
+use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
+use Monta\CheckoutApiWrapper\Objects\Settings;
+use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
+use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
 
 /**

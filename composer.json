@@ -1,9 +1,9 @@
 {
-    "name": "monta/monta_processing",
+    "name": "monta/checkout-api-wrapper",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Monta\\MontaProcessing\\": "src/"
+            "Monta\\CheckoutApiWrapper\\": "src/"
         }
     },
     "authors": [
@@ -15,5 +15,6 @@
     "require": {
         "php": ">=5.3.0"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable",
+    "version": "1.0.0"
 }

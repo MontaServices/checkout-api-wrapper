@@ -1,8 +1,8 @@
 <?php
 
-namespace Monta\MontaProcessing\Objects;
+namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\MontaProcessing\Objects\ShippingOption as MontaCheckout_ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
 
 /**
  * Class TimeFrame

@@ -1,6 +1,6 @@
 <?php
 
-namespace Monta\MontaProcessing\Objects;
+namespace Monta\CheckoutApiWrapper\Objects;
 
 /**
  * Class Product

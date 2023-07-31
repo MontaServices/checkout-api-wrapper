@@ -1,6 +1,6 @@
 <?php
 
-namespace Monta\MontaProcessing;
+namespace Monta\CheckoutApiWrapper;
 
 class NumberGenerator
 {
