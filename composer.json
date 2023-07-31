@@ -1,0 +1,19 @@
+{
+    "name": "monta/monta_processing",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Monta\\MontaProcessing\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "DDEV User",
+            "email": "nobody@example.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "minimum-stability": "dev"
+}
