@@ -336,32 +336,6 @@ class MontapackingShipping
             $result = null;
         }
 
-//        if ($result == null) {
-//
-//            sleep(1);
-//            $response = $client->get($method . '?' . $request);
-//
-//            if ($response->getStatusCode() != 200) {
-//                $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
-//                $logger = $this->_logger;
-//                $context = ['source' => 'Montapacking Checkout'];
-//                $logger->critical($error_msg . " (" . $url . ")", $context);
-//                $result = null;
-//            }
-//        }
-
-//        $url = "https://api.montapacking.nl/rest/v5/" . $method . $request;
-
-//        if (null !== $this->_logger && null === $result) {
-//            $logger = $this->_logger;
-//            $context = ['source' => 'Monta Checkout'];
-//            $logger->critical("Webshop was unable to connect to Monta REST api. Please check your username and password. Otherwise please contact Montapacking (" . $url . ")", $context); //phpcs:ignore
-//        } elseif (null !== $this->_logger) {
-//            $logger = $this->_logger;
-//            $context = ['source' => 'Monta Checkout'];
-//            $logger->notice("Connection logged (" . $url . ")", $context);
-//        }
-
         return $result;
     }
 
