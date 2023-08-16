@@ -10,76 +10,6 @@ use Monta\CheckoutApiWrapper\Objects\OpeningTime;
  */
 class PickupPoint
 {
-    public string $displayName;
-
-    /**
-     * @return string
-     */
-    public function getDisplayName(): string
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * @param string $displayName
-     */
-    public function setDisplayName(string $displayName): void
-    {
-        $this->displayName = $displayName;
-    }
-
-    /**
-     * @var string
-     */
-    public string $shipperCode;
-
-    /**
-     * @return string
-     */
-    public function getShipperCode(): string
-    {
-        return $this->shipperCode;
-    }
-
-    /**
-     * @param string $shipperCode
-     */
-    public function setShipperCode(string $shipperCode): void
-    {
-        $this->shipperCode = $shipperCode;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     */
-    public function setPrice(float $price): void
-    {
-        $this->price = $price;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriceFormatted(): string
-    {
-        return $this->priceFormatted;
-    }
-
-    /**
-     * @param string $priceFormatted
-     */
-    public function setPriceFormatted(string $priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
     public string $code;
     public float $distanceMeters;
     public string $company;
@@ -160,6 +90,77 @@ class PickupPoint
         $this->setLatitude($latitude);
         $this->setImageUrl($imageUrl);
         $this->setOpeningTimes($openingTimes);
+    }
+
+    public string $displayName;
+
+    /**
+     * @return string
+     */
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * @param string $displayName
+     */
+    public function setDisplayName(string $displayName): void
+    {
+        $this->displayName = $displayName;
+    }
+
+    /**
+     * @var string
+     */
+    public string $shipperCode;
+
+    /**
+     * @return string
+     */
+    public function getShipperCode(): string
+    {
+        return $this->shipperCode;
+    }
+
+    /**
+     * @param string $shipperCode
+     */
+    public function setShipperCode(string $shipperCode): void
+    {
+        $this->shipperCode = $shipperCode;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param float $price
+     */
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPriceFormatted(): string
+    {
+        return $this->priceFormatted;
+    }
+
+    /**
+     * @param string $priceFormatted
+     */
+    public function setPriceFormatted(string $priceFormatted): void
+    {
+        $this->priceFormatted = $priceFormatted;
     }
 
     /**

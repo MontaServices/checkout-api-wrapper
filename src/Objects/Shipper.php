@@ -9,7 +9,6 @@ namespace Monta\CheckoutApiWrapper\Objects;
  */
 class Shipper
 {
-
     /**
      * @var
      */

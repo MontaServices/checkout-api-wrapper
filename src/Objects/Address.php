@@ -4,6 +4,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Address
@@ -85,7 +86,8 @@ class Address
     }
 
     /**
-     *
+     * @return void
+     * @throws GuzzleException
      */
     public function setLongLat()
     {

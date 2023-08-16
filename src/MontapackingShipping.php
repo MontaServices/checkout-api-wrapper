@@ -2,10 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Monta\CheckoutApiWrapper\Objects\Address as MontaCheckout_Address;
 use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
 use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
+use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
@@ -37,10 +39,6 @@ class MontapackingShipping
      * @var null
      */
     private $_products = null;
-//    /**
-//     * @var null
-//     */
-//    private $_allowedshippers = null;
 
     /**
      * @var bool
@@ -78,20 +76,6 @@ class MontapackingShipping
             'Currency' => 'EUR',
             'Language' => $language,
         ];
-
-
-
-
-//        $this->_user = $user;
-//        $this->_pass = $pass;
-//        $this->_maxPickupPoints = $maxPickupPoints;
-//        $this->_googlekey = $googlekey;
-//
-//        $this->_basic = [
-//            'Origin' => $origin,
-//            'Currency' => 'EUR',
-//            'Language' => $language,
-//        ];
     }
 
     /**
@@ -167,111 +151,17 @@ class MontapackingShipping
     }
 
     /**
-     * @param null $shippers
-     */
-//    public function setShippers($shippers = null)
-//    {
-//
-//        if (is_array($shippers)) {
-//            $this->_shippers = $shippers;
-//        } else {
-//            $this->_shippers[] = $shippers;
-//        }
-//    }
-
-    /**
      * @param     $sku
      * @param     $quantity
-     * @param int $length
-     * @param int $width
-     * @param int $height
-     * @param int $weight
+     * @param int $lengthMm
+     * @param int $widthMm
+     * @param int $heightMm
+     * @param int $weightGrammes
      */
-    public function addProduct($sku, $quantity, $lengthMm = 0, $widthMm = 0, $heightMm = 0, $weightGrammes = 0)
+    public function addProduct($sku, $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0) : void
     {
-
         $this->_products['products'][] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity);
     }
-
-    // Todo: Cleanup
-    /**
-     * @return array|null
-     */
-//    public function getShippers()
-//    {
-//
-//        $shippers = null;
-//
-//        $result = $this->call('info', ['_basic']);
-//        if (isset($result->Origins)) {
-//
-//            $origins = is_array($result->Origins) ? $result->Origins : [$result->Origins];
-//
-//            // Array goedzetten
-//            if (is_array($result->Origins)) {
-//                $origins = $result->Origins;
-//            } else {
-//                $origins[] = $result->Origins;
-//            }
-//
-//            // Shippers omzetten naar shipper object
-//            foreach ($origins as $origin) {
-//
-//                // Check of shipper options object er is
-//                if (isset($origin->ShipperOptions)) {
-//
-//                    foreach ($origin->ShipperOptions as $shipper) {
-//
-//                        $shippers[] = new Shipper(
-//                                $shipper->ShipperDescription,
-//                                $shipper->ShipperCode
-//                        );
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//            return $origins;
-//
-//        }
-//
-//        return $shippers;
-//    }
-
-//    /**
-//     * @param $sku
-//     *
-//     * @return bool
-//     */
-//    public function checkStock($sku)
-//    {
-//        $url = "https://api.montapacking.nl/rest/v5/";
-//        $this->_pass = htmlspecialchars_decode($this->_pass);
-//
-//        $client = new Client([
-//            // Base URI is used with relative requests
-//            'base_uri' => $url,
-//            // You can set any number of default request options.
-//            'timeout' => 10.0,
-//            'headers' => [
-//                'Authorization' => 'Basic ' . base64_encode($this->_user . ":" . $this->_pass)
-//            ]
-//        ]);
-//
-//        $response = $client->get("product/" . $sku . "/stock");
-//        $result = json_decode($response->getBody(), true);
-//
-//
-//        if (null !== $result && property_exists($result, 'Message') && $result->Message == 'Zero products found with sku ' . $sku) {
-//            return false;
-//        } else if (null !== $result && property_exists($result, 'Stock') && $result->Stock->StockAvailable <= 0) {
-//            return false;
-//        } else {
-//            return true;
-//        }
-//    }
 
     /**
      * @param bool $onstock
@@ -291,6 +181,7 @@ class MontapackingShipping
     {
         $timeframes = [];
         $pickups = [];
+        $standardShipper = null;
 
         if (trim($this->address->postalcode) && (trim($this->address->housenumber) || trim($this->address->street))) {
             // Basis gegevens uitbreiden met shipping option specifieke data
@@ -305,15 +196,6 @@ class MontapackingShipping
             {
                 $this->getSettings()->setMaxPickupPoints(0);
             }
-
-//            if ($this->_carrierConfig->getDisablePickupPoints()) {
-//                $this->_basic = array_merge(
-//                    $this->_basic,
-//                    [
-//                        'MaxNumberOfPickupPoints' => 0
-//                    ]
-//                );
-//            }
 
             // Timeframes omzetten naar bruikbaar object
             $result = $this->call('ShippingOptions', ['_basic', '_shippers', '_order', 'address', '_products']);
@@ -356,9 +238,27 @@ class MontapackingShipping
                     );
                 }
             }
+
+            if (isset($result->standard_shipper)) {
+                $standardShipper = new MontaCheckout_ShippingOption(
+                    $result->standard_shipper->shipper,
+                    $result->standard_shipper->code,
+                    $result->standard_shipper->displayNameShort,
+                    $result->standard_shipper->displayName,
+                    $result->standard_shipper->deliveryType,
+                    $result->standard_shipper->shippingType,
+                    $result->standard_shipper->price,
+                    $result->standard_shipper->priceFormatted,
+                    $result->standard_shipper->discountPercentage,
+                    $result->standard_shipper->isPreferred,
+                    $result->standard_shipper->isSustainable,
+                    $result->standard_shipper->deliveryOptions,
+                    $result->standard_shipper->optionCodes
+                );
+            }
         }
 
-        return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'CustomerLocation' => $this->address];
+        return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address];
     }
 
     /**
@@ -366,32 +266,25 @@ class MontapackingShipping
      * @param null $send
      *
      * @return mixed
+     * @throws GuzzleException
      */
-    public function call($method, $send = null)
+    public function call($method, $send = null): mixed
     {
-
         $request = '?';
         if ($send != null) {
 
             $requestBody = [];
 
-            // Request needed data
             foreach ($send as $data) {
-
                 if (isset($this->{$data}) && $this->{$data} != null) {
-
                     if (!is_array($this->{$data})) {
-
                         $request .= '&' . http_build_query($this->{$data}->toArray());
                         $requestBody[$data] = $this->{$data}->toArray();
                     } else {
                         $request .= '&' . http_build_query($this->{$data});
                         $requestBody[$data] = $this->{$data};
-
                     }
-
                 }
-
             }
         }
 
@@ -404,40 +297,35 @@ class MontapackingShipping
             'base_uri' => $url,
             'timeout' => 10.0,
             'headers' => [
-                'Authorization' => 'Basic ' . base64_encode($this->_user . ":" . $this->_pass)
+                'Authorization' => 'Basic ' . base64_encode($this->getSettings()->getUser() . ":" . $this->getSettings()->getPassword())
             ]
         ]);
 
         $method = strtolower($method);
-        //$response = $client->get($method . '?' . $request);
-
         $jsonRequest = [
             'userName' => $this->getSettings()->getUser(),
             'password' => $this->getSettings()->getPassword(),
             'channel' => $this->getSettings()->getOrigin(),
             'googleAPIKey' => $this->getSettings()->getGoogleKey(),
-//            'usePickupPoints' => $sdfs['_basic']['usePickupPoints'],
-//            'useShipperOptions' => $sdfs['_basic']['useShipperOptions'],
-//            'numberOfPickupPoints' => $sdfs['_basic']['numberOfPickupPoints'],
-//            'defaultCosts' => $sdfs['_basic']['defaultCosts'],
-//            'productsOnStock' => $sdfs['_basic']['productsOnStock'],
-
-
             'usePickupPoints' => $this->getSettings()->getIsPickupPointsEnabled(),
             'useShipperOptions' => true,
             'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
             'defaultCosts' => $this->getSettings()->getDefaultCosts(),
-            'productsOnStock' => $this->getOnstock(),
             'streetaddress' => $this->address->street . ' ' . $this->address->housenumber . $this->address->housenumberaddition,
             'city' => $this->address->city,
             'postalcode' => $this->address->postalcode,
             'countrycode' => $this->address->countrycode,
-//            'products' => $this->_products['products'],
+            'products' => $this->_products['products'],
         ];
+
+        if($this->getOnstock()) {
+            $jsonRequest['productsOnStock'] = true;
+        }
 
         $response = $client->post($method, [
             'json' => $jsonRequest
         ]);
+
         $result = json_decode($response->getBody());
 
         if ($response->getStatusCode() != 200) {
@@ -448,78 +336,30 @@ class MontapackingShipping
             $result = null;
         }
 
-        if ($result == null) {
-
-            sleep(1);
-            $response = $client->get($method . '?' . $request);
-
-            if ($response->getStatusCode() != 200) {
-                $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
-                $logger = $this->_logger;
-                $context = ['source' => 'Montapacking Checkout'];
-                $logger->critical($error_msg . " (" . $url . ")", $context);
-                $result = null;
-            }
-        }
-
-        $url = "https://api.montapacking.nl/rest/v5/" . $method . $request;
-
-        if (null !== $this->_logger && null === $result) {
-            $logger = $this->_logger;
-            $context = ['source' => 'Monta Checkout'];
-            $logger->critical("Webshop was unable to connect to Monta REST api. Please check your username and password. Otherwise please contact Montapacking (" . $url . ")", $context); //phpcs:ignore
-        } elseif (null !== $this->_logger) {
-            $logger = $this->_logger;
-            $context = ['source' => 'Monta Checkout'];
-            $logger->notice("Connection logged (" . $url . ")", $context);
-        }
-
-//        if ($this->_carrierConfig->getLogErrors()) {
+//        if ($result == null) {
 //
-//            if (null !== $this->_logger && isset($result->Warnings)) {
+//            sleep(1);
+//            $response = $client->get($method . '?' . $request);
 //
-//                foreach ($result->Warnings as $warning) {
-//
-//                    $logger = $this->_logger;
-//                    $context = ['source' => 'Montapacking Checkout'];
-//
-//                    if (null !== $warning->ShipperCode) {
-//                        $logger->notice($warning->ShipperCode . " - " . $warning->Message, $context);
-//                    } else {
-//                        $logger->notice($warning->Message, $context);
-//                    }
-//
-//                }
+//            if ($response->getStatusCode() != 200) {
+//                $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
+//                $logger = $this->_logger;
+//                $context = ['source' => 'Montapacking Checkout'];
+//                $logger->critical($error_msg . " (" . $url . ")", $context);
+//                $result = null;
 //            }
-//
-//            if (null !== $this->_logger && isset($result->Notices)) {
-//
-//                foreach ($result->Notices as $notice) {
-//                    $logger = $this->_logger;
-//                    $context = ['source' => 'Montapacking Checkout'];
-//
-//                    if (null !== $notice->ShipperCode) {
-//                        $logger->notice($notice->ShipperCode . " - " . $notice->Message, $context);
-//                    } else {
-//                        $logger->notice($notice->Message, $context);
-//                    }
-//
-//                }
-//            }
-//
-//            if (null !== $this->_logger && isset($result->ImpossibleShipperOptions)) {
-//
-//                foreach ($result->ImpossibleShipperOptions as $impossibleoption) {
-//                    foreach ($impossibleoption->Reasons as $reason) {
-//
-//                        $logger = $this->_logger;
-//                        $context = ['source' => 'Montapacking Checkout'];
-//                        $logger->notice($impossibleoption->ShipperCode . " - " . $reason->Code . " | " . $reason->Reason, $context); //phpcs:ignore
-//                    }
-//                }
-//
-//            }
-//
+//        }
+
+//        $url = "https://api.montapacking.nl/rest/v5/" . $method . $request;
+
+//        if (null !== $this->_logger && null === $result) {
+//            $logger = $this->_logger;
+//            $context = ['source' => 'Monta Checkout'];
+//            $logger->critical("Webshop was unable to connect to Monta REST api. Please check your username and password. Otherwise please contact Montapacking (" . $url . ")", $context); //phpcs:ignore
+//        } elseif (null !== $this->_logger) {
+//            $logger = $this->_logger;
+//            $context = ['source' => 'Monta Checkout'];
+//            $logger->notice("Connection logged (" . $url . ")", $context);
 //        }
 
         return $result;

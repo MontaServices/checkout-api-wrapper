@@ -8,7 +8,6 @@ namespace Monta\CheckoutApiWrapper\Objects;
  */
 class Product
 {
-
     /**
      * @var
      */
