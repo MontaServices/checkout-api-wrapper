@@ -2,38 +2,33 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-/**
- * Class Option
- *
- */
 class Option
 {
-
-    public $code;
-    public $description;
-    public $price;
-    public $priceFormatted;
+    /**
+     * @var string
+     */
+    public string $code;
 
     /**
-     * @return mixed
+     * @var string
      */
-    public function getPriceFormatted()
-    {
-        return $this->priceFormatted;
-    }
+    public string $description;
 
     /**
-     * @param mixed $priceFormatted
+     * @var float
      */
-    public function setPriceFormatted($priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
+    public float $price;
+
+    /**
+     * @var string
+     */
+    public string $priceFormatted;
 
     /**
      * @param $code
      * @param $description
      * @param $price
+     * @param $priceFormatted
      */
     public function __construct($code, $description, $price, $priceFormatted)
     {
@@ -43,49 +38,68 @@ class Option
         $this->priceFormatted = $priceFormatted;
     }
 
+    /**
+     * @return string
+     */
+    public function getPriceFormatted(): string
+    {
+        return $this->priceFormatted;
+    }
 
     /**
-     * @return mixed
+     * @param $priceFormatted
+     * @return void
      */
-    public function getCode()
+    public function setPriceFormatted($priceFormatted): void
+    {
+        $this->priceFormatted = $priceFormatted;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
-     * @param mixed $code
+     * @param string $code
+     * @return void
      */
-    public function setCode($code): void
+    public function setCode(string $code): void
     {
         $this->code = $code;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * @param mixed $description
+     * @param string $description
+     * @return void
      */
-    public function setDescription($description): void
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
     /**
-     * @param mixed $price
+     * @param $price
+     * @return void
      */
     public function setPrice($price): void
     {
@@ -95,9 +109,8 @@ class Option
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-
         $option = null;
         foreach ($this as $key => $value) {
             $option[$key] = $value;

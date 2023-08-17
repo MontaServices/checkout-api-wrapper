@@ -4,17 +4,6 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 class Settings
 {
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts)
-    {
-        $this->setOrigin($origin);
-        $this->setUser($user);
-        $this->setPassword($password);
-        $this->setPickupPointsEnabled($pickupPointsEnabled);
-        $this->setMaxPickupPoints($maxPickupPoints);
-        $this->setGoogleKey($googleKey);
-        $this->setDefaultCosts($defaultCosts);
-    }
-
     /**
      * @var string
      */
@@ -49,6 +38,33 @@ class Settings
      * @var float
      */
     private float $defaultCosts;
+
+    /**
+     * @var string
+     */
+    private string $webshopLanguage;
+
+    /**
+     * @param string $origin
+     * @param string $user
+     * @param string $password
+     * @param bool $pickupPointsEnabled
+     * @param int $maxPickupPoints
+     * @param string $googleKey
+     * @param float $defaultCosts
+     * @param string|null $webshopLanguage
+     */
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts, ?string $webshopLanguage = 'nl-NL')
+    {
+        $this->setOrigin($origin);
+        $this->setUser($user);
+        $this->setPassword($password);
+        $this->setPickupPointsEnabled($pickupPointsEnabled);
+        $this->setMaxPickupPoints($maxPickupPoints);
+        $this->setGoogleKey($googleKey);
+        $this->setDefaultCosts($defaultCosts);
+        $this->setWebshopLanguage($webshopLanguage);
+    }
 
     /**
      * @return string
@@ -95,7 +111,7 @@ class Settings
      */
     public function setPassword(string $password): void
     {
-        $this->password = $password;
+        $this->password = htmlspecialchars_decode($password);
     }
 
     /**
@@ -160,5 +176,21 @@ class Settings
     public function setDefaultCosts(float $defaultCosts): void
     {
         $this->defaultCosts = $defaultCosts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebshopLanguage(): string
+    {
+        return $this->webshopLanguage;
+    }
+
+    /**
+     * @param string $webshopLanguage
+     */
+    public function setWebshopLanguage(string $webshopLanguage): void
+    {
+        $this->webshopLanguage = $webshopLanguage;
     }
 }

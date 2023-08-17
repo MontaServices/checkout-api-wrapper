@@ -2,31 +2,24 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-/**
- * Class Shipper
- *
- * @package Montapacking\MontaCheckout\Api\Objects
- */
 class Shipper
 {
     /**
-     * @var
+     * @var string
      */
-    public $name;
-    /**
-     * @var
-     */
-    public $code;
+    public string $name;
 
     /**
-     * Shipper constructor.
-     *
+     * @var string
+     */
+    public string $code;
+
+    /**
      * @param $name
      * @param $code
      */
     public function __construct($name, $code)
     {
-
         $this->setName($name);
         $this->setCode($code);
     }
@@ -36,7 +29,7 @@ class Shipper
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName($name): Shipper
     {
         $this->name = $name;
         return $this;
@@ -47,7 +40,7 @@ class Shipper
      *
      * @return $this
      */
-    public function setCode($code)
+    public function setCode($code): Shipper
     {
         $this->code = $code;
         return $this;
@@ -56,14 +49,11 @@ class Shipper
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-
-        $shipper = [
+        return [
             'code' => $this->code,
             'name' => $this->name
         ];
-
-        return $shipper;
     }
 }

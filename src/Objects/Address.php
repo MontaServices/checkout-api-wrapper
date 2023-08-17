@@ -6,80 +6,83 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-/**
- * Class Address
- *
- */
 class Address
 {
+    /**
+     * @var string
+     */
+    public string $street;
 
     /**
-     * @var
+     * @var string
      */
-    public $street;
-    /**
-     * @var
-     */
-    public $housenumber;
-    /**
-     * @var
-     */
-    public $housenumberaddition;
-    /**
-     * @var
-     */
-    public $postalcode;
-    /**
-     * @var
-     */
-    public $city;
-    /**
-     * @var
-     */
-    public $state;
-    /**
-     * @var
-     */
-    public $countrycode;
-    /**
-     * @var
-     */
-    public $googleapikey;
-    /**
-     * @var
-     */
-    public $longitude;
-    /**
-     * @var
-     */
-    public $latitude;
+    public string $houseNumber;
 
     /**
-     * Address constructor.
-     *
-     * @param $street
-     * @param $housenumber
-     * @param $housenumberaddition
-     * @param $postalcode
-     * @param $city
-     * @param $state
-     * @param $countrycode
-     * @param $googleapikey
+     * @var string
      */
-    public function __construct($street, $housenumber, $housenumberaddition, $postalcode, $city, $state, $countrycode, $googleapikey) //phpcs:ignore
+    public string $houseNumberAddition;
+
+    /**
+     * @var string
+     */
+    public string $postalCode;
+
+    /**
+     * @var string
+     */
+    public string $city;
+
+    /**
+     * @var string
+     */
+    public string $state;
+
+    /**
+     * @var string
+     */
+    public string $countryCode;
+
+    /**
+     * @var string|null
+     */
+    public ?string $googleApiKey = null;
+
+    /**
+     * @var float
+     */
+    public float $longitude;
+
+    /**
+     * @var float
+     */
+    public float $latitude;
+
+    /**
+     * @param string $street
+     * @param string $houseNumber
+     * @param string $houseNumberAddition
+     * @param string $postalCode
+     * @param string $city
+     * @param string $state
+     * @param string $countryCode
+     * @param string $googleApiKey
+     * @throws GuzzleException
+     */
+    public function __construct(string $street, string $houseNumber, string $houseNumberAddition, string $postalCode, string $city, string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
     {
 
         $this->setStreet($street);
-        $this->setHousenumber($housenumber);
-        $this->setHousenumberAddition($housenumberaddition);
-        $this->setPostalcode($postalcode);
+        $this->setHouseNumber($houseNumber);
+        $this->setHouseNumberAddition($houseNumberAddition);
+        $this->setPostalCode($postalCode);
         $this->setCity($city);
         $this->setState($state);
-        $this->setCountry($countrycode);
+        $this->setCountry($countryCode);
 
-        if ($googleapikey != null)
+        if ($googleApiKey != null)
         {
-            $this->setGoogleApiKey(trim($googleapikey));
+            $this->setGoogleApiKey(trim($googleApiKey));
         }
 
         $this->setLongLat();
@@ -89,13 +92,13 @@ class Address
      * @return void
      * @throws GuzzleException
      */
-    public function setLongLat()
+    public function setLongLat(): void
     {
         // Get lat and long by address
-        $address = $this->housenumber . ' ' . $this->housenumberaddition . ', ' . $this->postalcode . ' ' . $this->countrycode; // Google HQ
+        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode; // Google HQ
         $prepAddr = str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
-        $google_maps_url = "https://maps.google.com/maps/api/geocode/json?address=" . $prepAddr . "&sensor=false&key=" . $this->googleapikey; //phpcs:ignore
+        $google_maps_url = "https://maps.google.com/maps/api/geocode/json?address=" . $prepAddr . "&sensor=false&key=" . $this->googleApiKey; //phpcs:ignore
 
 
         try {
@@ -117,7 +120,7 @@ class Address
                 $longitude = 0;
             }
 
-        } catch (Exception $e) {
+        } catch (Exception) {
             $latitude = 0;
             $longitude = 0;
         }
@@ -131,7 +134,7 @@ class Address
      *
      * @return $this
      */
-    public function setStreet($street)
+    public function setStreet($street): Address
     {
         $this->street = $street;
 
@@ -139,37 +142,37 @@ class Address
     }
 
     /**
-     * @param $housenumber
+     * @param $houseNumber
      *
      * @return $this
      */
-    public function setHousenumber($housenumber)
+    public function setHouseNumber($houseNumber): Address
     {
-        $this->housenumber = $housenumber;
+        $this->houseNumber = $houseNumber;
 
         return $this;
     }
 
     /**
-     * @param $housenumberaddition
+     * @param $houseNumberAddition
      *
      * @return $this
      */
-    public function setHousenumberAddition($housenumberaddition)
+    public function setHouseNumberAddition($houseNumberAddition): Address
     {
-        $this->housenumberaddition = $housenumberaddition;
+        $this->houseNumberAddition = $houseNumberAddition;
 
         return $this;
     }
 
     /**
-     * @param $postalcode
+     * @param $postalCode
      *
      * @return $this
      */
-    public function setPostalcode($postalcode)
+    public function setPostalCode($postalCode): Address
     {
-        $this->postalcode = $postalcode;
+        $this->postalCode = $postalCode;
 
         return $this;
     }
@@ -179,7 +182,7 @@ class Address
      *
      * @return $this
      */
-    public function setCity($city)
+    public function setCity($city): Address
     {
         $this->city = $city;
 
@@ -191,7 +194,7 @@ class Address
      *
      * @return $this
      */
-    public function setState($state)
+    public function setState($state): Address
     {
         $this->state = $state;
 
@@ -203,21 +206,21 @@ class Address
      *
      * @return $this
      */
-    public function setCountry($country)
+    public function setCountry($country): Address
     {
-        $this->countrycode = $country;
+        $this->countryCode = $country;
 
         return $this;
     }
 
     /**
-     * @param $googleapikey
+     * @param $googleApiKey
      *
      * @return $this
      */
-    public function setGoogleApiKey($googleapikey)
+    public function setGoogleApiKey($googleApiKey): Address
     {
-        $this->googleapikey = $googleapikey;
+        $this->googleApiKey = $googleApiKey;
 
         return $this;
     }
@@ -225,21 +228,18 @@ class Address
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-
-        $address = [
+        return [
             'Address.Street' => $this->street,
-            'Address.HouseNumber' => $this->housenumber,
-            'Address.HouseNumberAddition' => $this->housenumberaddition,
-            'Address.PostalCode' => $this->postalcode,
+            'Address.HouseNumber' => $this->houseNumber,
+            'Address.HouseNumberAddition' => $this->houseNumberAddition,
+            'Address.PostalCode' => $this->postalCode,
             'Address.City' => $this->city,
             'Address.State' => $this->state,
-            'Address.CountryCode' => $this->countrycode,
+            'Address.CountryCode' => $this->countryCode,
             'Address.Latitude' => $this->latitude,
             'Address.Longitude' => $this->longitude,
         ];
-
-        return $address;
     }
 }

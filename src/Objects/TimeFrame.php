@@ -4,13 +4,34 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
 
-/**
- * Class TimeFrame
- *
- */
 class TimeFrame
 {
-    public function __construct($date, $day, $month, $dateFormatted, $ShippingOptions)
+    /**
+     * @var string
+     */
+    public string $date;
+
+    /**
+     * @var string
+     */
+    public string $day;
+
+    /**
+     * @var string
+     */
+    public string $month;
+
+    /**
+     * @var string
+     */
+    public string $dateFormatted;
+
+    /**
+     * @var array
+     */
+    public array $options;
+
+    public function __construct(string $date, string $day, string $month, string $dateFormatted, array $ShippingOptions)
     {
         $this->setDate($date);
         $this->setDay($day);
@@ -19,101 +40,90 @@ class TimeFrame
         $this->setOptions($ShippingOptions);
     }
 
-    public $date;
-
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDate()
+    public function getDate(): string
     {
         return $this->date;
     }
 
     /**
-     * @param mixed $date
+     * @param string $date
      */
-    public function setDate($date): void
+    public function setDate(string $date): void
     {
         $this->date = $date;
     }
 
-    public $day;
-
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDay()
+    public function getDay(): string
     {
         return $this->day;
     }
 
     /**
-     * @param mixed $day
+     * @param string $day
      */
-    public function setDay($day): void
+    public function setDay(string $day): void
     {
         $this->day = $day;
     }
-    public $month;
-
-    public $dateFormatted;
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDateFormatted()
+    public function getDateFormatted(): string
     {
         return $this->dateFormatted;
     }
 
     /**
-     * @param mixed $dateFormatted
+     * @param string $dateFormatted
      */
-    public function setDateFormatted($dateFormatted): void
+    public function setDateFormatted(string $dateFormatted): void
     {
         $this->dateFormatted = $dateFormatted;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getMonth()
+    public function getMonth(): string
     {
         return $this->month;
     }
 
     /**
-     * @param mixed $month
+     * @param string $month
      */
-    public function setMonth($month): void
+    public function setMonth(string $month): void
     {
         $this->month = $month;
     }
 
-    public function setOptions($options)
+    public function setOptions(array $options): TimeFrame
     {
         $list = null;
 
-        if (is_array($options)) {
-
-            foreach ($options as $onr => $option) {
-
-                $list[$onr] = new MontaCheckout_ShippingOption(
-                    $option->shipper,
-                    $option->code,
-                    $option->displayNameShort,
-                    $option->displayName,
-                    $option->deliveryType,
-                    $option->shippingType,
-                    $option->price,
-                    $option->priceFormatted,
-                    $option->discountPercentage,
-                    $option->isPreferred,
-                    $option->isSustainable,
-                    $option->deliveryOptions,
-                    $option->optionCodes
-                );
-            }
+        foreach ($options as $onr => $option) {
+            $list[$onr] = new MontaCheckout_ShippingOption(
+                $option->shipper,
+                $option->code,
+                $option->displayNameShort,
+                $option->displayName,
+                $option->deliveryType,
+                $option->shippingType,
+                $option->price,
+                $option->priceFormatted,
+                $option->discountPercentage,
+                $option->isPreferred,
+                $option->isSustainable,
+                $option->deliveryOptions,
+                $option->optionCodes
+            );
         }
 
         $this->options = $list;
@@ -123,9 +133,8 @@ class TimeFrame
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-
         $option = null;
         foreach ($this as $key => $value) {
             $option[$key] = $value;

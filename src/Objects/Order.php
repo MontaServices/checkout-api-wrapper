@@ -2,24 +2,19 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-/**
- * Class Order
- *
- */
 class Order
 {
     /**
-     * @var
+     * @var float
      */
-    public $total_incl;
-    /**
-     * @var
-     */
-    public $total_excl;
+    public float $total_incl;
 
     /**
-     * Order constructor.
-     *
+     * @var float
+     */
+    public float $total_excl;
+
+    /**
      * @param $incl
      * @param $excl
      */
@@ -32,10 +27,9 @@ class Order
 
     /**
      * @param $incl
-     *
      * @return $this
      */
-    public function setIncl($incl)
+    public function setIncl($incl): Order
     {
         $this->total_incl = $incl;
         return $this;
@@ -43,10 +37,9 @@ class Order
 
     /**
      * @param $excl
-     *
      * @return $this
      */
-    public function setExcl($excl)
+    public function setExcl($excl): Order
     {
         $this->total_excl = $excl;
         return $this;
@@ -55,14 +48,11 @@ class Order
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-
-        $order = [
+        return [
             'OrderValueInclVat' => $this->total_incl,
             'OrderValueExclVat' => $this->total_excl,
         ];
-
-        return $order;
     }
 }

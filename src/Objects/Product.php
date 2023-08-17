@@ -2,48 +2,42 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-/**
- * Class Product
- *
- */
 class Product
 {
     /**
-     * @var
+     * @var string
      */
-    public $sku;
+    public string $sku;
     /**
-     * @var
+     * @var int
      */
-    public $length;
+    public int $length;
     /**
-     * @var
+     * @var int
      */
-    public $width;
+    public int $width;
     /**
-     * @var
+     * @var int
      */
-    public $height;
+    public int $height;
     /**
-     * @var
+     * @var int
      */
-    public $weight;
+    public int $weight;
     /**
-     * @var
+     * @var int
      */
-    public $quantity;
+    public int $quantity;
 
     /**
-     * Product constructor.
-     *
-     * @param $sku
-     * @param $length
-     * @param $width
-     * @param $height
-     * @param $weight
-     * @param $quantity
+     * @param string $sku
+     * @param int $length
+     * @param int $width
+     * @param int $height
+     * @param int $weight
+     * @param int $quantity
      */
-    public function __construct($sku, $length, $width, $height, $weight, $quantity)
+    public function __construct(string $sku, int $length, int $width, int $height, int $weight, int $quantity)
     {
 
         $this->setSku($sku);
@@ -59,7 +53,7 @@ class Product
      *
      * @return $this
      */
-    public function setSku($sku)
+    public function setSku($sku): Product
     {
         $this->sku = $sku;
         return $this;
@@ -70,7 +64,7 @@ class Product
      *
      * @return $this
      */
-    public function setLength($length)
+    public function setLength($length): Product
     {
         $this->length = $length;
         return $this;
@@ -81,7 +75,7 @@ class Product
      *
      * @return $this
      */
-    public function setWidth($width)
+    public function setWidth($width): Product
     {
         $this->width = $width;
         return $this;
@@ -92,7 +86,7 @@ class Product
      *
      * @return $this
      */
-    public function setHeight($height)
+    public function setHeight($height): Product
     {
         $this->height = $height;
         return $this;
@@ -103,7 +97,7 @@ class Product
      *
      * @return $this
      */
-    public function setWeight($weight)
+    public function setWeight($weight): Product
     {
         $this->weight = $weight;
         return $this;
@@ -114,7 +108,7 @@ class Product
      *
      * @return $this
      */
-    public function setQuantity($quantity)
+    public function setQuantity($quantity): Product
     {
         $this->quantity = $quantity;
         return $this;
@@ -123,10 +117,9 @@ class Product
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-
-        $product = [
+        return [
             'SKU' => $this->sku,
             'LengthMm' => $this->length,
             'WidthMm' => $this->width,
@@ -134,7 +127,5 @@ class Product
             'WeightGrammes' => $this->weight,
             'Quantity' => $this->quantity,
         ];
-
-        return $product;
     }
 }

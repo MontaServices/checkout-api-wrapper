@@ -4,8 +4,19 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 class OpeningTime
 {
+    /**
+     * @var string
+     */
     public string $day;
+
+    /**
+     * @var string
+     */
     public string $from;
+
+    /**
+     * @var string
+     */
     public string $to;
 
     /**

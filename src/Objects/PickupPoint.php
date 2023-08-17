@@ -53,34 +53,15 @@ class PickupPoint
      */
     public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes)
     {
-        $this->displayName = $displayName;
-        $this->shipperCode = $shipperCode;
-        $this->code = $code;
-        $this->distanceMeters = $distanceMeters;
-        $this->company = $company;
-        $this->street = $street;
-        $this->houseNumber = $houseNumber;
-        $this->postalCode = $postalCode;
-        $this->district = $district;
-        $this->city = $city;
-        $this->state = $state;
-        $this->countryCode = $countryCode;
-        $this->addressRemark = $addressRemark;
-        $this->phone = $phone;
-        $this->longitude = $longitude;
-        $this->latitude = $latitude;
-        $this->imageUrl = $imageUrl;
-        $this->price = $price;
-        $this->priceFormatted = $priceFormatted;
-        $this->openingTimes = $openingTimes;
-
+        $this->setDisplayName($displayName);
+        $this->setShipperCode($shipperCode);
         $this->setCode($code);
-        $this->setDistrict($distanceMeters);
+        $this->setDistanceMeters($distanceMeters);
+        $this->setDistrict($district);
         $this->setCompany($company);
         $this->setStreet($street);
         $this->setHouseNumber($houseNumber);
         $this->setPostalCode($postalCode);
-        $this->setDistrict($district);
         $this->setCity($city);
         $this->setState($state);
         $this->setCountryCode($countryCode);
@@ -89,6 +70,8 @@ class PickupPoint
         $this->setLongitude($longitude);
         $this->setLatitude($latitude);
         $this->setImageUrl($imageUrl);
+        $this->setPrice($price);
+        $this->setPriceFormatted($priceFormatted);
         $this->setOpeningTimes($openingTimes);
     }
 
@@ -417,27 +400,22 @@ class PickupPoint
     public function setOpeningTimes(array $openingTimes): void
     {
         $list = [];
+        foreach ($openingTimes as $option) {
 
-        if (is_array($openingTimes)) {
-
-            foreach ($openingTimes as $onr => $option) {
-
-                $list[$onr] = new OpeningTime(
-                    $option->day,
-                    $option->from,
-                    $option->to,
-                );
-            }
+            $list[] = new OpeningTime(
+                $option->day,
+                $option->from,
+                $option->to,
+            );
         }
 
         $this->openingTimes = $list;
     }
 
-
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
 
         $option = null;

@@ -4,25 +4,72 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 use Monta\CheckoutApiWrapper\Objects\Option as MontaCheckout_Option;
 
-/**
- * Class ShippingOption
- *
- * @package Montapacking\MontaCheckout\Objects
- */
 class ShippingOption
 {
+    /**
+     * @var string
+     */
     public string $shipper;
+
+    /**
+     * @var int
+     */
     public int $discountPercentage;
+
+    /**
+     * @var bool
+     */
     public bool $isPreferred;
+
+    /**
+     * @var bool
+     */
     public bool $isSustainable;
 
+    /**
+     * @var string
+     */
     public string $displayName;
+
+    /**
+     * @var string
+     */
     public string $deliveryType;
+
+    /**
+     * @var string
+     */
     public string $shippingType;
+
+    /**
+     * @var float
+     */
     public float $price;
+
+    /**
+     * @var string
+     */
     public string $priceFormatted;
+
+    /**
+     * @var array
+     */
     public array $deliveryOptions;
+
+    /**
+     * @var string
+     */
     public string $optionCodes;
+
+    /**
+     * @var string
+     */
+    public string $code;
+
+    /**
+     * @var string
+     */
+    public string $displayNameShort;
 
     /**
      * @return string
@@ -41,21 +88,21 @@ class ShippingOption
     }
 
     /**
-     * @param $shipper
-     * @param $code
-     * @param $displayNameShort
-     * @param $displayName
-     * @param $deliveryType
-     * @param $shippingType
-     * @param $price
-     * @param $priceFormatted
-     * @param $discountPercentage
-     * @param $isPreferred
-     * @param $isSustainable
-     * @param $deliveryOptions
-     * @param $optionCodes
+     * @param string $shipper
+     * @param string $code
+     * @param string $displayNameShort
+     * @param string $displayName
+     * @param string $deliveryType
+     * @param string $shippingType
+     * @param float $price
+     * @param string $priceFormatted
+     * @param int $discountPercentage
+     * @param bool $isPreferred
+     * @param bool $isSustainable
+     * @param array $deliveryOptions
+     * @param string $optionCodes
      */
-    public function __construct($shipper, $code, $displayNameShort, $displayName, $deliveryType, $shippingType, $price, $priceFormatted, $discountPercentage, $isPreferred, $isSustainable, $deliveryOptions, $optionCodes)
+    public function __construct(string $shipper, string $code, string $displayNameShort, string $displayName, string $deliveryType, string $shippingType, float $price, string $priceFormatted, int $discountPercentage, bool $isPreferred, bool $isSustainable, array $deliveryOptions, string $optionCodes)
     {
         $this->setShipper($shipper);
         $this->setCode($code);
@@ -75,221 +122,215 @@ class ShippingOption
     /**
      * @return mixed
      */
-    public function getShipper()
+    public function getShipper(): string
     {
         return $this->shipper;
     }
 
     /**
-     * @param mixed $shipper
+     * @param string $shipper
      * @return ShippingOption
      */
-    public function setShipper($shipper)
+    public function setShipper(string $shipper): ShippingOption
     {
         $this->shipper = $shipper;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
-     * @param mixed $code
+     * @param string $code
      * @return ShippingOption
      */
-    public function setCode($code)
+    public function setCode(string $code): ShippingOption
     {
         $this->code = $code;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDisplayName()
+    public function getDisplayName(): string
     {
         return $this->displayName;
     }
 
     /**
-     * @param mixed $displayName
+     * @param string $displayName
      * @return ShippingOption
      */
-    public function setDisplayName($displayName)
+    public function setDisplayName(string $displayName): ShippingOption
     {
         $this->displayName = $displayName;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDeliveryType()
+    public function getDeliveryType(): string
     {
         return $this->deliveryType;
     }
 
     /**
-     * @param mixed $deliveryType
+     * @param string $deliveryType
      * @return ShippingOption
      */
-    public function setDeliveryType($deliveryType)
+    public function setDeliveryType(string $deliveryType): ShippingOption
     {
         $this->deliveryType = $deliveryType;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getShippingType()
+    public function getShippingType(): String
     {
         return $this->shippingType;
     }
 
     /**
-     * @param mixed $shippingType
+     * @param string $shippingType
      * @return ShippingOption
      */
-    public function setShippingType($shippingType)
+    public function setShippingType(string $shippingType): ShippingOption
     {
         $this->shippingType = $shippingType;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
     /**
-     * @param mixed $price
+     * @param float $price
      * @return ShippingOption
      */
-    public function setPrice($price)
+    public function setPrice(float $price): ShippingOption
     {
         $this->price = $price;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getDiscountPercentage()
+    public function getDiscountPercentage(): int
     {
         return $this->discountPercentage;
     }
 
     /**
-     * @param mixed $discountPercentage
+     * @param int $discountPercentage
      * @return ShippingOption
      */
-    public function setDiscountPercentage($discountPercentage)
+    public function setDiscountPercentage(int $discountPercentage): ShippingOption
     {
         $this->discountPercentage = $discountPercentage;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getIsPreferred()
+    public function getIsPreferred(): bool
     {
         return $this->isPreferred;
     }
 
     /**
-     * @param mixed $isPreferred
+     * @param bool $isPreferred
      * @return ShippingOption
      */
-    public function setIsPreferred($isPreferred)
+    public function setIsPreferred(bool $isPreferred): ShippingOption
     {
         $this->isPreferred = $isPreferred;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getIsSustainable()
+    public function getIsSustainable(): bool
     {
         return $this->isSustainable;
     }
 
     /**
-     * @param mixed $isSustainable
+     * @param bool $isSustainable
      * @return ShippingOption
      */
-    public function setIsSustainable($isSustainable)
+    public function setIsSustainable(bool $isSustainable): ShippingOption
     {
         $this->isSustainable = $isSustainable;
         return $this;
     }
-    public $code;
-    public $displayNameShort;
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDisplayNameShort()
+    public function getDisplayNameShort(): string
     {
         return $this->displayNameShort;
     }
 
     /**
-     * @param mixed $displayNameShort
+     * @param void $displayNameShort
      */
     public function setDisplayNameShort($displayNameShort): void
     {
         $this->displayNameShort = $displayNameShort;
     }
 
-
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPriceFormatted()
+    public function getPriceFormatted(): string
     {
         return $this->priceFormatted;
     }
 
     /**
-     * @param mixed $priceFormatted
+     * @param string $priceFormatted
      */
-    public function setPriceFormatted($priceFormatted): void
+    public function setPriceFormatted(string $priceFormatted): void
     {
         $this->priceFormatted = $priceFormatted;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getDeliveryOptions()
+    public function getDeliveryOptions(): array
     {
         return $this->deliveryOptions;
     }
 
     /**
-     * @param mixed $deliveryOptions
+     * @param array $deliveryOptions
+     * @return ShippingOption
      */
-    public function setDeliveryOptions($deliveryOptions): ShippingOption
+    public function setDeliveryOptions(array $deliveryOptions): ShippingOption
     {
         $list = [];
+        foreach ($deliveryOptions as $option) {
 
-        if (is_array($deliveryOptions)) {
-
-            foreach ($deliveryOptions as $onr => $option) {
-
-                $list[$onr] = new MontaCheckout_Option($option->code, $option->description, $option->price, $option->priceFormatted);
-            }
+            $list[] = new MontaCheckout_Option($option->code, $option->description, $option->price, $option->priceFormatted);
         }
 
         $this->deliveryOptions = $list;
@@ -297,373 +338,10 @@ class ShippingOption
         return $this;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//    /**
-//     * @var
-//     */
-//    public $code;
-//    /**
-//     * @var
-//     */
-//    public $codes;
-//    /**
-//     * @var
-//     */
-//    public $optioncodes;
-//    /**
-//     * @var
-//     */
-//    public $optionsWithValue;
-//    /**
-//     * @var
-//     */
-//    public $description;
-//    /**
-//     * @var
-//     */
-//    public $mailbox;
-//    /**
-//     * @var
-//     */
-//    public $price;
-//    /**
-//    /**
-//     * @var
-//     */
-//    public $price_raw;
-//    /**
-//     * @var
-//     */
-//    public $currency;
-//    /**
-//     * @var
-//     */
-//    public $from;
-//    /**
-//     * @var
-//     */
-//    public $to;
-//    /**
-//     * @var
-//     */
-//    public $extras;
-//    /**
-//     * @var
-//     */
-//    public $date;
-//     /**
-//     * @var
-//     */
-//    public $isPreferred;
-//     /**
-//     * @var
-//     */
-//    public $isSustainable;
-//    /**
-//     * @var
-//     */
-//    public $displayName;
-//    /**
-//     * @var
-//     */
-//    public $discountPercentage;
-//
-//    /**
-//     * ShippingOption constructor.
-//     *
-//     * @param $code
-//     * @param $codes
-//     * @param $optioncodes
-//     * @param $optionsWithValue
-//     * @param $description
-//     * @param $mailbox
-//     * @param $price
-//     * @param $price_raw
-//     * @param $currency
-//     * @param $from
-//     * @param $to
-//     * @param $extras
-//     * @param $date
-//     * @param $isPreferred
-//     */
-//    public function __construct($code, $codes, $optioncodes, $optionsWithValue, $description, $mailbox, $price, $price_raw, $currency, $from, $to, $extras, $date, $isPreferred, $displayName, $isSustainable, $discountPercentage) //phpcs:ignore
-//    {
-//        $this->setCode($code);
-//        $this->setCodes($codes);
-//        $this->setOptionCodes($optioncodes);
-//        $this->setOptionsWithValue($optionsWithValue);
-//        $this->setDescription($description);
-//        $this->setMailbox($mailbox);
-//        $this->setPrice($price);
-//        $this->setPriceRaw($price_raw);
-//        $this->setCurrency($currency);
-//        $this->setFrom($from);
-//        $this->setTo($to);
-//        $this->setExtras($extras);
-//        $this->setDate($date);
-//        $this->setIsPreferred($isPreferred);
-//        $this->setIsSustainable($isSustainable);
-//        $this->setDisplayName($displayName);
-//        $this->setDiscountPercentage($discountPercentage);
-//    }
-//
-//     /**
-//     * @param $code
-//     *
-//     * @return $this
-//     */
-//    public function setDiscountPercentage($discountPercentage)
-//    {
-//        $this->discountPercentage = $discountPercentage;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $code
-//     *
-//     * @return $this
-//     */
-//    public function setCode($code)
-//    {
-//        $this->code = $code;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $codes
-//     *
-//     * @return $this
-//     */
-//    public function setCodes($codes)
-//    {
-//        $this->codes = $codes;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $optioncodes
-//     *
-//     * @return $this
-//     */
-//    public function setOptionCodes($optioncodes)
-//    {
-//        $this->optioncodes = $optioncodes;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $optionsWithValue
-//     *
-//     * @return $this
-//     */
-//    public function setOptionsWithValue($optionsWithValue)
-//    {
-//        $this->optionsWithValue = $optionsWithValue;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $description
-//     *
-//     * @return $this
-//     */
-//    public function setDescription($description)
-//    {
-//        $this->description = $description;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $mailbox
-//     *
-//     * @return $this
-//     */
-//    public function setMailbox($mailbox)
-//    {
-//        $this->mailbox = $mailbox;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $price
-//     *
-//     * @return $this
-//     */
-//    public function setPrice($price)
-//    {
-//        $this->price = $price;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $price_raw
-//     *
-//     * @return $this
-//     */
-//    public function setPriceRaw($price_raw)
-//    {
-//        $this->price_raw = $price_raw;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $currency
-//     *
-//     * @return $this
-//     */
-//    public function setCurrency($currency)
-//    {
-//        $this->currency = $currency;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $from
-//     *
-//     * @return $this
-//     */
-//    public function setFrom($from)
-//    {
-//        $this->from = $from;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $to
-//     *
-//     * @return $this
-//     */
-//    public function setTo($to)
-//    {
-//        $this->to = $to;
-//        return $this;
-//    }
-//
-//     /**
-//     * @param $isPreferred
-//     *
-//     * @return $this
-//     */
-//    public function setIsPreferred($isPreferred)
-//    {
-//        $this->isPreferred = $isPreferred;
-//        return $this;
-//    }
-//
-//     /**
-//     * @param $isSustainable
-//     *
-//     * @return $this
-//     */
-//    public function setIsSustainable($isSustainable)
-//    {
-//        $this->isSustainable = $isSustainable;
-//        return $this;
-//    }
-//
-//      /**
-//     * @param $displayName
-//     *
-//     * @return $this
-//     */
-//    public function setDisplayName($displayName)
-//    {
-//        $this->displayName = $displayName;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $extras
-//     *
-//     * @return $this
-//     */
-//    public function setExtras($extras)
-//    {
-//
-//        $list = null;
-//
-//        if (is_array($extras)) {
-//
-//            foreach ($extras as $extra) {
-//
-//                $list[] = new MontaCheckout_Option(
-//                    $extra->Code,
-//                    $extra->Description,
-//                    $extra->SellPrice,
-//                    $extra->SellPriceCurrency
-//                );
-//
-//            }
-//
-//        }
-//
-//        $this->extras = $list;
-//        return $this;
-//    }
-//
-//    /**
-//     * @param $date
-//     */
-//    public function setDate($date)
-//    {
-//        if ($date != null) {
-//            $this->date = date('Y-m-d H:i:s', strtotime($date));
-//        }
-//    }
-
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
 
         $option = null;
