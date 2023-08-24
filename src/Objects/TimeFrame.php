@@ -7,19 +7,19 @@ use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOpt
 class TimeFrame
 {
     /**
-     * @var string
+     * @var string|null
      */
-    public string $date;
+    public ?string $date;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $day;
+    public ?string $day;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $month;
+    public ?string $month;
 
     /**
      * @var string
@@ -31,7 +31,7 @@ class TimeFrame
      */
     public array $options;
 
-    public function __construct(string $date, string $day, string $month, string $dateFormatted, array $ShippingOptions)
+    public function __construct(?string $date, ?string $day, ?string $month, string $dateFormatted, array $ShippingOptions)
     {
         $this->setDate($date);
         $this->setDay($day);
@@ -49,9 +49,9 @@ class TimeFrame
     }
 
     /**
-     * @param string $date
+     * @param string|null $date
      */
-    public function setDate(string $date): void
+    public function setDate(?string $date): void
     {
         $this->date = $date;
     }
@@ -65,9 +65,9 @@ class TimeFrame
     }
 
     /**
-     * @param string $day
+     * @param string|null $day
      */
-    public function setDay(string $day): void
+    public function setDay(?string $day): void
     {
         $this->day = $day;
     }
@@ -97,9 +97,9 @@ class TimeFrame
     }
 
     /**
-     * @param string $month
+     * @param string|null $month
      */
-    public function setMonth(string $month): void
+    public function setMonth(?string $month): void
     {
         $this->month = $month;
     }
