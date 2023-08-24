@@ -14,14 +14,14 @@ class Address
     public string $street;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $houseNumber;
+    public ?string $houseNumber;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $houseNumberAddition;
+    public ?string $houseNumberAddition;
 
     /**
      * @var string
@@ -34,9 +34,9 @@ class Address
     public string $city;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $state;
+    public ?string $state;
 
     /**
      * @var string
@@ -60,8 +60,8 @@ class Address
 
     /**
      * @param string $street
-     * @param string $houseNumber
-     * @param string $houseNumberAddition
+     * @param string|null $houseNumber
+     * @param string|null $houseNumberAddition
      * @param string $postalCode
      * @param string $city
      * @param string $state
@@ -69,7 +69,7 @@ class Address
      * @param string $googleApiKey
      * @throws GuzzleException
      */
-    public function __construct(string $street, string $houseNumber, string $houseNumberAddition, string $postalCode, string $city, string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
+    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
     {
 
         $this->setStreet($street);
