@@ -231,8 +231,8 @@ class MontapackingShipping
      */
     public function call($method): mixed
     {
-        //$url = "https://api.montapacking.nl/rest/v5/";
-        $url = "https://host.docker.internal:62884/selfhosted/";
+        $url = "https://api-gateway.monta.nl/selfhosted/checkout/shippingrates/";
+//        $url = "https://host.docker.internal:62884/selfhosted/";
 
         $client = new Client([
             'verify' => false,
