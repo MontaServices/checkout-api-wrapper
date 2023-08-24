@@ -163,7 +163,7 @@ class MontapackingShipping
                 $this->getSettings()->setMaxPickupPoints(0);
             }
 
-            $result = $this->call('ShippingOptions');
+            $result = $this->call('shippingrates');
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $timeframe) {
@@ -231,7 +231,7 @@ class MontapackingShipping
      */
     public function call($method): mixed
     {
-        $url = "https://api-gateway.monta.nl/selfhosted/checkout/shippingrates/";
+        $url = "https://api-gateway.monta.nl/selfhosted/checkout/";
 //        $url = "https://host.docker.internal:62884/selfhosted/";
 
         $client = new Client([
