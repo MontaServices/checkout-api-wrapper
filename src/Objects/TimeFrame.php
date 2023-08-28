@@ -22,16 +22,16 @@ class TimeFrame
     public ?string $month;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $dateFormatted;
+    public ?string $dateFormatted;
 
     /**
      * @var array
      */
     public array $options;
 
-    public function __construct(?string $date, ?string $day, ?string $month, string $dateFormatted, array $ShippingOptions)
+    public function __construct(?string $date, ?string $day, ?string $month, ?string $dateFormatted, array $ShippingOptions)
     {
         $this->setDate($date);
         $this->setDay($day);
@@ -81,9 +81,9 @@ class TimeFrame
     }
 
     /**
-     * @param string $dateFormatted
+     * @param string|null $dateFormatted
      */
-    public function setDateFormatted(string $dateFormatted): void
+    public function setDateFormatted(?string $dateFormatted): void
     {
         $this->dateFormatted = $dateFormatted;
     }
