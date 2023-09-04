@@ -12,7 +12,7 @@ use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
 
-require_once __DIR__ . '/../vendor/autoload.php'; // Adjust the path as needed
+//require_once __DIR__ . '/../vendor/autoload.php'; // Adjust the path as needed
 
 class MontapackingShipping
 {
