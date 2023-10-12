@@ -122,7 +122,8 @@ class TimeFrame
                 $option->isPreferred,
                 $option->isSustainable,
                 $option->deliveryOptions,
-                $option->optionCodes
+                $option->optionCodes,
+	            $option->shipperCodes
             );
         }
 

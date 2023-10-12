@@ -71,6 +71,8 @@ class ShippingOption
      */
     public string $displayNameShort;
 
+	public array $shipperCodes;
+
     /**
      * @return string
      */
@@ -102,7 +104,7 @@ class ShippingOption
      * @param array $deliveryOptions
      * @param string $optionCodes
      */
-    public function __construct(string $shipper, string $code, string $displayNameShort, string $displayName, string $deliveryType, string $shippingType, float $price, string $priceFormatted, int $discountPercentage, bool $isPreferred, bool $isSustainable, array $deliveryOptions, string $optionCodes)
+    public function __construct(string $shipper, string $code, string $displayNameShort, string $displayName, string $deliveryType, string $shippingType, float $price, string $priceFormatted, int $discountPercentage, bool $isPreferred, bool $isSustainable, array $deliveryOptions, string $optionCodes, array $shipperCodes)
     {
         $this->setShipper($shipper);
         $this->setCode($code);
@@ -117,6 +119,7 @@ class ShippingOption
         $this->setIsSustainable($isSustainable);
         $this->setDeliveryOptions($deliveryOptions);
         $this->setOptionCodes($optionCodes);
+		$this->setShipperCodes($shipperCodes);
     }
 
     /**
@@ -351,4 +354,18 @@ class ShippingOption
 
         return $option;
     }
+
+	/**
+	 * @return array
+	 */
+	public function getShipperCodes(): array {
+		return $this->shipperCodes;
+	}
+
+	/**
+	 * @param array $shipperCodes
+	 */
+	public function setShipperCodes( array $shipperCodes ): void {
+		$this->shipperCodes = $shipperCodes;
+	}
 }
