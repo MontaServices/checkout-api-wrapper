@@ -125,10 +125,12 @@ class MontapackingShipping
      * @param int $widthMm
      * @param int $heightMm
      * @param int $weightGrammes
+     * @param float $price
      */
-    public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0) : void
+    public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0) : void
     {
-        $this->_products['products'][] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity);
+        $this->_products['products'][] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
+		$dbg = $this->_products['products'];
     }
 
     /**
@@ -210,6 +212,8 @@ class MontapackingShipping
                     $result->standard_shipper->code,
                     $result->standard_shipper->displayNameShort,
                     $result->standard_shipper->displayName,
+					$result->standard_shipper->from,
+					$result->standard_shipper->to,
                     $result->standard_shipper->deliveryType,
                     $result->standard_shipper->shippingType,
                     $result->standard_shipper->price,
@@ -218,7 +222,8 @@ class MontapackingShipping
                     $result->standard_shipper->isPreferred,
                     $result->standard_shipper->isSustainable,
                     $result->standard_shipper->deliveryOptions,
-                    $result->standard_shipper->optionCodes
+                    $result->standard_shipper->optionCodes,
+	                $result->standard_shipper->shipperCodes
                 );
             }
         }

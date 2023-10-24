@@ -114,6 +114,8 @@ class TimeFrame
                 $option->code,
                 $option->displayNameShort,
                 $option->displayName,
+				$option->from,
+				$option->to,
                 $option->deliveryType,
                 $option->shippingType,
                 $option->price,

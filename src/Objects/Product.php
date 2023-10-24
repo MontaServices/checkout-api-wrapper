@@ -28,6 +28,10 @@ class Product
      * @var int
      */
     public int $quantity;
+	/**
+	 * @var float
+	 */
+	public float $price_incl;
 
     /**
      * @param string $sku
@@ -36,8 +40,9 @@ class Product
      * @param int $height
      * @param int $weight
      * @param int $quantity
+     * @param float $price
      */
-    public function __construct(string $sku, int $length, int $width, int $height, int $weight, int $quantity)
+    public function __construct(string $sku, int $length, int $width, int $height, int $weight, int $quantity, float $price)
     {
 
         $this->setSku($sku);
@@ -46,7 +51,21 @@ class Product
         $this->setHeight($height);
         $this->setWeight($weight);
         $this->setQuantity($quantity);
+		if($price != null) {
+			$this->setPrice($price);
+		}
     }
+
+	/**
+	 * @param $price
+	 *
+	 * @return $this
+	 */
+	public function setPrice($price): Product
+	{
+		$this->price_incl = $price;
+		return $this;
+	}
 
     /**
      * @param $sku

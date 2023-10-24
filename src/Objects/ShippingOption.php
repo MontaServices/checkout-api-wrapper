@@ -31,6 +31,16 @@ class ShippingOption
      */
     public string $displayName;
 
+	/**
+	 * @var ?string
+	 */
+    public ?string $from;
+
+	/**
+	 * @var ?string
+	 */
+	public ?string $to;
+
     /**
      * @var string
      */
@@ -89,27 +99,34 @@ class ShippingOption
         $this->optionCodes = $optionCodes;
     }
 
-    /**
-     * @param string $shipper
-     * @param string $code
-     * @param string $displayNameShort
-     * @param string $displayName
-     * @param string $deliveryType
-     * @param string $shippingType
-     * @param float $price
-     * @param string $priceFormatted
-     * @param int $discountPercentage
-     * @param bool $isPreferred
-     * @param bool $isSustainable
-     * @param array $deliveryOptions
-     * @param string $optionCodes
-     */
-    public function __construct(string $shipper, string $code, string $displayNameShort, string $displayName, string $deliveryType, string $shippingType, float $price, string $priceFormatted, int $discountPercentage, bool $isPreferred, bool $isSustainable, array $deliveryOptions, string $optionCodes, array $shipperCodes)
+	/**
+	 * @param string $shipper
+	 * @param string $code
+	 * @param string $displayNameShort
+	 * @param string $displayName
+	 * @param ?string $from
+	 * @param ?string $to
+	 * @param string $deliveryType
+	 * @param string $shippingType
+	 * @param float $price
+	 * @param string $priceFormatted
+	 * @param int $discountPercentage
+	 * @param bool $isPreferred
+	 * @param bool $isSustainable
+	 * @param array $deliveryOptions
+	 * @param string $optionCodes
+	 * @param array $shipperCodes
+	 */
+    public function __construct(string $shipper, string $code, string $displayNameShort, string $displayName, ?string $from, ?string $to, string $deliveryType, string $shippingType, float $price, string $priceFormatted, int $discountPercentage, bool $isPreferred, bool $isSustainable, array $deliveryOptions, string $optionCodes, array $shipperCodes)
     {
         $this->setShipper($shipper);
         $this->setCode($code);
         $this->setDisplayNameShort($displayNameShort);
         $this->setDisplayName($displayName);
+
+		$this->setFrom($from);
+		$this->setTo($to);
+
         $this->setDeliveryType($deliveryType);
         $this->setShippingType($shippingType);
         $this->setPrice($price);
@@ -122,7 +139,44 @@ class ShippingOption
 		$this->setShipperCodes($shipperCodes);
     }
 
-    /**
+	/**
+	 * @return string|null
+	 */
+	public function getFrom(): ?string
+	{
+		return $this->from;
+	}
+
+	/**
+	 * @param ?string $from
+	 * @return ShippingOption
+	 */
+	public function setFrom(?string $from): ShippingOption
+	{
+		$this->from = $from;
+		return $this;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getTo(): ?string
+	{
+		return $this->to;
+	}
+
+	/**
+	 * @param ?string $to
+	 * @return ShippingOption
+	 */
+	public function setTo(?string $to): ShippingOption
+	{
+		$this->to = $to;
+		return $this;
+	}
+
+
+	/**
      * @return mixed
      */
     public function getShipper(): string
@@ -295,7 +349,7 @@ class ShippingOption
     /**
      * @param void $displayNameShort
      */
-    public function setDisplayNameShort($displayNameShort): void
+    public function setDisplayNameShort(string $displayNameShort): void
     {
         $this->displayNameShort = $displayNameShort;
     }
