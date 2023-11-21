@@ -201,7 +201,8 @@ class MontapackingShipping
                         $pickup->imageUrl,
                         $pickup->price,
                         $pickup->priceFormatted,
-                        $pickup->openingTimes
+                        $pickup->openingTimes,
+                        $pickup->shipperOptionsWithValue
                     );
                 }
             }

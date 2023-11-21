@@ -28,6 +28,7 @@ class PickupPoint
     public float $price;
     public string $priceFormatted;
     public array $openingTimes;
+    public string $shipperOptionsWithValue;
 
     /**
      * @param string $displayName
@@ -50,8 +51,9 @@ class PickupPoint
      * @param float $price
      * @param string $priceFormatted
      * @param array $openingTimes
+     * @param string $shipperOptionsWithValue
      */
-    public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes)
+    public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes, string $shipperOptionsWithValue)
     {
         $this->setDisplayName($displayName);
         $this->setShipperCode($shipperCode);
@@ -73,6 +75,7 @@ class PickupPoint
         $this->setPrice($price);
         $this->setPriceFormatted($priceFormatted);
         $this->setOpeningTimes($openingTimes);
+		$this->set_shipper_options_with_value($shipperOptionsWithValue);
     }
 
     public string $displayName;
@@ -425,4 +428,18 @@ class PickupPoint
 
         return $option;
     }
+
+	/**
+	 * @return string
+	 */
+	public function get_shipper_options_with_value(): string {
+		return $this->shipperOptionsWithValue;
+	}
+
+	/**
+	 * @param string $shipperOptionsWithValue
+	 */
+	public function set_shipper_options_with_value( string $shipperOptionsWithValue ): void {
+		$this->shipperOptionsWithValue = $shipperOptionsWithValue;
+	}
 }
