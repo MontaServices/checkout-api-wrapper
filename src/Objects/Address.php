@@ -64,12 +64,12 @@ class Address
      * @param string|null $houseNumberAddition
      * @param string $postalCode
      * @param string $city
-     * @param string $state
+     * @param ?string $state
      * @param string $countryCode
      * @param string $googleApiKey
      * @throws GuzzleException
      */
-    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
+    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, ?string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
     {
 
         $this->setStreet($street);
