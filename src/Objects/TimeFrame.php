@@ -27,16 +27,22 @@ class TimeFrame
     public ?string $dateFormatted;
 
     /**
+     * @var string|null
+     */
+    public ?string $dateOnlyFormatted;
+
+    /**
      * @var array
      */
     public array $options;
 
-    public function __construct(?string $date, ?string $day, ?string $month, ?string $dateFormatted, array $ShippingOptions)
+    public function __construct(?string $date, ?string $day, ?string $month, ?string $dateFormatted, ?string $dateOnlyFormatted, array $ShippingOptions)
     {
         $this->setDate($date);
         $this->setDay($day);
         $this->setMonth($month);
         $this->setDateFormatted($dateFormatted);
+        $this->setDateOnlyFormatted($dateOnlyFormatted);
         $this->setOptions($ShippingOptions);
     }
 
@@ -87,6 +93,24 @@ class TimeFrame
     {
         $this->dateFormatted = $dateFormatted;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getDateOnlyFormatted(): string|null
+    {
+        return $this->dateOnlyFormatted;
+    }
+
+    /**
+     * @param string|null $dateOnlyFormatted
+     */
+    public function setDateOnlyFormatted(?string $dateOnlyFormatted): void
+    {
+        $this->dateOnlyFormatted = $dateOnlyFormatted;
+    }
+
+
 
     /**
      * @return string
