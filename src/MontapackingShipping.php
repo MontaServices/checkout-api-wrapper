@@ -153,6 +153,7 @@ class MontapackingShipping
         $timeframes = [];
         $pickups = [];
         $standardShipper = null;
+        $storeLocation = null;
 
         if (trim($this->address->postalCode) && (trim($this->address->houseNumber) || trim($this->address->street))) {
 //            $this->_basic = array_merge(
@@ -228,9 +229,35 @@ class MontapackingShipping
 	                $result->standard_shipper->shipperCodes
                 );
             }
+
+	        if (isset($result->store_location)) {
+			        $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
+				        $result->store_location->shipperCode,
+				        $result->store_location->code,
+				        $result->store_location->distanceMeters,
+				        $result->store_location->company,
+				        $result->store_location->street,
+				        $result->store_location->houseNumber,
+				        $result->store_location->postalCode,
+				        $result->store_location->district,
+				        $result->store_location->city, $result->store_location->state,
+				        $result->store_location->countryCode,
+				        $result->store_location->addressRemark,
+				        $result->store_location->phone,
+				        $result->store_location->longitude,
+				        $result->store_location->latitude,
+				        $result->store_location->imageUrl,
+				        $result->store_location->price,
+				        $result->store_location->priceFormatted,
+				        $result->store_location->openingTimes,
+				        $result->store_location->shipperOptionsWithValue
+			        );
+
+	        }
+
         }
 
-        return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address];
+        return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
     }
 
     /**
