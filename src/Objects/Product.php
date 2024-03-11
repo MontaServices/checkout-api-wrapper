@@ -31,7 +31,7 @@ class Product
 	/**
 	 * @var float
 	 */
-	public float $price_incl;
+	public float $price;
 
     /**
      * @param string $sku
@@ -63,7 +63,7 @@ class Product
 	 */
 	public function setPrice($price): Product
 	{
-		$this->price_incl = $price;
+		$this->price = $price;
 		return $this;
 	}
 
@@ -145,6 +145,7 @@ class Product
             'HeightMm' => $this->height,
             'WeightGrammes' => $this->weight,
             'Quantity' => $this->quantity,
+            'Price' => $this->price
         ];
     }
 }
