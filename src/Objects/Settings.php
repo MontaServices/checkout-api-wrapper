@@ -45,6 +45,11 @@ class Settings
     private string $webshopLanguage;
 
     /**
+     * @var string
+     */
+    private bool $excludeShippingDiscount;
+
+    /**
      * @param string $origin
      * @param string $user
      * @param string $password
@@ -54,7 +59,7 @@ class Settings
      * @param float $defaultCosts
      * @param string|null $webshopLanguage
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts, ?string $webshopLanguage = 'nl-NL')
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts, ?string $webshopLanguage = 'nl-NL', bool $excludeShippingDiscount = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -64,6 +69,7 @@ class Settings
         $this->setGoogleKey($googleKey);
         $this->setDefaultCosts($defaultCosts);
         $this->setWebshopLanguage($webshopLanguage);
+        $this->setExcludeShippingDiscount($excludeShippingDiscount);
     }
 
     /**
@@ -192,5 +198,21 @@ class Settings
     public function setWebshopLanguage(string $webshopLanguage): void
     {
         $this->webshopLanguage = $webshopLanguage;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getExcludeShippingDiscount(): bool
+    {
+        return $this->excludeShippingDiscount;
+    }
+
+    /**
+     * @param bool excludeShippingDiscount
+     */
+    public function setExcludeShippingDiscount(bool $excludeShippingDiscount): void
+    {
+        $this->excludeShippingDiscount = $excludeShippingDiscount;
     }
 }
