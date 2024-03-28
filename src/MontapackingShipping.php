@@ -333,4 +333,27 @@ class MontapackingShipping
     {
         $this->settings = $settings;
     }
+
+    public function GetDebugPostBodyJson(): string
+    {
+        $jsonRequest = [
+            'userName' => $this->getSettings()->getUser(),
+            'password' => $this->getSettings()->getPassword(),
+            'channel' => $this->getSettings()->getOrigin(),
+            'webshopLanguage' => $this->getSettings()->getWebshopLanguage(),
+            'googleAPIKey' => $this->getSettings()->getGoogleKey(),
+            'usePickupPoints' => $this->getSettings()->getIsPickupPointsEnabled(),
+            'useShipperOptions' => true,
+            'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
+            'defaultCosts' => $this->getSettings()->getDefaultCosts(),
+            'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
+            'city' => $this->address->city,
+            'postalcode' => $this->address->postalCode,
+            'countrycode' => $this->address->countryCode,
+            'products' => $this->_products['products'],
+            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount()
+        ];
+
+        return json_encode($jsonRequest);
+    }
 }
