@@ -255,9 +255,42 @@ class MontapackingShipping
 
 	        }
 
+            if ($result == null){
+                $timeframes[] = self::getFallbackTimeframe();
+            }
+
         }
 
         return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
+    }
+
+    private function getFallbackTimeframe(){
+        $options = [new MontaCheckout_ShippingOption(
+            'Monta',
+            'Monta',
+            'Monta',
+            'Standard delivery',
+            null,
+            null,
+            'Unknown',
+            "DeliveryTimeframeType",
+            $this->getSettings()->getDefaultCosts(),
+            "€". $this->getSettings()->getDefaultCosts(),
+            0,
+            false,
+            false,
+            [],
+            "",
+            []
+        )];
+        return new MontaCheckout_TimeFrame(
+            null,
+            null,
+            null,
+            null,
+            'Unknown',
+            $options,
+        );
     }
 
     /**
