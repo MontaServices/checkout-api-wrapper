@@ -130,7 +130,7 @@ class MontapackingShipping
     public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0) : void
     {
         $this->_products['products'][] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
-		$dbg = $this->_products['products'];
+        $dbg = $this->_products['products'];
     }
 
     /**
@@ -215,8 +215,8 @@ class MontapackingShipping
                     $result->standard_shipper->code,
                     $result->standard_shipper->displayNameShort,
                     $result->standard_shipper->displayName,
-					$result->standard_shipper->from,
-					$result->standard_shipper->to,
+                    $result->standard_shipper->from,
+                    $result->standard_shipper->to,
                     $result->standard_shipper->deliveryType,
                     $result->standard_shipper->shippingType,
                     $result->standard_shipper->price,
@@ -226,34 +226,34 @@ class MontapackingShipping
                     $result->standard_shipper->isSustainable,
                     $result->standard_shipper->deliveryOptions,
                     $result->standard_shipper->optionCodes,
-	                $result->standard_shipper->shipperCodes
+                    $result->standard_shipper->shipperCodes
                 );
             }
 
-	        if (isset($result->store_location)) {
-			        $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
-				        $result->store_location->shipperCode,
-				        $result->store_location->code,
-				        $result->store_location->distanceMeters,
-				        $result->store_location->company,
-				        $result->store_location->street,
-				        $result->store_location->houseNumber,
-				        $result->store_location->postalCode,
-				        $result->store_location->district,
-				        $result->store_location->city, $result->store_location->state,
-				        $result->store_location->countryCode,
-				        $result->store_location->addressRemark,
-				        $result->store_location->phone,
-				        $result->store_location->longitude,
-				        $result->store_location->latitude,
-				        $result->store_location->imageUrl,
-				        $result->store_location->price,
-				        $result->store_location->priceFormatted,
-				        $result->store_location->openingTimes,
-				        $result->store_location->shipperOptionsWithValue
-			        );
+            if (isset($result->store_location)) {
+                $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
+                    $result->store_location->shipperCode,
+                    $result->store_location->code,
+                    $result->store_location->distanceMeters,
+                    $result->store_location->company,
+                    $result->store_location->street,
+                    $result->store_location->houseNumber,
+                    $result->store_location->postalCode,
+                    $result->store_location->district,
+                    $result->store_location->city, $result->store_location->state,
+                    $result->store_location->countryCode,
+                    $result->store_location->addressRemark,
+                    $result->store_location->phone,
+                    $result->store_location->longitude,
+                    $result->store_location->latitude,
+                    $result->store_location->imageUrl,
+                    $result->store_location->price,
+                    $result->store_location->priceFormatted,
+                    $result->store_location->openingTimes,
+                    $result->store_location->shipperOptionsWithValue
+                );
 
-	        }
+            }
 
             if ($result == null){
                 $timeframes[] = self::getFallbackTimeframe();
@@ -275,7 +275,7 @@ class MontapackingShipping
             'Unknown',
             "DeliveryTimeframeType",
             $this->getSettings()->getDefaultCosts(),
-            "€". $this->getSettings()->getDefaultCosts(),
+            $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
             0,
             false,
             false,
