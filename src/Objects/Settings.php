@@ -59,7 +59,7 @@ class Settings
      * @param float $defaultCosts
      * @param string|null $webshopLanguage
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts, string $currency, ?string $webshopLanguage = 'nl-NL', bool $excludeShippingDiscount = false)
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
