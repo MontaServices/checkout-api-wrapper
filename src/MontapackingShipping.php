@@ -335,7 +335,7 @@ class MontapackingShipping
             false,
             [],
             "",
-            []
+            ["MultipleShipper_ShippingDayUnknown"]
         )];
         return new MontaCheckout_TimeFrame(
             null,
