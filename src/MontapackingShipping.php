@@ -71,7 +71,7 @@ class MontapackingShipping
     /**
      * @param $value
      */
-    public function setOnStock($value) : void
+    public function setOnStock($value): void
     {
         $this->_onStock = $value;
     }
@@ -79,7 +79,7 @@ class MontapackingShipping
     /**
      * @return bool
      */
-    public function getOnStock() : bool
+    public function getOnStock(): bool
     {
         return $this->_onStock;
     }
@@ -88,7 +88,7 @@ class MontapackingShipping
      * @param $total_incl
      * @param $total_excl
      */
-    public function setOrder($total_incl, $total_excl) : void
+    public function setOrder($total_incl, $total_excl): void
     {
 
         $this->_order = new MontaCheckout_Order($total_incl, $total_excl);
@@ -104,7 +104,7 @@ class MontapackingShipping
      * @param $countryCode
      * @throws GuzzleException
      */
-    public function setAddress($street, $houseNumber, $houseNumberAddition, $postalCode, $city, $state, $countryCode) : void
+    public function setAddress($street, $houseNumber, $houseNumberAddition, $postalCode, $city, $state, $countryCode): void
     {
         $this->address = new MontaCheckout_Address(
             $street,
@@ -127,7 +127,7 @@ class MontapackingShipping
      * @param int $weightGrammes
      * @param float $price
      */
-    public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0) : void
+    public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0): void
     {
         $this->_products['products'][] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
         $dbg = $this->_products['products'];
@@ -148,7 +148,7 @@ class MontapackingShipping
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(bool $onStock = true) : array
+    public function getShippingOptions(bool $onStock = true): array
     {
         $timeframes = [];
         $pickups = [];
@@ -163,8 +163,7 @@ class MontapackingShipping
 //                ]
 //            );
 
-            if(!$this->getSettings()->getIsPickupPointsEnabled())
-            {
+            if (!$this->getSettings()->getIsPickupPointsEnabled()) {
                 $this->getSettings()->setMaxPickupPoints(0);
             }
 
@@ -178,7 +177,7 @@ class MontapackingShipping
                         $timeframe->month,
                         $timeframe->dateFormatted,
                         $timeframe->dateOnlyFormatted,
-                        $timeframe->ShippingOptions
+                        isset($timeframe->ShippingOptions) ? $timeframe->ShippingOptions : $timeframe->options
                     );
                 }
             }
@@ -255,42 +254,9 @@ class MontapackingShipping
 
             }
 
-            if ($result == null){
-                $timeframes[] = self::getFallbackTimeframe();
-            }
-
         }
 
         return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
-    }
-
-    private function getFallbackTimeframe(){
-        $options = [new MontaCheckout_ShippingOption(
-            'Monta',
-            'Monta',
-            'Monta',
-            'Standard delivery',
-            null,
-            null,
-            'Unknown',
-            "DeliveryTimeframeType",
-            $this->getSettings()->getDefaultCosts(),
-            $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
-            0,
-            false,
-            false,
-            [],
-            "",
-            []
-        )];
-        return new MontaCheckout_TimeFrame(
-            null,
-            null,
-            null,
-            null,
-            'Unknown',
-            $options,
-        );
     }
 
     /**
@@ -331,7 +297,7 @@ class MontapackingShipping
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount()
         ];
 
-        if($this->getOnStock()) {
+        if ($this->getOnStock()) {
             $jsonRequest['productsOnStock'] = true;
         }
 
@@ -345,10 +311,40 @@ class MontapackingShipping
             // Create abstract logger here later that logs to local file storage
             $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
             $context = ['source' => 'Montapacking Checkout'];
-            $result = null;
+            $result->timeframes = [self::getFallbackTimeframe()];
         }
 
         return $result;
+    }
+
+    private function getFallbackTimeframe()
+    {
+        $options = [new MontaCheckout_ShippingOption(
+            'Standard Shipper',
+            'montapacking_standard',
+            'Standard Shipper',
+            'Standard Shipper',
+            null,
+            null,
+            'Unknown',
+            "DeliveryTimeframeType",
+            $this->getSettings()->getDefaultCosts(),
+            $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+            0,
+            false,
+            false,
+            [],
+            "",
+            []
+        )];
+        return new MontaCheckout_TimeFrame(
+            null,
+            null,
+            null,
+            null,
+            'Unknown',
+            $options,
+        );
     }
 
     /**
