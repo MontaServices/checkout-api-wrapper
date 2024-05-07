@@ -8,6 +8,7 @@ use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
 use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
@@ -167,7 +168,7 @@ class MontapackingShipping
                 $this->getSettings()->setMaxPickupPoints(0);
             }
 
-            $result = $this->call('shippingrates');
+            $result = $this->call('shippingratessdfsdf');
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $timeframe) {
@@ -301,20 +302,27 @@ class MontapackingShipping
             $jsonRequest['productsOnStock'] = true;
         }
 
-        $response = $client->post($method, [
-            'json' => $jsonRequest
-        ]);
-
-        $result = json_decode($response->getBody());
-
-        if ($response->getStatusCode() != 200) {
-            // Create abstract logger here later that logs to local file storage
-            $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
-            $context = ['source' => 'Montapacking Checkout'];
-            $result->timeframes = [self::getFallbackTimeframe()];
+        $response = null;
+        $result = (object)[];
+        try {
+            $response = $client->post($method, [
+                'json' => $jsonRequest
+            ]);
+        } catch(\Exception $exception) {
+            if($response != null) {
+                // Create abstract logger here later that logs to local file storage
+                $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
+            }
         }
 
-        return $result;
+        if ($response == null || $response->getStatusCode() != 200) {
+//            $context = ['source' => 'Montapacking Checkout'];
+            $result->timeframes = [self::getFallbackTimeframe()];
+
+            return $result;
+        }
+
+        return json_decode($response->getBody());
     }
 
     private function getFallbackTimeframe()
