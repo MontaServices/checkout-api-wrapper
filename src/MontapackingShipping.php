@@ -167,7 +167,7 @@ class MontapackingShipping
                 $this->getSettings()->setMaxPickupPoints(0);
             }
 
-            $result = $this->call('shippingratessdfsdf');
+            $result = $this->call('shippingrates');
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $timeframe) {
