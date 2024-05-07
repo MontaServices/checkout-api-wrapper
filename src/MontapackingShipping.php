@@ -8,7 +8,6 @@ use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
 use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
-use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
