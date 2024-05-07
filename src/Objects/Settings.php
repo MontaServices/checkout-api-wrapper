@@ -59,7 +59,7 @@ class Settings
      * @param float $defaultCosts
      * @param string|null $webshopLanguage
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts, ?string $webshopLanguage = 'nl-NL', bool $excludeShippingDiscount = false)
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -68,6 +68,7 @@ class Settings
         $this->setMaxPickupPoints($maxPickupPoints);
         $this->setGoogleKey($googleKey);
         $this->setDefaultCosts($defaultCosts);
+        $this->setCurrency($currency);
         $this->setWebshopLanguage($webshopLanguage);
         $this->setExcludeShippingDiscount($excludeShippingDiscount);
     }
@@ -182,6 +183,22 @@ class Settings
     public function setDefaultCosts(float $defaultCosts): void
     {
         $this->defaultCosts = $defaultCosts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param string $currency
+     */
+    public function setCurrency(string $currency): void
+    {
+        $this->currency = $currency;
     }
 
     /**
