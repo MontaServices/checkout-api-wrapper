@@ -49,6 +49,11 @@ class Settings
      */
     private bool $excludeShippingDiscount;
 
+      /**
+     * @var bool
+     */
+    private bool $onlyPickupPoints;
+
     /**
      * @param string $origin
      * @param string $user
@@ -59,7 +64,7 @@ class Settings
      * @param float $defaultCosts
      * @param string|null $webshopLanguage
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false)
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool onlyPickupPoints = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -70,6 +75,7 @@ class Settings
         $this->setDefaultCosts($defaultCosts);
         $this->setCurrency($currency);
         $this->setWebshopLanguage($webshopLanguage);
+        $this->setExcludeShippingDiscount($excludeShippingDiscount);
         $this->setExcludeShippingDiscount($excludeShippingDiscount);
     }
 
@@ -231,5 +237,21 @@ class Settings
     public function setExcludeShippingDiscount(bool $excludeShippingDiscount): void
     {
         $this->excludeShippingDiscount = $excludeShippingDiscount;
+    }
+
+      /**
+     * @return bool
+     */
+    public function getOnlyPickupPoints(): bool
+    {
+        return $this->onlyPickupPoints;
+    }
+
+    /**
+     * @param bool onlyPickupPoints
+     */
+    public function setOnlyPickupPoints(bool $onlyPickupPoints): void
+    {
+        $this->onlyPickupPoints = $onlyPickupPoints;
     }
 }

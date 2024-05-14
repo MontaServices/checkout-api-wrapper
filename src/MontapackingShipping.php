@@ -214,8 +214,8 @@ class MontapackingShipping
                     $result->standard_shipper->code,
                     $result->standard_shipper->displayNameShort,
                     $result->standard_shipper->displayName,
-                    $result->standard_shipper->from,
-                    $result->standard_shipper->to,
+					$result->standard_shipper->from,
+					$result->standard_shipper->to,
                     $result->standard_shipper->deliveryType,
                     $result->standard_shipper->shippingType,
                     $result->standard_shipper->price,
@@ -225,32 +225,32 @@ class MontapackingShipping
                     $result->standard_shipper->isSustainable,
                     $result->standard_shipper->deliveryOptions,
                     $result->standard_shipper->optionCodes,
-                    $result->standard_shipper->shipperCodes
+	                $result->standard_shipper->shipperCodes
                 );
             }
 
-            if (isset($result->store_location)) {
-                $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
-                    $result->store_location->shipperCode,
-                    $result->store_location->code,
-                    $result->store_location->distanceMeters,
-                    $result->store_location->company,
-                    $result->store_location->street,
-                    $result->store_location->houseNumber,
-                    $result->store_location->postalCode,
-                    $result->store_location->district,
-                    $result->store_location->city, $result->store_location->state,
-                    $result->store_location->countryCode,
-                    $result->store_location->addressRemark,
-                    $result->store_location->phone,
-                    $result->store_location->longitude,
-                    $result->store_location->latitude,
-                    $result->store_location->imageUrl,
-                    $result->store_location->price,
-                    $result->store_location->priceFormatted,
-                    $result->store_location->openingTimes,
-                    $result->store_location->shipperOptionsWithValue
-                );
+	        if (isset($result->store_location)) {
+			        $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
+				        $result->store_location->shipperCode,
+				        $result->store_location->code,
+				        $result->store_location->distanceMeters,
+				        $result->store_location->company,
+				        $result->store_location->street,
+				        $result->store_location->houseNumber,
+				        $result->store_location->postalCode,
+				        $result->store_location->district,
+				        $result->store_location->city, $result->store_location->state,
+				        $result->store_location->countryCode,
+				        $result->store_location->addressRemark,
+				        $result->store_location->phone,
+				        $result->store_location->longitude,
+				        $result->store_location->latitude,
+				        $result->store_location->imageUrl,
+				        $result->store_location->price,
+				        $result->store_location->priceFormatted,
+				        $result->store_location->openingTimes,
+				        $result->store_location->shipperOptionsWithValue
+			        );
 
             }
 
@@ -294,7 +294,8 @@ class MontapackingShipping
             'postalcode' => $this->address->postalCode,
             'countrycode' => $this->address->countryCode,
             'products' => $this->_products['products'],
-            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount()
+            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
+            'onlyPickupPoints' => this->getSettings()->getOnlyPickupPoints()
         ];
 
         if ($this->getOnStock()) {
@@ -343,6 +344,35 @@ class MontapackingShipping
             [],
             "",
             ["MultipleShipper_ShippingDayUnknown"]
+        )];
+        return new MontaCheckout_TimeFrame(
+            null,
+            null,
+            null,
+            null,
+            'Unknown',
+            $options,
+        );
+    }
+
+    private function getFallbackTimeframe(){
+        $options = [new MontaCheckout_ShippingOption(
+            'Standard Shipper',
+            'montapacking_standard',
+            'Standard Shipper',
+            'Standard Shipper',
+            null,
+            null,
+            'Unknown',
+            "DeliveryTimeframeType",
+            $this->getSettings()->getDefaultCosts(),
+            $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+            0,
+            false,
+            false,
+            [],
+            "",
+            []
         )];
         return new MontaCheckout_TimeFrame(
             null,
