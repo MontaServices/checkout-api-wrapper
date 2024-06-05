@@ -47,6 +47,11 @@ class Settings
     /**
      * @var string
      */
+    private string $currency;
+
+    /**
+     * @var string
+     */
     private bool $excludeShippingDiscount;
 
     /**
