@@ -294,7 +294,8 @@ class MontapackingShipping
             'postalcode' => $this->address->postalCode,
             'countrycode' => $this->address->countryCode,
             'products' => $this->_products['products'],
-            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount()
+            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
+            'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree()  
         ];
 
         if ($this->getOnStock()) {

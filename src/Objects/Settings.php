@@ -55,6 +55,11 @@ class Settings
     private bool $excludeShippingDiscount;
 
     /**
+     * @var string
+     */
+    private bool $showZeroCostsAsFree;
+
+    /**
      * @param string $origin
      * @param string $user
      * @param string $password
@@ -64,7 +69,7 @@ class Settings
      * @param float $defaultCosts
      * @param string|null $webshopLanguage
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false)
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -76,6 +81,7 @@ class Settings
         $this->setCurrency($currency);
         $this->setWebshopLanguage($webshopLanguage);
         $this->setExcludeShippingDiscount($excludeShippingDiscount);
+        $this->setShowZeroCostsAsFree($showZeroCostsAsFree);
     }
 
     /**
@@ -236,5 +242,15 @@ class Settings
     public function setExcludeShippingDiscount(bool $excludeShippingDiscount): void
     {
         $this->excludeShippingDiscount = $excludeShippingDiscount;
+    }
+
+    public function getShowZeroCostsAsFree(): bool
+    {
+        return $this->showZeroCostsAsFree;
+    }
+
+    public function setShowZeroCostsAsFree(bool $showZeroCostsAsFree): void
+    {
+        $this->showZeroCostsAsFree = $showZeroCostsAsFree;
     }
 }
