@@ -54,7 +54,7 @@ class Settings
      */
     private bool $excludeShippingDiscount;
 
-     /**
+    /**
      * @var string
      */
     private bool $showZeroCostsAsFree;
