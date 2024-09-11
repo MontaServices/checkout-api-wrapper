@@ -167,7 +167,7 @@ class MontapackingShipping
                 $this->getSettings()->setMaxPickupPoints(0);
             }
 
-            $result = $this->call('shippingrates');
+            $result = $this->call('ShippingOptions');
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $timeframe) {
@@ -295,7 +295,8 @@ class MontapackingShipping
             'countrycode' => $this->address->countryCode,
             'products' => $this->_products['products'],
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
-            'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree()  
+            'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
+            'currencySymbol' => $this->getSettings()->getCurrency()
         ];
 
         if ($this->getOnStock()) {
