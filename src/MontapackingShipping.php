@@ -129,8 +129,7 @@ class MontapackingShipping
      */
     public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0): void
     {
-        $this->_products['products'][] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
-        $dbg = $this->_products['products'];
+        $this->_products[] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
     }
 
     /**
@@ -293,7 +292,7 @@ class MontapackingShipping
             'city' => $this->address->city,
             'postalcode' => $this->address->postalCode,
             'countrycode' => $this->address->countryCode,
-            'products' => $this->_products['products'],
+            'products' => $this->_products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency()
