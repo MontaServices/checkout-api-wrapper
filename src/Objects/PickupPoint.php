@@ -29,6 +29,7 @@ class PickupPoint
     public string $priceFormatted;
     public array $openingTimes;
     public string $shipperOptionsWithValue;
+    public ?string $imageName;
 
     /**
      * @param string $displayName
