@@ -14,7 +14,7 @@ class PickupPoint
     public float $distanceMeters;
     public string $company;
     public string $street;
-    public string $houseNumber;
+    public ?string $houseNumber;
     public string $postalCode;
     public ?string $district;
     public string $city;
@@ -38,7 +38,7 @@ class PickupPoint
      * @param float $distanceMeters
      * @param string $company
      * @param string $street
-     * @param string $houseNumber
+     * @param ?string $houseNumber
      * @param string $postalCode
      * @param ?string $district
      * @param string $city
@@ -54,7 +54,7 @@ class PickupPoint
      * @param array $openingTimes
      * @param string $shipperOptionsWithValue
      */
-    public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes, string $shipperOptionsWithValue)
+    public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, ?string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes, string $shipperOptionsWithValue)
     {
         $this->setDisplayName($displayName);
         $this->setShipperCode($shipperCode);
@@ -223,9 +223,9 @@ class PickupPoint
     }
 
     /**
-     * @param string $houseNumber
+     * @param ?string $houseNumber
      */
-    public function setHouseNumber(string $houseNumber): void
+    public function setHouseNumber(?string $houseNumber): void
     {
         $this->houseNumber = $houseNumber;
     }

@@ -11,19 +11,19 @@ class Product
     /**
      * @var int
      */
-    public int $length;
+    public int $lengthMm;
     /**
      * @var int
      */
-    public int $width;
+    public int $widthMm;
     /**
      * @var int
      */
-    public int $height;
+    public int $heightMm;
     /**
      * @var int
      */
-    public int $weight;
+    public int $weightGrammes;
     /**
      * @var int
      */
@@ -35,21 +35,21 @@ class Product
 
     /**
      * @param string $sku
-     * @param int $length
-     * @param int $width
-     * @param int $height
-     * @param int $weight
+     * @param int $lengthMm
+     * @param int $widthMm
+     * @param int $heightMm
+     * @param int $weightGrammes
      * @param int $quantity
      * @param float $price
      */
-    public function __construct(string $sku, int $length, int $width, int $height, int $weight, int $quantity, float $price)
+    public function __construct(string $sku, int $lengthMm, int $widthMm, int $heightMm, int $weightGrammes, int $quantity, float $price)
     {
 
         $this->setSku($sku);
-        $this->setLength($length);
-        $this->setWidth($width);
-        $this->setHeight($height);
-        $this->setWeight($weight);
+        $this->setLength($lengthMm);
+        $this->setWidth($widthMm);
+        $this->setHeight($heightMm);
+        $this->setWeight($weightGrammes);
         $this->setQuantity($quantity);
 		if($price != null) {
 			$this->setPrice($price);
@@ -85,7 +85,7 @@ class Product
      */
     public function setLength($length): Product
     {
-        $this->length = $length;
+        $this->lengthMm = $length;
         return $this;
     }
 
@@ -96,7 +96,7 @@ class Product
      */
     public function setWidth($width): Product
     {
-        $this->width = $width;
+        $this->widthMm = $width;
         return $this;
     }
 
@@ -107,7 +107,7 @@ class Product
      */
     public function setHeight($height): Product
     {
-        $this->height = $height;
+        $this->heightMm = $height;
         return $this;
     }
 
@@ -118,7 +118,7 @@ class Product
      */
     public function setWeight($weight): Product
     {
-        $this->weight = $weight;
+        $this->weightGrammes = $weight;
         return $this;
     }
 
@@ -140,10 +140,10 @@ class Product
     {
         return [
             'SKU' => $this->sku,
-            'LengthMm' => $this->length,
-            'WidthMm' => $this->width,
-            'HeightMm' => $this->height,
-            'WeightGrammes' => $this->weight,
+            'LengthMm' => $this->lengthMm,
+            'WidthMm' => $this->widthMm,
+            'HeightMm' => $this->heightMm,
+            'WeightGrammes' => $this->weightGrammes,
             'Quantity' => $this->quantity,
             'Price' => $this->price
         ];
