@@ -31,10 +31,14 @@ trait SystemInfo
         self::OPERATING_SYSTEM => PHP_OS
     ];
 
+    /**
+     * @param array $systemInfo
+     * @return void
+     */
     public function setSystemInfo(array $systemInfo): void
     {
-        // merge arrays (preserve duplicate keys)
-        $this->systemInfo += $systemInfo;
+        // merge arrays (prioritize parameter on duplicate key)
+        $this->systemInfo = array_merge($this->systemInfo, $systemInfo);
     }
 
     public function getSystemInfo(): array
