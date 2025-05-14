@@ -20,12 +20,8 @@ class MontapackingShipping
     private Settings $settings;
 
     /**
-     * @var array
-     */
-    private array $_basic;
-
-    /**
      * @var MontaCheckout_Order
+     * @deprecated - Property is written but never read
      */
     private MontaCheckout_Order $_order;
 
@@ -58,12 +54,6 @@ class MontapackingShipping
         );
 
         $this->setSettings($settings);
-
-//        $this->_basic = [
-//            'Origin' => $this->getSettings()->getOrigin(),
-//            'Currency' => 'EUR',
-//            'Language' => $language,
-//        ];
     }
 
     /**
@@ -85,6 +75,7 @@ class MontapackingShipping
     /**
      * @param $total_incl
      * @param $total_excl
+     * @deprecated - Property is set but never used
      */
     public function setOrder($total_incl, $total_excl): void
     {
@@ -153,13 +144,6 @@ class MontapackingShipping
         $storeLocation = null;
 
         if (trim($this->address->postalCode) && (trim($this->address->houseNumber) || trim($this->address->street))) {
-//            $this->_basic = array_merge(
-//                $this->_basic,
-//                [
-//                    'ProductsOnStock' => ($onStock) ? 'TRUE' : 'FALSE',
-//                ]
-//            );
-
             if (!$this->getSettings()->getIsPickupPointsEnabled()) {
                 $this->getSettings()->setMaxPickupPoints(0);
             }
