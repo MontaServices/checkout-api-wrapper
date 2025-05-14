@@ -244,7 +244,7 @@ class Settings
     }
 
     /**
-     * @param bool $excludeShippingDiscount excludeShippingDiscount
+     * @param bool $excludeShippingDiscount
      */
     public function setExcludeShippingDiscount(bool $excludeShippingDiscount): void
     {
