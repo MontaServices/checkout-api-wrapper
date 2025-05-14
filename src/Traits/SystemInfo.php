@@ -25,12 +25,16 @@ trait SystemInfo
 
     public const OPERATING_SYSTEM = 'operatingSystem';
 
-    /** @var array */
-    protected array $systemInfo = [];
+    /** @var array - Initialize with some global defaults */
+    protected array $systemInfo = [
+        self::PHP_VERSION => PHP_VERSION,
+        self::OPERATING_SYSTEM => PHP_OS
+    ];
 
     public function setSystemInfo(array $systemInfo): void
     {
-        $this->systemInfo = $systemInfo;
+        // merge arrays (preserve duplicate keys)
+        $this->systemInfo += $systemInfo;
     }
 
     public function getSystemInfo(): array
