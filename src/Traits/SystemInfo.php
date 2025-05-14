@@ -7,6 +7,9 @@ namespace Monta\CheckoutApiWrapper\Traits;
 
 trait SystemInfo
 {
+    /** @var string - Identifies the system information in the body */
+    public const SYSTEM_INFO_NAME = 'systemInformation';
+
     /** @var array */
     protected array $systemInfo = [];
 

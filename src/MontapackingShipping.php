@@ -12,8 +12,6 @@ use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
 
-//require_once __DIR__ . '/../vendor/autoload.php'; // Adjust the path as needed
-
 class MontapackingShipping
 {
     /**
@@ -294,6 +292,7 @@ class MontapackingShipping
             'countrycode' => $this->address->countryCode,
             'products' => $this->_products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
+            Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency()
         ];
