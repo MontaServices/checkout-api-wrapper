@@ -54,12 +54,12 @@ class Settings
     private string $currency;
 
     /**
-     * @var string
+     * @var bool
      */
     private bool $excludeShippingDiscount;
 
     /**
-     * @var string
+     * @var bool
      */
     private bool $showZeroCostsAsFree;
 
@@ -72,6 +72,9 @@ class Settings
      * @param string $googleKey
      * @param float $defaultCosts
      * @param string|null $webshopLanguage
+     * @param string $currency
+     * @param bool $excludeShippingDiscount
+     * @param bool $showZeroCostsAsFree
      */
     public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false)
     {
@@ -241,7 +244,7 @@ class Settings
     }
 
     /**
-     * @param bool excludeShippingDiscount
+     * @param bool $excludeShippingDiscount excludeShippingDiscount
      */
     public function setExcludeShippingDiscount(bool $excludeShippingDiscount): void
     {

@@ -174,7 +174,7 @@ class MontapackingShipping
                         $timeframe->month,
                         $timeframe->dateFormatted,
                         $timeframe->dateOnlyFormatted,
-                        isset($timeframe->ShippingOptions) ? $timeframe->ShippingOptions : $timeframe->options
+                        $timeframe->ShippingOptions ?? $timeframe->options
                     );
                 }
             }
@@ -324,7 +324,10 @@ class MontapackingShipping
         return json_decode($response->getBody());
     }
 
-    private function getFallbackTimeframe()
+    /**
+     * @return MontaCheckout_TimeFrame
+     */
+    private function getFallbackTimeframe(): MontaCheckout_TimeFrame
     {
         $options = [new MontaCheckout_ShippingOption(
             'Standard Shipper',

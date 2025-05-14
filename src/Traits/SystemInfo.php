@@ -41,6 +41,9 @@ trait SystemInfo
         $this->systemInfo = array_merge($this->systemInfo, $systemInfo);
     }
 
+    /**
+     * @return array
+     */
     public function getSystemInfo(): array
     {
         return $this->systemInfo;
