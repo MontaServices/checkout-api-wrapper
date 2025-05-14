@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\SystemInfo;
+
 class Settings
 {
+    use SystemInfo;
+
     /**
      * @var string
      */
