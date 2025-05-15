@@ -8,7 +8,7 @@ namespace Monta\CheckoutApiWrapper\Traits;
 trait SystemInfo
 {
     /** @var string - Identifies the system information in the body */
-    public const SYSTEM_INFO_NAME = 'systemInformation';
+    public const SYSTEM_INFO_NAME = 'systemInfo';
 
     /* Constants to determine the system info body. Reference these from client modules. */
     public const CORE_SOFTWARE = 'coreSoftware';
