@@ -64,6 +64,11 @@ class Settings
     private bool $showZeroCostsAsFree;
 
     /**
+     * @var bool
+     */
+    private bool $hideDHLPackstations;
+
+    /**
      * @param string $origin
      * @param string $user
      * @param string $password
@@ -75,8 +80,9 @@ class Settings
      * @param string $currency
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
+     * @param bool $hideDHLPackstations
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false)
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false, bool $hideDHLPackstations = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -89,6 +95,7 @@ class Settings
         $this->setWebshopLanguage($webshopLanguage);
         $this->setExcludeShippingDiscount($excludeShippingDiscount);
         $this->setShowZeroCostsAsFree($showZeroCostsAsFree);
+        $this->setHideDHLPackstations($hideDHLPackstations);
     }
 
     /**
@@ -259,5 +266,15 @@ class Settings
     public function setShowZeroCostsAsFree(bool $showZeroCostsAsFree): void
     {
         $this->showZeroCostsAsFree = $showZeroCostsAsFree;
+    }
+
+    public function getHideDHLPackstations(): bool
+    {
+        return $this->hideDHLPackstations;
+    }
+
+    public function setHideDHLPackstations(bool $hideDHLPackstations): void
+    {
+        $this->hideDHLPackstations = $hideDHLPackstations;
     }
 }

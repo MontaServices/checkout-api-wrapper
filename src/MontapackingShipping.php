@@ -278,9 +278,9 @@ class MontapackingShipping
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
-            'currencySymbol' => $this->getSettings()->getCurrency()
+            'currencySymbol' => $this->getSettings()->getCurrency(),
+            'hideDHLPackstations' => $this->getSettings()->getHideDHLPackstations()
         ];
-
         if ($this->getOnStock()) {
             $jsonRequest['productsOnStock'] = true;
         }
@@ -373,8 +373,11 @@ class MontapackingShipping
             'city' => $this->address->city,
             'postalcode' => $this->address->postalCode,
             'countrycode' => $this->address->countryCode,
-            'products' => $this->_products['products'],
-            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount()
+            'products' => $this->_products,
+            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
+            'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
+            'currencySymbol' => $this->getSettings()->getCurrency(),
+            'hideDHLPackstations ' => $this->getSettings()->getHideDHLPackstations()
         ];
 
         return json_encode($jsonRequest);
