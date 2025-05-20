@@ -12,8 +12,6 @@ use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use GuzzleHttp\Client;
 
-//require_once __DIR__ . '/../vendor/autoload.php'; // Adjust the path as needed
-
 class MontapackingShipping
 {
     /**
@@ -22,12 +20,8 @@ class MontapackingShipping
     private Settings $settings;
 
     /**
-     * @var array
-     */
-    private array $_basic;
-
-    /**
      * @var MontaCheckout_Order
+     * @deprecated - Property is written but never read
      */
     private MontaCheckout_Order $_order;
 
@@ -60,12 +54,6 @@ class MontapackingShipping
         );
 
         $this->setSettings($settings);
-
-//        $this->_basic = [
-//            'Origin' => $this->getSettings()->getOrigin(),
-//            'Currency' => 'EUR',
-//            'Language' => $language,
-//        ];
     }
 
     /**
@@ -87,6 +75,7 @@ class MontapackingShipping
     /**
      * @param $total_incl
      * @param $total_excl
+     * @deprecated - Property is set but never used
      */
     public function setOrder($total_incl, $total_excl): void
     {
@@ -155,13 +144,6 @@ class MontapackingShipping
         $storeLocation = null;
 
         if (trim($this->address->postalCode) && (trim($this->address->houseNumber) || trim($this->address->street))) {
-//            $this->_basic = array_merge(
-//                $this->_basic,
-//                [
-//                    'ProductsOnStock' => ($onStock) ? 'TRUE' : 'FALSE',
-//                ]
-//            );
-
             if (!$this->getSettings()->getIsPickupPointsEnabled()) {
                 $this->getSettings()->setMaxPickupPoints(0);
             }
@@ -176,7 +158,7 @@ class MontapackingShipping
                         $timeframe->month,
                         $timeframe->dateFormatted,
                         $timeframe->dateOnlyFormatted,
-                        isset($timeframe->ShippingOptions) ? $timeframe->ShippingOptions : $timeframe->options
+                        $timeframe->ShippingOptions ?? $timeframe->options
                     );
                 }
             }
@@ -294,6 +276,7 @@ class MontapackingShipping
             'countrycode' => $this->address->countryCode,
             'products' => $this->_products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
+            Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency(),
             'hideDHLPackstations' => $this->getSettings()->getHideDHLPackstations()
@@ -325,7 +308,10 @@ class MontapackingShipping
         return json_decode($response->getBody());
     }
 
-    private function getFallbackTimeframe()
+    /**
+     * @return MontaCheckout_TimeFrame
+     */
+    private function getFallbackTimeframe(): MontaCheckout_TimeFrame
     {
         $options = [new MontaCheckout_ShippingOption(
             'Standard Shipper',

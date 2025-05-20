@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\SystemInfo;
+
 class Settings
 {
+    use SystemInfo;
+
     /**
      * @var string
      */
@@ -50,12 +54,12 @@ class Settings
     private string $currency;
 
     /**
-     * @var string
+     * @var bool
      */
     private bool $excludeShippingDiscount;
 
     /**
-     * @var string
+     * @var bool
      */
     private bool $showZeroCostsAsFree;
 
@@ -247,7 +251,7 @@ class Settings
     }
 
     /**
-     * @param bool excludeShippingDiscount
+     * @param bool $excludeShippingDiscount
      */
     public function setExcludeShippingDiscount(bool $excludeShippingDiscount): void
     {

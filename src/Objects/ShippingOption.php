@@ -347,7 +347,7 @@ class ShippingOption
     }
 
     /**
-     * @param void $displayNameShort
+     * @param string $displayNameShort
      */
     public function setDisplayNameShort(string $displayNameShort): void
     {
