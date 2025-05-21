@@ -2,9 +2,10 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Abstract\SystemInfoInterface;
 use Monta\CheckoutApiWrapper\Traits\SystemInfo;
 
-class Settings
+class Settings implements SystemInfoInterface
 {
     use SystemInfo;
 
