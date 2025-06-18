@@ -71,7 +71,6 @@ class Address
      */
     public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, ?string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
     {
-
         $this->setStreet($street);
         $this->setHouseNumber($houseNumber);
         $this->setHouseNumberAddition($houseNumberAddition);
@@ -80,15 +79,15 @@ class Address
         $this->setState($state);
         $this->setCountry($countryCode);
 
-        if ($googleApiKey != null)
-        {
+        if ($googleApiKey != null) {
             $this->setGoogleApiKey(trim($googleApiKey));
         }
 
         $this->setLongLat();
     }
 
-    /**
+    /** Geocode address to validate and retrieve coordinates
+     *
      * @return void
      * @throws GuzzleException
      */
@@ -98,12 +97,15 @@ class Address
         $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode; // Google HQ
         $prepAddr = str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
-        $google_maps_url = "https://maps.google.com/maps/api/geocode/json?address=" . $prepAddr . "&sensor=false&key=" . $this->googleApiKey; //phpcs:ignore
-
+        $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
+                'address' => $prepAddr,
+                'sensor' => false,
+                'key' => $this->googleApiKey,
+            ]);
 
         try {
             $client = new Client([
-                'timeout'  => 1.0
+                'timeout' => 1.0
             ]);
 
             $response = $client->get($google_maps_url);
@@ -116,10 +118,10 @@ class Address
                 $latitude = $result->geometry->location->lat;
                 $longitude = $result->geometry->location->lng;
             } else {
+                // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 $latitude = 0;
                 $longitude = 0;
             }
-
         } catch (Exception) {
             $latitude = 0;
             $longitude = 0;
