@@ -95,7 +95,9 @@ class Address
     {
         // Get lat and long by address
         $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode; // Google HQ
-        $prepAddr = str_replace('  ', ' ', $address);
+        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
+        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
+        $prepAddr = $this->city . str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
         $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
                 'address' => $prepAddr,
