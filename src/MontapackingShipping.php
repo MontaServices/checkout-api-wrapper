@@ -2,15 +2,15 @@
 
 namespace Monta\CheckoutApiWrapper;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Monta\CheckoutApiWrapper\Objects\Address as MontaCheckout_Address;
 use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
+use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
 use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
-use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
-use GuzzleHttp\Client;
 
 class MontapackingShipping
 {
@@ -79,7 +79,6 @@ class MontapackingShipping
      */
     public function setOrder($total_incl, $total_excl): void
     {
-
         $this->_order = new MontaCheckout_Order($total_incl, $total_excl);
     }
 
@@ -143,7 +142,11 @@ class MontapackingShipping
         $standardShipper = null;
         $storeLocation = null;
 
-        if (trim($this->address->postalCode) && (trim($this->address->houseNumber) || trim($this->address->street))) {
+        // Postal code must be set
+        if (trim($this->address->postalCode ?? '')
+            // and either housenumber or street
+            && (trim($this->address->houseNumber ?? '') || trim($this->address->street ?? ''))
+        ) {
             if (!$this->getSettings()->getIsPickupPointsEnabled()) {
                 $this->getSettings()->setMaxPickupPoints(0);
             }
@@ -232,9 +235,7 @@ class MontapackingShipping
                     $result->store_location->openingTimes,
                     $result->store_location->shipperOptionsWithValue
                 );
-
             }
-
         }
 
         return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
@@ -291,8 +292,8 @@ class MontapackingShipping
             $response = $client->post($method, [
                 'json' => $jsonRequest
             ]);
-        } catch(\Exception $exception) {
-            if($response != null) {
+        } catch (\Exception $exception) {
+            if ($response != null) {
                 // Create abstract logger here later that logs to local file storage
                 $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
             }
