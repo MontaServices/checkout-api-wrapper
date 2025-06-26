@@ -143,7 +143,12 @@ class MontapackingShipping
         $standardShipper = null;
         $storeLocation = null;
 
-        if (trim($this->address->postalCode) && (trim($this->address->houseNumber) || trim($this->address->street))) {
+        // Postal code must be set
+        if (trim($this->address->postalCode)
+            // and either housenumber or street
+            && (trim($this->address->houseNumber) ||
+                trim($this->address->street))
+        ) {
             if (!$this->getSettings()->getIsPickupPointsEnabled()) {
                 $this->getSettings()->setMaxPickupPoints(0);
             }
