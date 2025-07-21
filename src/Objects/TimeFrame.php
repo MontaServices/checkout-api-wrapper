@@ -6,44 +6,30 @@ use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOpt
 
 class TimeFrame
 {
-    /**
-     * @var string|null
+    /** Constructor with promoted properties
+     *
+     * @param string|null $date
+     * @param string|null $day
+     * @param string|null $month
+     * @param string|null $dateFormatted
+     * @param string|null $dateOnlyFormatted
+     * @param array $options
      */
-    public ?string $date;
-
-    /**
-     * @var string|null
-     */
-    public ?string $day;
-
-    /**
-     * @var string|null
-     */
-    public ?string $month;
-
-    /**
-     * @var string|null
-     */
-    public ?string $dateFormatted;
-
-    /**
-     * @var string|null
-     */
-    public ?string $dateOnlyFormatted;
-
-    /**
-     * @var array
-     */
-    public array $options;
-
-    public function __construct(?string $date, ?string $day, ?string $month, ?string $dateFormatted, ?string $dateOnlyFormatted, array $ShippingOptions)
+    public function __construct(
+        public ?string $date = null,
+        public ?string $day = null,
+        public ?string $month = null,
+        public ?string $dateFormatted = null,
+        public ?string $dateOnlyFormatted = null,
+        public array $options = [],
+    )
     {
         $this->setDate($date);
         $this->setDay($day);
         $this->setMonth($month);
         $this->setDateFormatted($dateFormatted);
         $this->setDateOnlyFormatted($dateOnlyFormatted);
-        $this->setOptions($ShippingOptions);
+        $this->setOptions($options);
     }
 
     /**
@@ -110,8 +96,6 @@ class TimeFrame
         $this->dateOnlyFormatted = $dateOnlyFormatted;
     }
 
-
-
     /**
      * @return string
      */
@@ -138,8 +122,8 @@ class TimeFrame
                 $option->code,
                 $option->displayNameShort,
                 $option->displayName,
-				$option->from,
-				$option->to,
+                $option->from,
+                $option->to,
                 $option->deliveryType,
                 $option->shippingType,
                 $option->price,
@@ -149,7 +133,7 @@ class TimeFrame
                 $option->isSustainable,
                 $option->deliveryOptions,
                 $option->optionCodes,
-	            $option->shipperCodes
+                $option->shipperCodes
             );
         }
 

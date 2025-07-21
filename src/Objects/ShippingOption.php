@@ -7,81 +7,61 @@ use Monta\CheckoutApiWrapper\Objects\Option as MontaCheckout_Option;
 class ShippingOption
 {
     /**
-     * @var string
+     * @param string $shipper
+     * @param string $code
+     * @param string $displayNameShort
+     * @param string $displayName
+     * @param ?string $from
+     * @param ?string $to
+     * @param string $deliveryType
+     * @param string $shippingType
+     * @param float $price
+     * @param string $priceFormatted
+     * @param int $discountPercentage
+     * @param bool $isPreferred
+     * @param bool $isSustainable
+     * @param array $deliveryOptions
+     * @param string $optionCodes
+     * @param array $shipperCodes
      */
-    public string $shipper;
+    public function __construct(
+        public string $shipper,
+        public string $code,
+        public string $displayNameShort,
+        public string $displayName,
+        public ?string $from = null,
+        public ?string $to = null,
+        public string $deliveryType = "",
+        public string $shippingType = "",
+        public float $price,
+        public string $priceFormatted,
+        public int $discountPercentage = 0,
+        public bool $isPreferred = false,
+        public bool $isSustainable = false,
+        public array $deliveryOptions = [],
+        public string $optionCodes = "",
+        public array $shipperCodes = [],
+    )
+    {
+        $this->setShipper($shipper);
+        $this->setCode($code);
+        $this->setDisplayNameShort($displayNameShort);
+        $this->setDisplayName($displayName);
 
-    /**
-     * @var int
-     */
-    public int $discountPercentage;
+        $this->setFrom($from);
+        $this->setTo($to);
 
-    /**
-     * @var bool
-     */
-    public bool $isPreferred;
-
-    /**
-     * @var bool
-     */
-    public bool $isSustainable;
-
-    /**
-     * @var string
-     */
-    public string $displayName;
-
-	/**
-	 * @var ?string
-	 */
-    public ?string $from;
-
-	/**
-	 * @var ?string
-	 */
-	public ?string $to;
-
-    /**
-     * @var string
-     */
-    public string $deliveryType;
-
-    /**
-     * @var string
-     */
-    public string $shippingType;
-
-    /**
-     * @var float
-     */
-    public float $price;
-
-    /**
-     * @var string
-     */
-    public string $priceFormatted;
-
-    /**
-     * @var array
-     */
-    public array $deliveryOptions;
-
-    /**
-     * @var string
-     */
-    public string $optionCodes;
-
-    /**
-     * @var string
-     */
-    public string $code;
-
-    /**
-     * @var string
-     */
-    public string $displayNameShort;
-
-	public array $shipperCodes;
+        $this->setDeliveryType($deliveryType);
+        $this->setShippingType($shippingType);
+        $this->setPrice($price);
+        $this->setPriceFormatted($priceFormatted);
+        $this->setDiscountPercentage($discountPercentage);
+        $this->setIsPreferred($isPreferred);
+        $this->setIsSustainable($isSustainable);
+        $this->setDeliveryOptions($deliveryOptions);
+        $this->setOptionCodes($optionCodes);
+        $this->setShipperCodes($shipperCodes);
+    }
 
     /**
      * @return string
@@ -99,84 +79,43 @@ class ShippingOption
         $this->optionCodes = $optionCodes;
     }
 
-	/**
-	 * @param string $shipper
-	 * @param string $code
-	 * @param string $displayNameShort
-	 * @param string $displayName
-	 * @param ?string $from
-	 * @param ?string $to
-	 * @param string $deliveryType
-	 * @param string $shippingType
-	 * @param float $price
-	 * @param string $priceFormatted
-	 * @param int $discountPercentage
-	 * @param bool $isPreferred
-	 * @param bool $isSustainable
-	 * @param array $deliveryOptions
-	 * @param string $optionCodes
-	 * @param array $shipperCodes
-	 */
-    public function __construct(string $shipper, string $code, string $displayNameShort, string $displayName, ?string $from, ?string $to, string $deliveryType, string $shippingType, float $price, string $priceFormatted, int $discountPercentage, bool $isPreferred, bool $isSustainable, array $deliveryOptions, string $optionCodes, array $shipperCodes)
+    /**
+     * @return string|null
+     */
+    public function getFrom(): ?string
     {
-        $this->setShipper($shipper);
-        $this->setCode($code);
-        $this->setDisplayNameShort($displayNameShort);
-        $this->setDisplayName($displayName);
-
-		$this->setFrom($from);
-		$this->setTo($to);
-
-        $this->setDeliveryType($deliveryType);
-        $this->setShippingType($shippingType);
-        $this->setPrice($price);
-        $this->setPriceFormatted($priceFormatted);
-        $this->setDiscountPercentage($discountPercentage);
-        $this->setIsPreferred($isPreferred);
-        $this->setIsSustainable($isSustainable);
-        $this->setDeliveryOptions($deliveryOptions);
-        $this->setOptionCodes($optionCodes);
-		$this->setShipperCodes($shipperCodes);
+        return $this->from;
     }
 
-	/**
-	 * @return string|null
-	 */
-	public function getFrom(): ?string
-	{
-		return $this->from;
-	}
+    /**
+     * @param ?string $from
+     * @return ShippingOption
+     */
+    public function setFrom(?string $from): ShippingOption
+    {
+        $this->from = $from;
+        return $this;
+    }
 
-	/**
-	 * @param ?string $from
-	 * @return ShippingOption
-	 */
-	public function setFrom(?string $from): ShippingOption
-	{
-		$this->from = $from;
-		return $this;
-	}
+    /**
+     * @return string|null
+     */
+    public function getTo(): ?string
+    {
+        return $this->to;
+    }
 
-	/**
-	 * @return string|null
-	 */
-	public function getTo(): ?string
-	{
-		return $this->to;
-	}
+    /**
+     * @param ?string $to
+     * @return ShippingOption
+     */
+    public function setTo(?string $to): ShippingOption
+    {
+        $this->to = $to;
+        return $this;
+    }
 
-	/**
-	 * @param ?string $to
-	 * @return ShippingOption
-	 */
-	public function setTo(?string $to): ShippingOption
-	{
-		$this->to = $to;
-		return $this;
-	}
-
-
-	/**
+    /**
      * @return mixed
      */
     public function getShipper(): string
@@ -251,7 +190,7 @@ class ShippingOption
     /**
      * @return string
      */
-    public function getShippingType(): String
+    public function getShippingType(): string
     {
         return $this->shippingType;
     }
@@ -386,7 +325,6 @@ class ShippingOption
     {
         $list = [];
         foreach ($deliveryOptions as $option) {
-
             $list[] = new MontaCheckout_Option($option->code, $option->description, $option->price, $option->priceFormatted);
         }
 
@@ -400,7 +338,6 @@ class ShippingOption
      */
     public function toArray(): array
     {
-
         $option = null;
         foreach ($this as $key => $value) {
             $option[$key] = $value;
