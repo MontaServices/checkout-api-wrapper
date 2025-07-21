@@ -161,7 +161,7 @@ class MontapackingShipping
                         $timeframe->month,
                         $timeframe->dateFormatted,
                         $timeframe->dateOnlyFormatted,
-                        $timeframe->ShippingOptions ?? $timeframe->options
+                        $timeframe->ShippingOptions ?? $timeframe->options ?? []
                     );
                 }
             }
