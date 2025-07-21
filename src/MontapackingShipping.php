@@ -314,31 +314,19 @@ class MontapackingShipping
      */
     private function getFallbackTimeframe(): MontaCheckout_TimeFrame
     {
-        $options = [new MontaCheckout_ShippingOption(
-            'Standard Shipper',
-            'montapacking_standard',
-            'Standard Shipper',
-            'Standard Shipper',
-            null,
-            null,
-            'Unknown',
-            "DeliveryTimeframeType",
-            $this->getSettings()->getDefaultCosts(),
-            $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
-            0,
-            false,
-            false,
-            [],
-            "",
-            ["MultipleShipper_ShippingDayUnknown"]
-        )];
         return new MontaCheckout_TimeFrame(
-            null,
-            null,
-            null,
-            null,
-            'Unknown',
-            $options,
+            dateOnlyFormatted: "Unknown",
+            options: [new MontaCheckout_ShippingOption(
+                shipper: 'Standard Shipper',
+                code: 'montapacking_standard',
+                displayNameShort: 'Standard Shipper',
+                displayName: 'Standard Shipper',
+                deliveryType: 'Unknown',
+                shippingType: "DeliveryTimeframeType",
+                price: $this->getSettings()->getDefaultCosts(),
+                priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+                shipperCodes: ["MultipleShipper_ShippingDayUnknown"]
+            )],
         );
     }
 
