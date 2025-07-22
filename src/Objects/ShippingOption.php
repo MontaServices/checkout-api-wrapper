@@ -6,7 +6,9 @@ use Monta\CheckoutApiWrapper\Objects\Option as MontaCheckout_Option;
 
 class ShippingOption
 {
-    /**
+    /** Constructor with promoted properties
+     * TODO change properties to protected, but might be necessary for serialization
+     *
      * @param string $shipper
      * @param string $code
      * @param string $displayNameShort
@@ -21,7 +23,7 @@ class ShippingOption
      * @param bool $isPreferred
      * @param bool $isSustainable
      * @param array $deliveryOptions
-     * @param string $optionCodes
+     * @param string $optionCodes - @deprecated, not referenced anywhere
      * @param array $shipperCodes
      */
     public function __construct(
@@ -47,10 +49,8 @@ class ShippingOption
         $this->setCode($code);
         $this->setDisplayNameShort($displayNameShort);
         $this->setDisplayName($displayName);
-
         $this->setFrom($from);
         $this->setTo($to);
-
         $this->setDeliveryType($deliveryType);
         $this->setShippingType($shippingType);
         $this->setPrice($price);
@@ -65,6 +65,7 @@ class ShippingOption
 
     /**
      * @return string
+     * @deprecated - Not referenced anywhere
      */
     public function getOptionCodes(): string
     {
@@ -73,6 +74,7 @@ class ShippingOption
 
     /**
      * @param string $optionCodes
+     * @deprecated - Not referenced anywhere
      */
     public function setOptionCodes(string $optionCodes): void
     {
@@ -346,17 +348,19 @@ class ShippingOption
         return $option;
     }
 
-	/**
-	 * @return array
-	 */
-	public function getShipperCodes(): array {
-		return $this->shipperCodes;
-	}
+    /**
+     * @return array
+     */
+    public function getShipperCodes(): array
+    {
+        return $this->shipperCodes;
+    }
 
-	/**
-	 * @param array $shipperCodes
-	 */
-	public function setShipperCodes( array $shipperCodes ): void {
-		$this->shipperCodes = $shipperCodes;
-	}
+    /**
+     * @param array $shipperCodes
+     */
+    public function setShipperCodes(array $shipperCodes): void
+    {
+        $this->shipperCodes = $shipperCodes;
+    }
 }
