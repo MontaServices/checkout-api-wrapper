@@ -58,6 +58,7 @@ class MontapackingShipping
 
     /**
      * @param $value
+     * @deprecated - Never called
      */
     public function setOnStock($value): void
     {
@@ -66,6 +67,7 @@ class MontapackingShipping
 
     /**
      * @return bool
+     * @deprecated - Value is always default
      */
     public function getOnStock(): bool
     {
@@ -121,7 +123,7 @@ class MontapackingShipping
     }
 
     /**
-     * @param bool $onstock
+     * @param bool $onstock - @deprecated - Never used or called
      * @param bool $mailbox
      * @param bool $mailboxfit
      * @param bool $trackingonly
@@ -131,7 +133,7 @@ class MontapackingShipping
      */
 
     /**
-     * @param bool $onStock
+     * @param bool $onStock @deprecated - Never used
      * @return array
      * @throws GuzzleException
      */
