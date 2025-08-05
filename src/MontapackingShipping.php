@@ -58,6 +58,7 @@ class MontapackingShipping
 
     /**
      * @param $value
+     * @deprecated - Never called
      */
     public function setOnStock($value): void
     {
@@ -66,6 +67,7 @@ class MontapackingShipping
 
     /**
      * @return bool
+     * @deprecated - Value is always default
      */
     public function getOnStock(): bool
     {
@@ -121,7 +123,7 @@ class MontapackingShipping
     }
 
     /**
-     * @param bool $onstock
+     * @param bool $onstock - @deprecated - Never used or called
      * @param bool $mailbox
      * @param bool $mailboxfit
      * @param bool $trackingonly
@@ -131,7 +133,7 @@ class MontapackingShipping
      */
 
     /**
-     * @param bool $onStock
+     * @param bool $onStock @deprecated - Never used
      * @return array
      * @throws GuzzleException
      */
@@ -161,7 +163,7 @@ class MontapackingShipping
                         $timeframe->month,
                         $timeframe->dateFormatted,
                         $timeframe->dateOnlyFormatted,
-                        $timeframe->ShippingOptions ?? $timeframe->options
+                        $timeframe->ShippingOptions ?? $timeframe->options ?? []
                     );
                 }
             }
@@ -314,31 +316,19 @@ class MontapackingShipping
      */
     private function getFallbackTimeframe(): MontaCheckout_TimeFrame
     {
-        $options = [new MontaCheckout_ShippingOption(
-            'Standard Shipper',
-            'montapacking_standard',
-            'Standard Shipper',
-            'Standard Shipper',
-            null,
-            null,
-            'Unknown',
-            "DeliveryTimeframeType",
-            $this->getSettings()->getDefaultCosts(),
-            $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
-            0,
-            false,
-            false,
-            [],
-            "",
-            ["MultipleShipper_ShippingDayUnknown"]
-        )];
         return new MontaCheckout_TimeFrame(
-            null,
-            null,
-            null,
-            null,
-            'Unknown',
-            $options,
+            dateOnlyFormatted: "Unknown",
+            options: [new MontaCheckout_ShippingOption(
+                shipper: 'Standard Shipper',
+                code: 'montapacking_standard',
+                displayNameShort: 'Standard Shipper',
+                displayName: 'Standard Shipper',
+                deliveryType: 'Unknown',
+                shippingType: "DeliveryTimeframeType",
+                price: $this->getSettings()->getDefaultCosts(),
+                priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+                shipperCodes: ["MultipleShipper_ShippingDayUnknown"]
+            )],
         );
     }
 

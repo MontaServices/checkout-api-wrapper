@@ -99,6 +99,7 @@ class Address
         // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
         $prepAddr = $this->city . str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
+        // TODO deprecated, use maps.googleapis.com which is the V3 standard
         $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
                 'address' => $prepAddr,
                 'sensor' => false,
