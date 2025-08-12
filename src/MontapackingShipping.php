@@ -36,18 +36,18 @@ class MontapackingShipping
     private bool $_onStock = true;
 
     /**
-     * @var MontaCheckout_Address
+     * @var ?MontaCheckout_Address
      */
-    public MontaCheckout_Address $address;
+    public ?MontaCheckout_Address $address = null;
 
     /**
      * MontapackingShipping constructor.
      *
      * @param Settings $settings
      * @param string $language
-     * @param bool $test
+     * @deprecated - Use ApiFactory method instead
      */
-    public function __construct(Settings $settings, string $language, bool $test = false)
+    public function __construct(Settings $settings, string $language)
     {
         $settings->setWebshopLanguage($language);
 
@@ -120,7 +120,7 @@ class MontapackingShipping
     }
 
     /**
-     * @param bool $onstock - @deprecated - Never used or called
+     * @param bool $onstock @deprecated - Never used or called
      * @param bool $mailbox
      * @param bool $mailboxfit
      * @param bool $trackingonly
@@ -269,10 +269,6 @@ class MontapackingShipping
             'useShipperOptions' => true,
             'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
             'defaultCosts' => $this->getSettings()->getDefaultCosts(),
-            'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
-            'city' => $this->address->city,
-            'postalcode' => $this->address->postalCode,
-            'countrycode' => $this->address->countryCode,
             'products' => $this->_products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
@@ -280,6 +276,16 @@ class MontapackingShipping
             'currencySymbol' => $this->getSettings()->getCurrency(),
             'hideDHLPackstations' => $this->getSettings()->getHideDHLPackstations()
         ];
+        // Add address to request when set
+        if ($this->address) {
+            // Merge arrays, give preference to the actual address object
+            $jsonRequest = array_merge($jsonRequest, [
+                'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
+                'city' => $this->address->city,
+                'postalcode' => $this->address->postalCode,
+                'countrycode' => $this->address->countryCode,
+            ]);
+        }
         if ($this->getOnStock()) {
             $jsonRequest['productsOnStock'] = true;
         }
