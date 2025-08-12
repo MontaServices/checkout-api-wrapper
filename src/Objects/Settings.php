@@ -9,7 +9,8 @@ class Settings implements SystemInfoInterface
 {
     use SystemInfo;
 
-    /**
+    /** Construct Settings object.
+     *
      * @param string $origin
      * @param string $user
      * @param string $password
@@ -22,6 +23,7 @@ class Settings implements SystemInfoInterface
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
      * @param bool $hideDHLPackstations
+     * @deprecated - Use the factory method instead
      */
     public function __construct(
         protected string $origin,
