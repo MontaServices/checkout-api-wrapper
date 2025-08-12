@@ -83,7 +83,20 @@ class Settings implements SystemInfoInterface
      * @param bool $showZeroCostsAsFree
      * @param bool $hideDHLPackstations
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false, bool $hideDHLPackstations = false)
+    public function __construct(
+        string $origin,
+        string $user,
+        string $password,
+        bool $pickupPointsEnabled,
+        int $maxPickupPoints,
+        string $googleKey,
+        float $defaultCosts,
+        ?string $webshopLanguage = 'nl-NL',
+        string $currency = '€',
+        bool $excludeShippingDiscount = false,
+        bool $showZeroCostsAsFree = false,
+        bool $hideDHLPackstations = false,
+    )
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -92,8 +105,8 @@ class Settings implements SystemInfoInterface
         $this->setMaxPickupPoints($maxPickupPoints);
         $this->setGoogleKey($googleKey);
         $this->setDefaultCosts($defaultCosts);
-        $this->setCurrency($currency);
         $this->setWebshopLanguage($webshopLanguage);
+        $this->setCurrency($currency);
         $this->setExcludeShippingDiscount($excludeShippingDiscount);
         $this->setShowZeroCostsAsFree($showZeroCostsAsFree);
         $this->setHideDHLPackstations($hideDHLPackstations);

@@ -69,7 +69,16 @@ class Address
      * @param string $googleApiKey
      * @throws GuzzleException
      */
-    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, ?string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
+    public function __construct(
+        string $street,
+        ?string $houseNumber,
+        ?string $houseNumberAddition,
+        string $postalCode,
+        string $city,
+        ?string $state,
+        string $countryCode,
+        ?string $googleApiKey,
+    )
     {
         $this->setStreet($street);
         $this->setHouseNumber($houseNumber);
@@ -78,8 +87,7 @@ class Address
         $this->setCity($city);
         $this->setState($state);
         $this->setCountry($countryCode);
-
-        if ($googleApiKey != null) {
+        if ($googleApiKey) {
             $this->setGoogleApiKey(trim($googleApiKey));
         }
 

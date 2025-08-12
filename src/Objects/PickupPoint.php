@@ -2,8 +2,6 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Objects\OpeningTime;
-
 /**
  * Class PickupPoint
  *
@@ -54,17 +52,38 @@ class PickupPoint
      * @param array $openingTimes
      * @param string $shipperOptionsWithValue
      */
-    public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, ?string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes, string $shipperOptionsWithValue)
+    public function __construct(
+        string $displayName,
+        string $shipperCode,
+        string $code,
+        float $distanceMeters,
+        string $company,
+        string $street,
+        ?string $houseNumber,
+        string $postalCode,
+        ?string $district,
+        string $city,
+        ?string $state,
+        string $countryCode,
+        ?string $addressRemark,
+        ?string $phone,
+        float $longitude,
+        float $latitude,
+        ?string $imageUrl,
+        float $price,
+        string $priceFormatted,
+        array $openingTimes,
+        string $shipperOptionsWithValue)
     {
         $this->setDisplayName($displayName);
         $this->setShipperCode($shipperCode);
         $this->setCode($code);
         $this->setDistanceMeters($distanceMeters);
-        $this->setDistrict($district);
         $this->setCompany($company);
         $this->setStreet($street);
         $this->setHouseNumber($houseNumber);
         $this->setPostalCode($postalCode);
+        $this->setDistrict($district);
         $this->setCity($city);
         $this->setState($state);
         $this->setCountryCode($countryCode);
@@ -76,7 +95,7 @@ class PickupPoint
         $this->setPrice($price);
         $this->setPriceFormatted($priceFormatted);
         $this->setOpeningTimes($openingTimes);
-		$this->set_shipper_options_with_value($shipperOptionsWithValue);
+        $this->set_shipper_options_with_value($shipperOptionsWithValue);
     }
 
     public string $displayName;
@@ -405,7 +424,6 @@ class PickupPoint
     {
         $list = [];
         foreach ($openingTimes as $option) {
-
             $list[] = new OpeningTime(
                 $option->day,
                 $option->from,
@@ -421,7 +439,6 @@ class PickupPoint
      */
     public function toArray(): array
     {
-
         $option = null;
         foreach ($this as $key => $value) {
             $option[$key] = $value;
@@ -430,17 +447,19 @@ class PickupPoint
         return $option;
     }
 
-	/**
-	 * @return string
-	 */
-	public function get_shipper_options_with_value(): string {
-		return $this->shipperOptionsWithValue;
-	}
+    /**
+     * @return string
+     */
+    public function get_shipper_options_with_value(): string
+    {
+        return $this->shipperOptionsWithValue;
+    }
 
-	/**
-	 * @param string $shipperOptionsWithValue
-	 */
-	public function set_shipper_options_with_value( string $shipperOptionsWithValue ): void {
-		$this->shipperOptionsWithValue = $shipperOptionsWithValue;
-	}
+    /**
+     * @param string $shipperOptionsWithValue
+     */
+    public function set_shipper_options_with_value(string $shipperOptionsWithValue): void
+    {
+        $this->shipperOptionsWithValue = $shipperOptionsWithValue;
+    }
 }
