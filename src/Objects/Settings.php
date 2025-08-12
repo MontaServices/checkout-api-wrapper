@@ -31,7 +31,7 @@ class Settings implements SystemInfoInterface
         protected string $password,
         protected bool $pickupPointsEnabled = false,
         protected int $maxPickupPoints = 4,
-        protected string $googleKey,
+        protected string $googleKey = "",
         protected float $defaultCosts = 0,
         protected ?string $webshopLanguage = 'nl-NL',
         protected string $currency = '€',
