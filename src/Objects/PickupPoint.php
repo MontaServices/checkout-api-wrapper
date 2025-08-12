@@ -8,6 +8,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
  */
 class PickupPoint
 {
+    // TODO convert all to promoted properties
     public string $code;
     public float $distanceMeters;
     public string $company;
@@ -75,6 +76,7 @@ class PickupPoint
         array $openingTimes,
         string $shipperOptionsWithValue)
     {
+        // TODO are all these setters obsolete with promoted properties?
         $this->setDisplayName($displayName);
         $this->setShipperCode($shipperCode);
         $this->setCode($code);

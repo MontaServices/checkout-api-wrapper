@@ -7,7 +7,6 @@ use Monta\CheckoutApiWrapper\Objects\Option as MontaCheckout_Option;
 class ShippingOption
 {
     /** Constructor with promoted properties
-     * TODO change properties to protected, but might be necessary for serialization
      *
      * @param string $shipper
      * @param string $code
@@ -45,6 +44,7 @@ class ShippingOption
         public array $shipperCodes = [],
     )
     {
+        // TODO are these obsolete with promoted properties?
         $this->setShipper($shipper);
         $this->setCode($code);
         $this->setDisplayNameShort($displayNameShort);
