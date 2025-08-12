@@ -44,21 +44,18 @@ class MontapackingShipping
      * MontapackingShipping constructor.
      *
      * @param Settings $settings
-     * @param      $language
+     * @param string $language
      * @param bool $test
      */
-    public function __construct(Settings $settings, $language, bool $test = false)
+    public function __construct(Settings $settings, string $language, bool $test = false)
     {
-        $settings->setWebshopLanguage(
-            $language
-        );
+        $settings->setWebshopLanguage($language);
 
         $this->setSettings($settings);
     }
 
     /**
      * @param $value
-     * @deprecated - Never called
      */
     public function setOnStock($value): void
     {
@@ -133,11 +130,10 @@ class MontapackingShipping
      */
 
     /**
-     * @param bool $onStock @deprecated - Never used
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(bool $onStock = true): array
+    public function getShippingOptions(): array
     {
         $timeframes = [];
         $pickups = [];
