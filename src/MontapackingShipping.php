@@ -23,7 +23,7 @@ class MontapackingShipping
      * @var MontaCheckout_Order
      * @deprecated - Property is written but never read
      */
-    private MontaCheckout_Order $_order;
+    private ?MontaCheckout_Order $_order = null;
 
     /**
      * @var MontaCheckout_Product[]
@@ -240,13 +240,15 @@ class MontapackingShipping
     }
 
     /**
-     * @param      $method
+     * @param string $method
+     * @param string $url
+     * @param array $parameters
+     * @param string $httpMethod
      * @return mixed
      * @throws GuzzleException
      */
-    public function call($method): mixed
+    public function call(string $method, string $url = "https://api-gateway.monta.nl/selfhosted/checkout/", array $parameters = [], string $httpMethod = "POST"): mixed
     {
-        $url = "https://api-gateway.monta.nl/selfhosted/checkout/";
 //        $url = "https://host.docker.internal:52668/selfhosted/";
 
         $client = new Client([
@@ -293,9 +295,15 @@ class MontapackingShipping
         $response = null;
         $result = (object)[];
         try {
-            $response = $client->post($method, [
-                'json' => $jsonRequest
-            ]);
+            switch ($httpMethod) {
+                case "POST":
+                    $response = $client->post($method, [
+                        'json' => $jsonRequest
+                    ]);
+                    break;
+                default:
+                    throw new \Exception("Unsupported HTTP method: " . $httpMethod);
+            }
         } catch (\Exception $exception) {
             if ($response != null) {
                 // Create abstract logger here later that logs to local file storage
