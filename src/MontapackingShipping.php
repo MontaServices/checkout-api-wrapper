@@ -35,6 +35,9 @@ class MontapackingShipping
      */
     private bool $_onStock = true;
 
+    /** @var string|null $lastResponseCode - HTTP response code from latest request */
+    protected ?string $lastResponseCode = null;
+
     /**
      * @var ?MontaCheckout_Address
      */
@@ -259,7 +262,7 @@ class MontapackingShipping
                 httpMethod: "GET",
             );
             // Succesful info test returns some Origins (based on existing Shopware test functionality)
-            if (!empty($response->Origins)) {
+            if ($this->getLastResponse() == 200 && !empty($response->Origins)) {
                 $success = true;
             }
         } catch (GuzzleException $e) {
@@ -339,7 +342,9 @@ class MontapackingShipping
                 default:
                     throw new \Exception("Unsupported HTTP method: " . $httpMethod);
             }
+            $this->lastResponseCode = $response->getStatusCode();
         } catch (\Exception $exception) {
+            $this->lastResponseCode = 404;
             if ($response != null) {
                 // Create abstract logger here later that logs to local file storage
                 $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
@@ -354,6 +359,14 @@ class MontapackingShipping
         }
 
         return json_decode($response->getBody());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLastResponse(): string
+    {
+        return $this->lastResponseCode;
     }
 
     /**
