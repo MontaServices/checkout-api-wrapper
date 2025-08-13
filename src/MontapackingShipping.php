@@ -14,6 +14,12 @@ use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
 
 class MontapackingShipping
 {
+    /** @var string - URI for deliveryoptions etc. */
+    protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
+
+    /** @var string - URI for testing info TODO why are these separate? Tested both on both and they work either way */
+    protected const string MONTA_REST_INFO_URI = 'https://api-v6.monta.nl/';
+
     /**
      * @var Settings
      */
@@ -252,8 +258,7 @@ class MontapackingShipping
         try {
             $response = $this->call(
                 method: "info",
-                // TODO this URl is used by Shopware connection test, what about `api-gateway.monta.nl`?
-                url: 'https://api-v6.monta.nl/',
+                url: self::MONTA_REST_INFO_URI,
                 // query parameters
                 parameters: [
                     // TODO this value is irrelevant for the `info` endpoint, output is the identical regardless
@@ -279,7 +284,7 @@ class MontapackingShipping
      * @return mixed
      * @throws GuzzleException
      */
-    public function call(string $method, string $url = "https://api-gateway.monta.nl/selfhosted/checkout/", array $parameters = [], string $httpMethod = "POST"): mixed
+    public function call(string $method, string $url = self::MONTA_REST_CHECKOUT_URI, array $parameters = [], string $httpMethod = "POST"): mixed
     {
 //        $url = "https://host.docker.internal:52668/selfhosted/";
 
