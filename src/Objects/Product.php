@@ -28,10 +28,10 @@ class Product
      * @var int
      */
     public int $quantity;
-	/**
-	 * @var float
-	 */
-	public float $price;
+    /**
+     * @var float
+     */
+    public float $price;
 
     /**
      * @param string $sku
@@ -42,30 +42,37 @@ class Product
      * @param int $quantity
      * @param float $price
      */
-    public function __construct(string $sku, int $lengthMm, int $widthMm, int $heightMm, int $weightGrammes, int $quantity, float $price)
+    public function __construct(
+        string $sku,
+        int $lengthMm,
+        int $widthMm,
+        int $heightMm,
+        int $weightGrammes,
+        int $quantity,
+        float $price,
+    )
     {
-
         $this->setSku($sku);
         $this->setLength($lengthMm);
         $this->setWidth($widthMm);
         $this->setHeight($heightMm);
         $this->setWeight($weightGrammes);
         $this->setQuantity($quantity);
-		if($price != null) {
-			$this->setPrice($price);
-		}
+        if ($price != null) {
+            $this->setPrice($price);
+        }
     }
 
-	/**
-	 * @param $price
-	 *
-	 * @return $this
-	 */
-	public function setPrice($price): Product
-	{
-		$this->price = $price;
-		return $this;
-	}
+    /**
+     * @param $price
+     *
+     * @return $this
+     */
+    public function setPrice($price): Product
+    {
+        $this->price = $price;
+        return $this;
+    }
 
     /**
      * @param $sku

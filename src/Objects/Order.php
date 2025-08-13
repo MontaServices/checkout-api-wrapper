@@ -20,7 +20,6 @@ class Order
      */
     public function __construct($incl, $excl)
     {
-
         $this->setIncl($incl);
         $this->setExcl($excl);
     }

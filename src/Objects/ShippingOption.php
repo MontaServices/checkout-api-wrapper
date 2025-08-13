@@ -2,12 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Objects\Option as MontaCheckout_Option;
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
 class ShippingOption
 {
     /** Constructor with promoted properties
-     * TODO change properties to protected, but might be necessary for serialization
      *
      * @param string $shipper
      * @param string $code
@@ -23,7 +23,7 @@ class ShippingOption
      * @param bool $isPreferred
      * @param bool $isSustainable
      * @param array $deliveryOptions
-     * @param string $optionCodes - @deprecated, not referenced anywhere
+     * @param string $optionCodes @deprecated, not referenced anywhere
      * @param array $shipperCodes
      */
     public function __construct(
@@ -45,6 +45,7 @@ class ShippingOption
         public array $shipperCodes = [],
     )
     {
+        // TODO are these obsolete with promoted properties?
         $this->setShipper($shipper);
         $this->setCode($code);
         $this->setDisplayNameShort($displayNameShort);
@@ -327,7 +328,7 @@ class ShippingOption
     {
         $list = [];
         foreach ($deliveryOptions as $option) {
-            $list[] = new MontaCheckout_Option($option->code, $option->description, $option->price, $option->priceFormatted);
+            $list[] = new Option($option->code, $option->description, $option->price, $option->priceFormatted);
         }
 
         $this->deliveryOptions = $list;
