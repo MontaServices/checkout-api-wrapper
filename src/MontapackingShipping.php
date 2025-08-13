@@ -239,6 +239,35 @@ class MontapackingShipping
         return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
     }
 
+    /** Check if connection and credentials are correct
+     *
+     * @return bool
+     */
+    public function testConnection(): bool
+    {
+        $success = false;
+        try {
+            $response = $this->call(
+                method: "info",
+                // TODO this URl is used by Shopware connection test, what about `api-gateway.monta.nl`?
+                url: 'https://api-v6.monta.nl/',
+                // query parameters
+                parameters: [
+                    // TODO this value is irrelevant for the `info` endpoint, output is the identical regardless
+                    'origin' => $this->getSettings()->getOrigin()
+                ],
+                httpMethod: "GET",
+            );
+            // Succesful info test returns some Origins (based on existing Shopware test functionality)
+            if (!empty($response->Origins)) {
+                $success = true;
+            }
+        } catch (GuzzleException $e) {
+            // TODO log erorr, success remains false.
+        }
+        return $success;
+    }
+
     /**
      * @param string $method
      * @param string $url
@@ -300,6 +329,12 @@ class MontapackingShipping
                     $response = $client->post($method, [
                         'json' => $jsonRequest
                     ]);
+                    break;
+                case "GET":
+                    if ($parameters) {
+                        $method .= "?" . http_build_query($parameters);
+                    }
+                    $response = $client->get($method);
                     break;
                 default:
                     throw new \Exception("Unsupported HTTP method: " . $httpMethod);
