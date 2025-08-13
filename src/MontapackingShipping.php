@@ -4,13 +4,13 @@ namespace Monta\CheckoutApiWrapper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Monta\CheckoutApiWrapper\Objects\Address as MontaCheckout_Address;
-use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
-use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
-use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
+use Monta\CheckoutApiWrapper\Objects\Address;
+use Monta\CheckoutApiWrapper\Objects\Order;
+use Monta\CheckoutApiWrapper\Objects\PickupPoint;
+use Monta\CheckoutApiWrapper\Objects\Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
-use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
-use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
+use Monta\CheckoutApiWrapper\Objects\ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 
 class MontapackingShipping
 {
@@ -26,13 +26,13 @@ class MontapackingShipping
     private Settings $settings;
 
     /**
-     * @var MontaCheckout_Order
+     * @var ?Order
      * @deprecated - Property is written but never read
      */
-    private ?MontaCheckout_Order $_order = null;
+    private ?Order $_order = null;
 
     /**
-     * @var MontaCheckout_Product[]
+     * @var Product[]
      */
     private array $_products = [];
 
@@ -45,9 +45,9 @@ class MontapackingShipping
     protected ?string $lastResponseCode = null;
 
     /**
-     * @var ?MontaCheckout_Address
+     * @var ?Address
      */
-    public ?MontaCheckout_Address $address = null;
+    public ?Address $address = null;
 
     /**
      * MontapackingShipping constructor.
@@ -87,7 +87,7 @@ class MontapackingShipping
      */
     public function setOrder($total_incl, $total_excl): void
     {
-        $this->_order = new MontaCheckout_Order($total_incl, $total_excl);
+        $this->_order = new Order($total_incl, $total_excl);
     }
 
     /**
@@ -102,7 +102,7 @@ class MontapackingShipping
      */
     public function setAddress($street, $houseNumber, $houseNumberAddition, $postalCode, $city, $state, $countryCode): void
     {
-        $this->address = new MontaCheckout_Address(
+        $this->address = new Address(
             $street,
             $houseNumber,
             $houseNumberAddition,
@@ -125,7 +125,7 @@ class MontapackingShipping
      */
     public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0): void
     {
-        $this->_products[] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
+        $this->_products[] = new Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
     }
 
     /**
@@ -162,7 +162,7 @@ class MontapackingShipping
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $timeframe) {
-                    $timeframes[] = new MontaCheckout_TimeFrame(
+                    $timeframes[] = new TimeFrame(
                         $timeframe->date,
                         $timeframe->day,
                         $timeframe->month,
@@ -175,7 +175,7 @@ class MontapackingShipping
 
             if (isset($result->pickup_locations)) {
                 foreach ($result->pickup_locations as $pickup) {
-                    $pickups[] = new MontaCheckout_PickupPoint($pickup->displayName,
+                    $pickups[] = new PickupPoint($pickup->displayName,
                         $pickup->shipperCode,
                         $pickup->code,
                         $pickup->distanceMeters,
@@ -200,7 +200,7 @@ class MontapackingShipping
             }
 
             if (isset($result->standard_shipper)) {
-                $standardShipper = new MontaCheckout_ShippingOption(
+                $standardShipper = new ShippingOption(
                     $result->standard_shipper->shipper,
                     $result->standard_shipper->code,
                     $result->standard_shipper->displayNameShort,
@@ -221,7 +221,7 @@ class MontapackingShipping
             }
 
             if (isset($result->store_location)) {
-                $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
+                $storeLocation = new PickupPoint($result->store_location->displayName,
                     $result->store_location->shipperCode,
                     $result->store_location->code,
                     $result->store_location->distanceMeters,
@@ -375,13 +375,13 @@ class MontapackingShipping
     }
 
     /**
-     * @return MontaCheckout_TimeFrame
+     * @return TimeFrame
      */
-    private function getFallbackTimeframe(): MontaCheckout_TimeFrame
+    private function getFallbackTimeframe(): TimeFrame
     {
-        return new MontaCheckout_TimeFrame(
+        return new TimeFrame(
             dateOnlyFormatted: "Unknown",
-            options: [new MontaCheckout_ShippingOption(
+            options: [new ShippingOption(
                 shipper: 'Standard Shipper',
                 code: 'montapacking_standard',
                 displayNameShort: 'Standard Shipper',

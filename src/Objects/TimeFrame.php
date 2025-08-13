@@ -2,7 +2,8 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
 
 class TimeFrame
 {
@@ -117,7 +118,7 @@ class TimeFrame
         $list = null;
 
         foreach ($options as $onr => $option) {
-            $list[$onr] = new MontaCheckout_ShippingOption(
+            $list[$onr] = new ShippingOption(
                 $option->shipper,
                 $option->code,
                 $option->displayNameShort,
