@@ -12,7 +12,7 @@ class ApiFactory
 {
     /** Factory method for getting an API instance
      *
-     * @param Settings $settings - TODO avoid requiring Settings object
+     * @param Settings $settings - TODO avoid requiring Settings object in the future
      * @param array $systemInfo
      * @return MontaPackingShipping
      */
@@ -26,10 +26,11 @@ class ApiFactory
 
     /**
      * @param array $settings
-     * @return Settings
+     * @param array $systemInfo
+     * @return MontapackingShipping
      */
-    public function createSettings(array $settings = []): Settings
+    public function createFromSettings(array $settings = [], array $systemInfo = []): Api
     {
-        return new Settings(...$settings);
+        return $this->create(new Settings(...$settings), $systemInfo);
     }
 }
