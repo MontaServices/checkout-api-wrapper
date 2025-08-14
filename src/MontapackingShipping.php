@@ -100,18 +100,21 @@ class MontapackingShipping
      * @param $countryCode
      * @throws GuzzleException
      */
-    public function setAddress($street, $houseNumber, $houseNumberAddition, $postalCode, $city, $state, $countryCode): void
+    public function setAddress(
+        $street,
+        $houseNumber,
+        $houseNumberAddition,
+        $postalCode,
+        $city,
+        $state,
+        $countryCode
+    ): void
     {
-        $this->address = new Address(
-            $street,
-            $houseNumber,
-            $houseNumberAddition,
-            $postalCode,
-            $city,
-            $state,
-            $countryCode,
-            $this->getSettings()->getGoogleKey()
-        );
+        $args = func_get_args();
+        // Add GoogleKey to address as well
+        $args[] = $this->getSettings()->getGoogleKey();
+        // Splat parameters to pass along to method
+        $this->address = new Address(...$args);
     }
 
     /**
@@ -245,7 +248,13 @@ class MontapackingShipping
             }
         }
 
-        return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
+        return [
+            'DeliveryOptions' => $timeframes,
+            'PickupOptions' => $pickups,
+            'StandardShipper' => $standardShipper,
+            'CustomerLocation' => $this->address,
+            'StoreLocation' => $storeLocation,
+        ];
     }
 
     /** Check if connection and credentials are correct
