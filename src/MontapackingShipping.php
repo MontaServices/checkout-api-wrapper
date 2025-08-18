@@ -99,9 +99,7 @@ class MontapackingShipping
      */
     public function setAddressFromArray(array $address): void
     {
-        $converted = AddressHelper::convertAddress($address);
-        // Splat array into constructor arguments
-        $this->address = new Address(...$converted);
+        $this->address = AddressHelper::convertAddress($address);
     }
 
     /**

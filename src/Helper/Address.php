@@ -5,6 +5,8 @@
  */
 namespace Monta\CheckoutApiWrapper\Helper;
 
+use Monta\CheckoutApiWrapper\Objects\Address as WrapperAddress;
+
 class Address
 {
     protected const string RETURN_TYPE_STREET = 'street';
@@ -12,21 +14,6 @@ class Address
     protected const string RETURN_TYPE_HOUSE_NUMBER = 'house_number';
 
     protected const string RETURN_TYPE_HOUSE_NUMBER_EXT = 'house_number_ext';
-
-    // Each field of Address, these must match the constructor parameters of Address
-    public const string FIELD_STREET = 'street';
-
-    public const string FIELD_HOUSE_NUMBER = 'houseNumber';
-
-    public const string FIELD_HOUSE_NUMBER_ADDITION = 'houseNumberAddition';
-
-    public const string FIELD_POSTAL_CODE = 'postalCode';
-
-    public const string FIELD_CITY = 'city';
-
-    public const string FIELD_STATE = 'state';
-
-    public const string FIELD_COUNTRY_CODE = 'countryCode';
 
     public const string PREG_MATCH_ADDRESS_NL =
         '~(?P<street>.*?)' .              // The rest belongs to the street
@@ -43,12 +30,13 @@ class Address
     public const string PREG_MATCH_ADDRESS_BE =
         '~(?P<street>.*?)\s(?P<street_suffix>(?P<number>\S{1,8})\s?(?P<box_separator>bus?)?\s?(?P<box_number>\d{0,8}$))$~';
 
-    /** Normalize address from array
+    /** Get normalized address from array
      *
      * @param array $address
-     * @return array
+     * @return WrapperAddress
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function convertAddress(array $address): array
+    public static function convertAddress(array $address): WrapperAddress
     {
         // Normalize street
         $street = $address['street'] ?? $address['fullstreet'] ?? '';
@@ -66,15 +54,15 @@ class Address
         $city = $address['city'] ?? $address['city_id'] ?? '';
         $state = $address['state'] ?? $address['region'] ?? '';
         // Return address as array, exactly in the shape of an Address object (to splat into constructor)
-        return [
-            self::FIELD_STREET => self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode),
-            self::FIELD_HOUSE_NUMBER => self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER, $countryCode),
-            self::FIELD_HOUSE_NUMBER_ADDITION => self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT, $countryCode),
-            self::FIELD_POSTAL_CODE => $postCode,
-            self::FIELD_CITY => $city,
-            self::FIELD_STATE => $state,
-            self::FIELD_COUNTRY_CODE => $countryCode,
-        ];
+        return new WrapperAddress(
+            street: self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode),
+            houseNumber: self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER, $countryCode),
+            houseNumberAddition: self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT, $countryCode),
+            postalCode: $postCode,
+            city: $city,
+            state: $state,
+            countryCode: $countryCode,
+        );
     }
 
     /**
