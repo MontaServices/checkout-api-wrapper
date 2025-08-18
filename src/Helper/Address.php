@@ -15,20 +15,22 @@ class Address
 
     protected const string RETURN_TYPE_HOUSE_NUMBER_EXT = 'house_number_ext';
 
-    public const string PREG_MATCH_ADDRESS_NL =
-        '~(?P<street>.*?)' .              // The rest belongs to the street
-        '\s?' .                           // Separator between street and number
-        '(?P<number>\d{1,4})' .           // Number can contain a maximum of 4 numbers
-        '[/\s\-]{0,2}' .                  // Separators between number and addition
-        '(?P<number_suffix>' .
-        '[a-zA-Z]{1}\d{1,3}|' .           // Numbers suffix starts with a letter followed by numbers or
-        '-\d{1,4}|' .                     // starts with - and has up to 4 numbers or
-        '\d{2}\w{1,2}|' .                 // starts with 2 numbers followed by letters or
-        '[a-zA-Z]{1}[a-zA-Z\s]{0,3}' .    // has up to 4 letters with a space
-        ')?$~';
-
-    public const string PREG_MATCH_ADDRESS_BE =
-        '~(?P<street>.*?)\s(?P<street_suffix>(?P<number>\S{1,8})\s?(?P<box_separator>bus?)?\s?(?P<box_number>\d{0,8}$))$~';
+    /** Custom-tailored regex per country */
+    public const array COUNTRIES_ADDRESS_REGEX = [
+        'nl' =>
+            '~(?P<street>.*?)' .              // The rest belongs to the street
+            '\s?' .                           // Separator between street and number
+            '(?P<number>\d{1,4})' .           // Number can contain a maximum of 4 numbers
+            '[/\s\-]{0,2}' .                  // Separators between number and addition
+            '(?P<number_suffix>' .
+            '[a-zA-Z]{1}\d{1,3}|' .           // Numbers suffix starts with a letter followed by numbers or
+            '-\d{1,4}|' .                     // starts with - and has up to 4 numbers or
+            '\d{2}\w{1,2}|' .                 // starts with 2 numbers followed by letters or
+            '[a-zA-Z]{1}[a-zA-Z\s]{0,3}' .    // has up to 4 letters with a space
+            ')?$~',
+        'be' =>
+            '~(?P<street>.*?)\s(?P<street_suffix>(?P<number>\S{1,8})\s?(?P<box_separator>bus?)?\s?(?P<box_number>\d{0,8}$))$~',
+    ];
 
     /** @var string Generic regular expression for other countries */
     public const string PREG_MATCH_ADDRESS =
@@ -106,18 +108,9 @@ class Address
         $countryCode = strtolower($countryCode);
 
         // Get street, house number and extension via preg match
-        switch ($countryCode) {
-            case 'nl':
-                $pattern = static::PREG_MATCH_ADDRESS_NL;
-                break;
-            case 'be':
-                $pattern = static::PREG_MATCH_ADDRESS_BE;
-                break;
-            default:
-                $pattern = static::PREG_MATCH_ADDRESS;
-        }
         preg_match(
-            $pattern,
+        // use specific regex for country if available, otherwise use generic regex
+            self::COUNTRIES_ADDRESS_REGEX[$countryCode] ?? self::PREG_MATCH_ADDRESS,
             $fullStreet,
             $matches
         );
