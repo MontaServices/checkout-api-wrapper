@@ -38,8 +38,6 @@ class Address
      */
     public static function convertAddress(array $address): WrapperAddress
     {
-        $houseNr = $address['housenumber'] ?? $address['housenr'] ?? $address['house_number'] ?? $address['houseNumber'] ?? '';;
-        $houseNrAddition = $address['housenumberaddition'] ?? $address['housenraddition'] ?? $address['house_number_addition'] ?? $address['houseNumberAddition'] ?? '';
         $countryCode = $address['countryCode'] ?? $address['country_id']
             ?? $address['country_code'] ?? $address['country'] ?? null;
 
@@ -47,18 +45,28 @@ class Address
         $street = $address['street'] ?? $address['fullstreet'] ?? '';
         if (is_array($street)) {
             // If it's an array, glue with spaces
+            // Rest of the code expects a string
             $street = implode(' ', $street);
-        } else {
-            // When street is a string, presumably the housenr and addition were included.
-            // Extract these from full street with existing logic
-            $houseNr = self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? $houseNr;
-            $houseNrAddition = self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? $houseNrAddition;
+        }
 
-            // Street at the end because it replaces the variable
-            $street = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
+        // When street is a string, presumably the housenr and addition were included.
+        $houseNr = $address['housenumber'] ?? $address['housenr']
+            ?? $address['house_number'] ?? $address['houseNumber']
+            // or extract it from street
+            ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
+        $houseNrAddition = $address['housenumberaddition'] ??
+            $address['housenraddition'] ?? $address['house_number_addition'] ??
+            $address['houseNumberAddition'] ??
+            // if not passed directly, extract it from street
+            self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
+
+        // Street at the end because it replaces the variable
+        $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
+        // Occasionally street is converted empty, so we use the original street
+        if ($convertedStreet) {
+            $street = $convertedStreet;
         }
         $street = trim($street);
-
         // Extract values out of any possible array fields
         $postCode = $address['postcode'] ?? $address['postal_code'] ??
             $address['postalCode'] ?? $address['zipcode'] ?? $address['zip'] ?? '';
@@ -83,16 +91,17 @@ class Address
      * @param string $fullStreet
      * @param string $returnType
      * @param string $countryCode
-     * @return ?string
+     * @return string
      */
-    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): ?string
+    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): string
     {
         // Variables
         $houseNumber = null;
+        $countryCode = strtolower($countryCode);
 
         // Get street, house number and extension via preg match
         preg_match(
-            $countryCode === 'nl' ? static::PREG_MATCH_ADDRESS_NL : static::PREG_MATCH_ADDRESS_BE,
+            $countryCode == 'nl' ? static::PREG_MATCH_ADDRESS_NL : static::PREG_MATCH_ADDRESS_BE,
             $fullStreet,
             $matches
         );
@@ -108,11 +117,16 @@ class Address
         // Return value depending on requested return type
         switch ($returnType) {
             case self::RETURN_TYPE_HOUSE_NUMBER:
-                return $houseNumber;
+                $return = $houseNumber;
+                break;
             case self::RETURN_TYPE_HOUSE_NUMBER_EXT:
-                return $houseNumberExtension;
+                $return = $houseNumberExtension;
+                break;
             default:
-                return $street;
+                $return = $street;
+                break;
         }
+        // Always return string
+        return (string)$return;
     }
 }
