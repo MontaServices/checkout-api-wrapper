@@ -47,7 +47,7 @@ class Address
      */
     public static function convertAddress(array $address): WrapperAddress
     {
-        $countryCode = self::extractValue($address, 'countryCode');
+        $countryCode = self::extractValue($address, ['countryCode', 'countryId']);
 
         // Normalize street
         $street = self::extractValue($address, ['street', 'fullStreet']);
