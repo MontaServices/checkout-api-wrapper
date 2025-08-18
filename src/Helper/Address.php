@@ -38,26 +38,35 @@ class Address
      */
     public static function convertAddress(array $address): WrapperAddress
     {
+        $houseNr = $address['housenumber'] ?? $address['housenr'] ?? $address['house_number'] ?? $address['houseNumber'] ?? '';;
+        $houseNrAddition = $address['housenumberaddition'] ?? $address['housenraddition'] ?? $address['house_number_addition'] ?? $address['houseNumberAddition'] ?? '';
+        $countryCode = $address['countryCode'] ?? $address['country_id']
+            ?? $address['country_code'] ?? $address['country'] ?? null;
+
         // Normalize street
         $street = $address['street'] ?? $address['fullstreet'] ?? '';
         if (is_array($street)) {
             // If it's an array, glue with spaces
-            $street = implode(' ', $address['street']);
+            $street = implode(' ', $street);
+        } else {
+            // When street is a string, presumably the housenr and addition were included.
+            // Extract these from full street with existing logic
+            $street = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
+            $houseNr = self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? $houseNr;
+            $houseNrAddition = self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? $houseNrAddition;
         }
         $street = trim($street);
 
         // Extract values out of any possible array fields
-        $countryCode = $address['countryCode'] ?? $address['country_id']
-            ?? $address['country_code'] ?? $address['country'] ?? null;
         $postCode = $address['postcode'] ?? $address['postal_code'] ??
             $address['postalCode'] ?? $address['zipcode'] ?? $address['zip'] ?? '';
         $city = $address['city'] ?? $address['city_id'] ?? '';
         $state = $address['state'] ?? $address['region'] ?? '';
         // Return address as array, exactly in the shape of an Address object (to splat into constructor)
         return new WrapperAddress(
-            street: self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode),
-            houseNumber: self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER, $countryCode),
-            houseNumberAddition: self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT, $countryCode),
+            street: $street,
+            houseNumber: $houseNr,
+            houseNumberAddition: $houseNrAddition,
             postalCode: $postCode,
             city: $city,
             state: $state,
@@ -72,13 +81,12 @@ class Address
      * @param string $fullStreet
      * @param string $returnType
      * @param string $countryCode
-     * @return string
+     * @return ?string
      */
-    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): string
+    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): ?string
     {
         // Variables
         $houseNumber = null;
-        $houseNumberExtension = null;
 
         // Get street, house number and extension via preg match
         preg_match(
@@ -98,9 +106,9 @@ class Address
         // Return value depending on requested return type
         switch ($returnType) {
             case self::RETURN_TYPE_HOUSE_NUMBER:
-                return (string)$houseNumber;
+                return $houseNumber;
             case self::RETURN_TYPE_HOUSE_NUMBER_EXT:
-                return (string)$houseNumberExtension;
+                return $houseNumberExtension;
             default:
                 return $street;
         }
