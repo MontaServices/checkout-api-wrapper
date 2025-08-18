@@ -27,7 +27,7 @@ class Address
      * @param string $city
      * @param ?string $state
      * @param string $countryCode
-     * @param string $googleApiKey
+     * @param string $googleApiKey @deprecated - does not belong in Address object
      * @throws GuzzleException
      */
     public function __construct(

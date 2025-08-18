@@ -4,6 +4,7 @@ namespace Monta\CheckoutApiWrapper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Monta\CheckoutApiWrapper\Helper\Address as AddressHelper;
 use Monta\CheckoutApiWrapper\Objects\Address;
 use Monta\CheckoutApiWrapper\Objects\Order;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint;
@@ -90,6 +91,19 @@ class MontapackingShipping
         $this->_order = new Order($total_incl, $total_excl);
     }
 
+    /** Generic address setter from array
+     * TODO perhaps use TIG\PostNL\Helper\AddressEnhancer? what if street is string, or 1 line, or 4 lines
+     * @param array $address
+     * @return void
+     * @throws GuzzleException
+     */
+    public function setAddressFromArray(array $address): void
+    {
+        $converted = AddressHelper::convertAddress($address);
+        // Splat array into constructor arguments
+        $this->address = new Address(...$converted);
+    }
+
     /**
      * @param $street
      * @param $houseNumber
@@ -99,6 +113,7 @@ class MontapackingShipping
      * @param $state
      * @param $countryCode
      * @throws GuzzleException
+     * @deprecated - Use setAddressFromArray instead
      */
     public function setAddress(
         $street,
