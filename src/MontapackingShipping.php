@@ -92,7 +92,7 @@ class MontapackingShipping
     }
 
     /** Generic address setter from array
-     * TODO perhaps use TIG\PostNL\Helper\AddressEnhancer? what if street is string, or 1 line, or 4 lines
+     *
      * @param array $address
      * @return void
      * @throws GuzzleException

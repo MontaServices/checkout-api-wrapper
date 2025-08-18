@@ -58,20 +58,25 @@ class Address
             // TODO if sizeof($street) > 3, throw Exception
         }
 
-        // When street is a string, presumably the housenr and addition were included.
-        $houseNr = self::extractValue($address, ['houseNumber', 'houseNr'])
-            // or extract it from street
-            ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
-        $houseNrAddition = self::extractValue($address, ['houseNumberAddition', 'houseNumberExt', 'houseNrAddition', 'houseNrExt', 'addition']) ??
-            // if not passed directly, extract it from street
-            self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
+        // If street is still empty
+        $houseNr = '';
+        $houseNrAddition = '';
+        if ($street) {
+            // When street is a string, presumably the housenr and addition were included.
+            $houseNr = self::extractValue($address, ['houseNumber', 'houseNr'])
+                // or extract it from street
+                ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
+            $houseNrAddition = self::extractValue($address, ['houseNumberAddition', 'houseNumberExt', 'houseNrAddition', 'houseNrExt', 'addition']) ??
+                // if not passed directly, extract it from street
+                self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
 
-        // Street at the end because it replaces the variable
-        $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
-        // Occasionally street is converted empty, so we use the original street
-        // TODO fix regex for when that occurs
-        if ($convertedStreet) {
-            $street = $convertedStreet;
+            // Street at the end because it replaces the variable
+            $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
+            // Occasionally street is converted empty, so we use the original street
+            // TODO fix regex for when that occurs
+            if ($convertedStreet) {
+                $street = $convertedStreet;
+            }
         }
 
         // Extract values out of any possible array fields
@@ -80,7 +85,7 @@ class Address
         $state = self::extractValue($address, ['state', 'state_id']) ?? '';
         // Return address as array, exactly in the shape of an Address object (to splat into constructor)
         return new WrapperAddress(
-            street: trim($street),
+            street: trim($street ?? ''),
             houseNumber: trim($houseNr),
             houseNumberAddition: trim($houseNrAddition),
             postalCode: trim($postCode),
