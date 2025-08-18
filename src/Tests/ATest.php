@@ -39,6 +39,28 @@ class ATest extends TestCase
                     'houseNumberAddition' => 'A',
                 ],
                 [
+                    // Magento sometimes puts street like this
+                    'street' => [
+                        'Hoefkade',
+                        '1156',
+                        'A'
+                    ]
+                ],
+//                [
+//                    // TODO 4 addresslines not currently supported
+//                        'street' => [
+//                            'Hoefkade',
+//                            '1154',
+//                            'A',
+//                            'achterom',
+//                        ]
+//                ],
+                [
+                    'street' => [
+                        'Hoefkade 1156A',
+                    ]
+                ],
+                [
                     // Autofill sometimes puts these in both fields
                     'street' => "Hoefkade 1156",
                     'houseNumber' => '1156',
