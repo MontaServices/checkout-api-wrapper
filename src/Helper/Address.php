@@ -75,7 +75,7 @@ class Address
         if ($convertedStreet) {
             $street = $convertedStreet;
         }
-        $street = trim($street);
+
         // Extract values out of any possible array fields
         $postCode = $address['postcode'] ?? $address['postal_code'] ??
             $address['postalCode'] ?? $address['zipcode'] ?? $address['zip'] ?? '';
@@ -83,13 +83,13 @@ class Address
         $state = $address['state'] ?? $address['region'] ?? '';
         // Return address as array, exactly in the shape of an Address object (to splat into constructor)
         return new WrapperAddress(
-            street: $street,
-            houseNumber: $houseNr,
-            houseNumberAddition: $houseNrAddition,
-            postalCode: $postCode,
-            city: $city,
-            state: $state,
-            countryCode: $countryCode,
+            street: trim($street),
+            houseNumber: trim($houseNr),
+            houseNumberAddition: trim($houseNrAddition),
+            postalCode: trim($postCode),
+            city: trim($city),
+            state: trim($state),
+            countryCode: trim($countryCode),
         );
     }
 
