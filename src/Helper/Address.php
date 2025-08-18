@@ -30,6 +30,12 @@ class Address
     public const string PREG_MATCH_ADDRESS_BE =
         '~(?P<street>.*?)\s(?P<street_suffix>(?P<number>\S{1,8})\s?(?P<box_separator>bus?)?\s?(?P<box_number>\d{0,8}$))$~';
 
+    /** @var string Generic regular expression for other countries */
+    public const string PREG_MATCH_ADDRESS =
+        '~(?P<street>.*?)' . // named group, any words in front
+        '(?P<number>\d+\D?)' . // named group with any digits after that
+        '(?P<number_suffix>.)~'; // named group with any characters after number
+
     /** Get normalized address from array
      *
      * @param array $address
@@ -87,7 +93,6 @@ class Address
 
     /**
      * Get the house number or its addition from a full street.
-     * Caution: Only works for NL and BE addresses! Created for Monta/Shopware plugin but inexhaustive.
      *
      * @param string $fullStreet
      * @param string $returnType
@@ -101,8 +106,18 @@ class Address
         $countryCode = strtolower($countryCode);
 
         // Get street, house number and extension via preg match
+        switch ($countryCode) {
+            case 'nl':
+                $pattern = static::PREG_MATCH_ADDRESS_NL;
+                break;
+            case 'be':
+                $pattern = static::PREG_MATCH_ADDRESS_BE;
+                break;
+            default:
+                $pattern = static::PREG_MATCH_ADDRESS;
+        }
         preg_match(
-            $countryCode == 'nl' ? static::PREG_MATCH_ADDRESS_NL : static::PREG_MATCH_ADDRESS_BE,
+            $pattern,
             $fullStreet,
             $matches
         );
