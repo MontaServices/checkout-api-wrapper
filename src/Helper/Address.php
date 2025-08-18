@@ -6,6 +6,7 @@
 namespace Monta\CheckoutApiWrapper\Helper;
 
 use Monta\CheckoutApiWrapper\Objects\Address as WrapperAddress;
+use function Symfony\Component\String\u;
 
 class Address
 {
@@ -46,41 +47,37 @@ class Address
      */
     public static function convertAddress(array $address): WrapperAddress
     {
-        $countryCode = $address['countryCode'] ?? $address['country_id']
-            ?? $address['country_code'] ?? $address['country'] ?? null;
+        $countryCode = self::extractValue($address, 'countryCode');
 
         // Normalize street
-        $street = $address['street'] ?? $address['fullstreet'] ?? '';
+        $street = self::extractValue($address, ['street', 'fullStreet']);
         if (is_array($street)) {
             // If it's an array, glue with spaces
             // Rest of the code expects a string
             $street = implode(' ', $street);
+            // TODO if sizeof($street) > 3, throw Exception
         }
 
         // When street is a string, presumably the housenr and addition were included.
-        $houseNr = $address['housenumber'] ?? $address['housenr']
-            ?? $address['house_number'] ?? $address['houseNumber']
+        $houseNr = self::extractValue($address, ['houseNumber', 'houseNr'])
             // or extract it from street
             ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
-        $houseNrAddition = $address['housenumberaddition'] ??
-            $address['housenraddition'] ?? $address['house_number_addition'] ??
-            $address['houseNumberAddition'] ?? $address['houseNrAddition'] ??
-            $address['addition'] ?? $address['houseNumberExt'] ?? $address['house_number_ext'] ??
+        $houseNrAddition = self::extractValue($address, ['houseNumberAddition', 'houseNumberExt', 'houseNrAddition', 'houseNrExt', 'addition']) ??
             // if not passed directly, extract it from street
             self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
 
         // Street at the end because it replaces the variable
         $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
         // Occasionally street is converted empty, so we use the original street
+        // TODO fix regex for when that occurs
         if ($convertedStreet) {
             $street = $convertedStreet;
         }
 
         // Extract values out of any possible array fields
-        $postCode = $address['postcode'] ?? $address['postal_code'] ??
-            $address['postalCode'] ?? $address['zipcode'] ?? $address['zip'] ?? '';
-        $city = $address['city'] ?? $address['city_id'] ?? '';
-        $state = $address['state'] ?? $address['region'] ?? '';
+        $postCode = self::extractValue($address, ['postCode', 'postalCode', 'zip', 'zipCode']) ?? '';
+        $city = self::extractValue($address, ['city', 'city_id']) ?? '';
+        $state = self::extractValue($address, ['state', 'state_id']) ?? '';
         // Return address as array, exactly in the shape of an Address object (to splat into constructor)
         return new WrapperAddress(
             street: trim($street),
@@ -91,6 +88,36 @@ class Address
             state: trim($state),
             countryCode: trim($countryCode),
         );
+    }
+
+    /** Try various ways to get a value from an array
+     *
+     * @param array $array - Source data array
+     * @param string|array $field - camelCase field name, or array of options
+     * @return mixed|null - String, array or NULL, could be anything
+     */
+    protected static function extractValue(array $array, string|array $field): mixed
+    {
+        if (is_array($field)) {
+            foreach ($field as $f) {
+                $value = self::extractValue($array, $f);
+                if ($value) {
+                    return $value;
+                }
+            }
+        } else {
+            // Make 3 variations of this field
+            $sf = u($field);
+            $snake = $sf->snake()->toString();
+            $camel = $sf->camel()->toString();
+            $title = $sf->title(allWords: true)->toString();
+            $lower = strtolower($camel);
+            // TODO try installing symfony/string ^7.3 but Magento requires ^6
+//            $kebab = $sf->kebab();
+//            $pascal = $sf->pascal();
+            return $array[$field] ?? $array[$snake] ?? $array[$camel] ?? $array[$title] ?? $array[$lower] ?? null;
+        }
+        return null;
     }
 
     /**
