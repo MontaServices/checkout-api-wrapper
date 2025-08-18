@@ -51,9 +51,11 @@ class Address
         } else {
             // When street is a string, presumably the housenr and addition were included.
             // Extract these from full street with existing logic
-            $street = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
             $houseNr = self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? $houseNr;
             $houseNrAddition = self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? $houseNrAddition;
+
+            // Street at the end because it replaces the variable
+            $street = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
         }
         $street = trim($street);
 
