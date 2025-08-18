@@ -22,11 +22,6 @@ class MontapackingShipping
     protected const string MONTA_REST_INFO_URI = 'https://api-v6.monta.nl/';
 
     /**
-     * @var Settings
-     */
-    private Settings $settings;
-
-    /**
      * @var ?Order
      * @deprecated - Property is written but never read
      */
@@ -57,7 +52,9 @@ class MontapackingShipping
      * @param string $language
      * @deprecated - Use ApiFactory method instead
      */
-    public function __construct(Settings $settings, string $language)
+    public function __construct(
+        protected Settings $settings,
+        string $language)
     {
         $settings->setWebshopLanguage($language);
 

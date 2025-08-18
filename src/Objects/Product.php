@@ -5,35 +5,6 @@ namespace Monta\CheckoutApiWrapper\Objects;
 class Product
 {
     /**
-     * @var string
-     */
-    public string $sku;
-    /**
-     * @var int
-     */
-    public int $lengthMm;
-    /**
-     * @var int
-     */
-    public int $widthMm;
-    /**
-     * @var int
-     */
-    public int $heightMm;
-    /**
-     * @var int
-     */
-    public int $weightGrammes;
-    /**
-     * @var int
-     */
-    public int $quantity;
-    /**
-     * @var float
-     */
-    public float $price;
-
-    /**
      * @param string $sku
      * @param int $lengthMm
      * @param int $widthMm
@@ -43,13 +14,13 @@ class Product
      * @param float $price
      */
     public function __construct(
-        string $sku,
-        int $lengthMm,
-        int $widthMm,
-        int $heightMm,
-        int $weightGrammes,
-        int $quantity,
-        float $price,
+        public string $sku,
+        public int $lengthMm,
+        public int $widthMm,
+        public int $heightMm,
+        public int $weightGrammes,
+        public int $quantity,
+        public float $price,
     )
     {
         $this->setSku($sku);

@@ -9,11 +9,11 @@ class TimeFrame
 {
     /** Constructor with promoted properties
      *
-     * @param string|null $date
-     * @param string|null $day
-     * @param string|null $month
-     * @param string|null $dateFormatted
-     * @param string|null $dateOnlyFormatted
+     * @param ?string $date
+     * @param ?string $day
+     * @param ?string $month
+     * @param ?string $dateFormatted
+     * @param ?string $dateOnlyFormatted
      * @param array $options
      */
     public function __construct(
@@ -42,7 +42,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $date
+     * @param ?string $date
      */
     public function setDate(?string $date): void
     {
@@ -58,7 +58,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $day
+     * @param ?string $day
      */
     public function setDay(?string $day): void
     {
@@ -74,7 +74,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $dateFormatted
+     * @param ?string $dateFormatted
      */
     public function setDateFormatted(?string $dateFormatted): void
     {
@@ -82,15 +82,15 @@ class TimeFrame
     }
 
     /**
-     * @return string|null
+     * @return ?string
      */
-    public function getDateOnlyFormatted(): string|null
+    public function getDateOnlyFormatted(): ?string
     {
         return $this->dateOnlyFormatted;
     }
 
     /**
-     * @param string|null $dateOnlyFormatted
+     * @param ?string $dateOnlyFormatted
      */
     public function setDateOnlyFormatted(?string $dateOnlyFormatted): void
     {
@@ -106,7 +106,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $month
+     * @param ?string $month
      */
     public function setMonth(?string $month): void
     {

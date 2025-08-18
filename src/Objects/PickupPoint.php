@@ -8,26 +8,6 @@ namespace Monta\CheckoutApiWrapper\Objects;
  */
 class PickupPoint
 {
-    // TODO convert all to promoted properties
-    public string $code;
-    public float $distanceMeters;
-    public string $company;
-    public string $street;
-    public ?string $houseNumber;
-    public string $postalCode;
-    public ?string $district;
-    public string $city;
-    public ?string $state;
-    public string $countryCode;
-    public ?string $addressRemark;
-    public ?string $phone;
-    public float $longitude;
-    public float $latitude;
-    public ?string $imageUrl;
-    public float $price;
-    public string $priceFormatted;
-    public array $openingTimes;
-    public string $shipperOptionsWithValue;
     public ?string $imageName;
 
     /**
@@ -54,27 +34,27 @@ class PickupPoint
      * @param string $shipperOptionsWithValue
      */
     public function __construct(
-        string $displayName,
-        string $shipperCode,
-        string $code,
-        float $distanceMeters,
-        string $company,
-        string $street,
-        ?string $houseNumber,
-        string $postalCode,
-        ?string $district,
-        string $city,
-        ?string $state,
-        string $countryCode,
-        ?string $addressRemark,
-        ?string $phone,
-        float $longitude,
-        float $latitude,
-        ?string $imageUrl,
-        float $price,
-        string $priceFormatted,
-        array $openingTimes,
-        string $shipperOptionsWithValue)
+        public string $displayName,
+        public string $shipperCode,
+        public string $code,
+        public float $distanceMeters,
+        public string $company,
+        public string $street,
+        public ?string $houseNumber,
+        public string $postalCode,
+        public ?string $district,
+        public string $city,
+        public ?string $state,
+        public string $countryCode,
+        public ?string $addressRemark,
+        public ?string $phone,
+        public float $longitude,
+        public float $latitude,
+        public ?string $imageUrl,
+        public float $price,
+        public string $priceFormatted,
+        public array $openingTimes,
+        public string $shipperOptionsWithValue)
     {
         // TODO are all these setters obsolete with promoted properties?
         $this->setDisplayName($displayName);
@@ -100,8 +80,6 @@ class PickupPoint
         $this->set_shipper_options_with_value($shipperOptionsWithValue);
     }
 
-    public string $displayName;
-
     /**
      * @return string
      */
@@ -117,11 +95,6 @@ class PickupPoint
     {
         $this->displayName = $displayName;
     }
-
-    /**
-     * @var string
-     */
-    public string $shipperCode;
 
     /**
      * @return string
@@ -276,7 +249,7 @@ class PickupPoint
     }
 
     /**
-     * @param string|null $district
+     * @param ?string $district
      */
     public function setDistrict(?string $district): void
     {
@@ -308,7 +281,7 @@ class PickupPoint
     }
 
     /**
-     * @param string|null $state
+     * @param ?string $state
      */
     public function setState(?string $state): void
     {
@@ -340,7 +313,7 @@ class PickupPoint
     }
 
     /**
-     * @param string|null $addressRemark
+     * @param ?string $addressRemark
      */
     public function setAddressRemark(?string $addressRemark): void
     {
@@ -356,7 +329,7 @@ class PickupPoint
     }
 
     /**
-     * @param string|null $phone
+     * @param ?string $phone
      */
     public function setPhone(?string $phone): void
     {

@@ -5,23 +5,16 @@ namespace Monta\CheckoutApiWrapper\Objects;
 class Order
 {
     /**
-     * @var float
+     * @param float $total_incl
+     * @param float $total_excl
      */
-    public float $total_incl;
-
-    /**
-     * @var float
-     */
-    public float $total_excl;
-
-    /**
-     * @param $incl
-     * @param $excl
-     */
-    public function __construct($incl, $excl)
+    public function __construct(
+        public float $total_incl,
+        public float $total_excl,
+    )
     {
-        $this->setIncl($incl);
-        $this->setExcl($excl);
+        $this->setIncl($total_incl);
+        $this->setExcl($total_excl);
     }
 
     /**

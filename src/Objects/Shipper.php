@@ -5,20 +5,13 @@ namespace Monta\CheckoutApiWrapper\Objects;
 class Shipper
 {
     /**
-     * @var string
+     * @param string $name
+     * @param string $code
      */
-    public string $name;
-
-    /**
-     * @var string
-     */
-    public string $code;
-
-    /**
-     * @param $name
-     * @param $code
-     */
-    public function __construct($name, $code)
+    public function __construct(
+        public string $name,
+        public string $code
+    )
     {
         $this->setName($name);
         $this->setCode($code);
