@@ -8,7 +8,7 @@ namespace Monta\CheckoutApiWrapper\Tests;
 use Monta\CheckoutApiWrapper\Helper\Address;
 use PHPUnit\Framework\TestCase;
 
-class ATest extends TestCase
+class AddressConverter extends TestCase
 {
     protected const string TEST_EXPECTATION = 'expected';
 
@@ -98,6 +98,20 @@ class ATest extends TestCase
                 ],
             ]
         ],
+        [
+            'street' => null,
+            self::TEST_INPUTS => [
+                [],
+                [ // TC302
+                    'street' => []
+                ],
+                [
+                    'street' => ['', '', '']
+                ],
+                ['houseNrExt' => null],
+                ['fullStreet' => ''],
+            ]
+        ],
     ];
     protected Address $helper;
 
@@ -118,7 +132,7 @@ class ATest extends TestCase
                 $address = $this->helper->convertAddress($input);
                 // Compare each field to the expectation
                 foreach (['street', 'houseNumber', 'houseNumberAddition'] as $field) {
-                    $this->assertEquals($address->$field, $testCase[$field], message: $testCode . " failed on " . $field);
+                    $this->assertEquals($address->$field, $testCase[$field] ?? null, message: $testCode . " failed on " . $field);
                 }
             }
         }
