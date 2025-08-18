@@ -28,14 +28,12 @@ class ATest extends TestCase
      */
     protected array $testCases = [
         [
-            self::TEST_EXPECTATION => [
-                'street' => 'Hoefkade',
-                'houseNumber' => '1156',
-                'houseNumberAddition' => 'A',
-            ],
+            'street' => 'Hoefkade',
+            'houseNumber' => '1156',
+            'houseNumberAddition' => 'A',
             // Each of these inputs should result in the above output
             self::TEST_INPUTS => [
-                [
+                [ // TC101
                     'street' => 'Hoefkade',
                     'houseNumber' => '1156',
                     'houseNumberAddition' => 'A',
@@ -47,8 +45,23 @@ class ATest extends TestCase
                     'houseNumberAddition' => 'A',
                 ],
                 [
+                    // Some systems pass only one string
                     'street' => "Hoefkade 1156A",
                 ]
+            ]
+        ],
+        [
+            'street' => "Papland",
+            'houseNumber' => "1",
+            'houseNumberAddition' => "",
+            self::TEST_INPUTS => [
+                [ // TC201
+                    'street' => "Papland",
+                    'houseNumber' => "1",
+                ], [
+                    'street' => "Papland 1",
+                    'houseNumber' => "1",
+                ],
             ]
         ],
     ];
@@ -62,18 +75,17 @@ class ATest extends TestCase
     public function testAddressConverter()
     {
         $this->assertTrue(true);
-        foreach ($this->testCases as $testCase) {
-            $expectation = $testCase[self::TEST_EXPECTATION];
+        foreach ($this->testCases as $caseIndex => $testCase) {
             foreach ($testCase[self::TEST_INPUTS] as $index => $input) {
-                $testCode = "TC" . ($index + 1);
+                $testCode = "TC" . ($caseIndex + 1) . "0" . ($index + 1);
                 // Add required defaults
                 $input += self::TEST_ADDRESS_DEFAULTS;
                 // Convert this address in Helper
                 $address = $this->helper->convertAddress($input);
                 // Compare each field to the expectation
-                $this->assertEquals($address->street, $expectation['street'], message: $testCode . " failed on street");
-                $this->assertEquals($address->houseNumber, $expectation['houseNumber'], message: $testCode . " failed on houseNumber");
-                $this->assertEquals($address->houseNumberAddition, $expectation['houseNumberAddition'], message: $testCode . " failed on houseNumberAddition");
+                foreach (['street', 'houseNumber', 'houseNumberAddition'] as $field) {
+                    $this->assertEquals($address->$field, $testCase[$field], message: $testCode . " failed on " . $field);
+                }
             }
         }
     }
