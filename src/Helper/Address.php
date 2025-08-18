@@ -56,7 +56,8 @@ class Address
             ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
         $houseNrAddition = $address['housenumberaddition'] ??
             $address['housenraddition'] ?? $address['house_number_addition'] ??
-            $address['houseNumberAddition'] ??
+            $address['houseNumberAddition'] ?? $address['houseNrAddition'] ??
+            $address['addition'] ?? $address['houseNumberExt'] ?? $address['house_number_ext'] ??
             // if not passed directly, extract it from street
             self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
 
