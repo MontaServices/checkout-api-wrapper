@@ -39,10 +39,16 @@ class ATest extends TestCase
                     'houseNumberAddition' => 'A',
                 ],
                 [
-                    // same but with spaces
+                    // with whitespaces
                     'street' => ' Hoefkade   ',
                     'houseNumber' => '1156',
-                    'houseNumberAddition' => ' A',
+                    'houseNrExt' => ' A',
+                ],
+                [
+                    // alternative keys
+                    'fullStreet' => 'Hoefkade',
+                    'houseNr' => '1156',
+                    'HouseNrExt' => 'A',
                 ],
                 [
                     // Magento sometimes puts street as array
