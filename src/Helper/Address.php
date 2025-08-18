@@ -79,16 +79,16 @@ class Address
 
     /**
      * Get the house number or its addition from a full street.
+     * Caution: Only works for NL and BE addresses! Created for Monta/Shopware plugin but inexhaustive.
      *
-     * @param $fullStreet
+     * @param string $fullStreet
      * @param string $returnType
      * @param string $countryCode
      * @return string
      */
-    public static function getAddressParts($fullStreet, string $returnType, string $countryCode = 'nl'): string
+    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): string
     {
         // Variables
-        $street = '';
         $houseNumber = null;
         $houseNumberExtension = null;
 
@@ -99,27 +99,22 @@ class Address
             $matches
         );
 
-        if (isset($matches['street']) && $matches['street'] !== '') {
-            $street = $matches['street'];
-        }
+        $street = $matches['street'] ?? null;
 
-        if (isset($matches['number']) && is_numeric($matches['number'])) {
+        if (!empty($matches['number']) && is_numeric($matches['number'])) {
             $houseNumber = $matches['number'];
         }
 
-        if (isset($matches['number_suffix'])) {
-            $houseNumberExtension = $matches['number_suffix'];
-        }
+        $houseNumberExtension = $matches['number_suffix'] ?? null;
 
         // Return value depending on requested return type
-        if ($returnType === self::RETURN_TYPE_HOUSE_NUMBER) {
-            return (string)$houseNumber;
+        switch ($returnType) {
+            case self::RETURN_TYPE_HOUSE_NUMBER:
+                return (string)$houseNumber;
+            case self::RETURN_TYPE_HOUSE_NUMBER_EXT:
+                return (string)$houseNumberExtension;
+            default:
+                return $street;
         }
-
-        if ($returnType === self::RETURN_TYPE_HOUSE_NUMBER_EXT) {
-            return (string)$houseNumberExtension;
-        }
-
-        return $street;
     }
 }
