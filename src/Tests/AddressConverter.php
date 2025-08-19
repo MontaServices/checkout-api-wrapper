@@ -5,7 +5,7 @@
  */
 namespace Monta\CheckoutApiWrapper\Tests;
 
-use Monta\CheckoutApiWrapper\Helper\Address;
+use Monta\CheckoutApiWrapper\Service\Address;
 use PHPUnit\Framework\TestCase;
 
 class AddressConverter extends TestCase

@@ -4,7 +4,6 @@ namespace Monta\CheckoutApiWrapper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Monta\CheckoutApiWrapper\Helper\Address as AddressHelper;
 use Monta\CheckoutApiWrapper\Objects\Address;
 use Monta\CheckoutApiWrapper\Objects\Order;
 use Monta\CheckoutApiWrapper\Objects\PickupPoint;
@@ -12,6 +11,7 @@ use Monta\CheckoutApiWrapper\Objects\Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame;
+use Monta\CheckoutApiWrapper\Service\Address as AddressHelper;
 
 class MontapackingShipping
 {
