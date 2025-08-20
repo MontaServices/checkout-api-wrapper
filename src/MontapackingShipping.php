@@ -127,20 +127,31 @@ class MontapackingShipping
         $this->address = new Address(...$args);
     }
 
-    /** Separate method for adding from simple array
+    /** Separate method for adding as simple array
+     *
      * @param array $cartItem
+     * @param string $inputMeasures
      * @return void
      */
-    public function addProductFromArray(array $cartItem): void
+    public function addProductFromArray(array $cartItem, string $inputMeasures = 'kilo'): void
     {
+        // Normalize weight
+        $weight = $cartItem['weight'] ?? 0;
+        switch ($inputMeasures) {
+            case 'kilo':
+                // When input is in kg, convert to gram
+                $weight = $weight * 1000;
+                break;
+        }
+
         $this->addProduct(
             sku: $cartItem['sku'],
             // Various systems might pass quantity in either key
             quantity: $cartItem['qty'] ?? $cartItem['quantity'],
-            weightGrammes: $cartItem['weight'] ?? null,
             lengthMm: $cartItem['length'] ?? 0,
             widthMm: $cartItem['width'] ?? 0,
             heightMm: $cartItem['height'] ?? 0,
+            weightGrammes: $weight,
             price: $cartItem['price'] ?? $cartItem['final_price'],
         );
     }
