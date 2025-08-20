@@ -25,11 +25,7 @@ class TimeFrame
         public array $options = [],
     )
     {
-        $this->setDate($date);
-        $this->setDay($day);
-        $this->setMonth($month);
-        $this->setDateFormatted($dateFormatted);
-        $this->setDateOnlyFormatted($dateOnlyFormatted);
+        // Properties are set in constructor, this setter has custom functionality
         $this->setOptions($options);
     }
 

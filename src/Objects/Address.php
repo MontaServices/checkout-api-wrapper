@@ -41,18 +41,12 @@ class Address
         public ?string $googleApiKey = null,
     )
     {
-        // TODO are all these setters obsolete with promoted properties?
-        $this->setStreet($street);
-        $this->setHouseNumber($houseNumber);
-        $this->setHouseNumberAddition($houseNumberAddition);
-        $this->setPostalCode($postalCode);
-        $this->setCity($city);
-        $this->setState($state);
-        $this->setCountry($countryCode);
+        // Properties are set in constructor, this setter has custom functionality
         if ($googleApiKey) {
             $this->setGoogleApiKey(trim($googleApiKey));
         }
 
+        // Calculate coordinates based on address using Google Maps API
         $this->setLongLat();
     }
 

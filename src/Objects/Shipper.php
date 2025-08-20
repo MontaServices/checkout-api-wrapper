@@ -13,8 +13,6 @@ class Shipper
         public string $code
     )
     {
-        $this->setName($name);
-        $this->setCode($code);
     }
 
     /**

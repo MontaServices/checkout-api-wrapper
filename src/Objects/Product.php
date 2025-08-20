@@ -25,7 +25,7 @@ class Product
     {
     }
 
-    /** TODO are all these setters still necessary? Constructor sets properties already
+    /**
      * @param $price
      *
      * @return $this

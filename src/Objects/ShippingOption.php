@@ -45,23 +45,8 @@ class ShippingOption
         public array $shipperCodes = [],
     )
     {
-        // TODO are these obsolete with promoted properties?
-        $this->setShipper($shipper);
-        $this->setCode($code);
-        $this->setDisplayNameShort($displayNameShort);
-        $this->setDisplayName($displayName);
-        $this->setFrom($from);
-        $this->setTo($to);
-        $this->setDeliveryType($deliveryType);
-        $this->setShippingType($shippingType);
-        $this->setPrice($price);
-        $this->setPriceFormatted($priceFormatted);
-        $this->setDiscountPercentage($discountPercentage);
-        $this->setIsPreferred($isPreferred);
-        $this->setIsSustainable($isSustainable);
+        // Properties are set in constructor, this setter has custom functionality
         $this->setDeliveryOptions($deliveryOptions);
-        $this->setOptionCodes($optionCodes);
-        $this->setShipperCodes($shipperCodes);
     }
 
     /**

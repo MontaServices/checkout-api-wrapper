@@ -58,28 +58,8 @@ class PickupPoint
         public array $openingTimes,
         public string $shipperOptionsWithValue)
     {
-        // TODO are all these setters obsolete with promoted properties?
-        $this->setDisplayName($displayName);
-        $this->setShipperCode($shipperCode);
-        $this->setCode($code);
-        $this->setDistanceMeters($distanceMeters);
-        $this->setCompany($company);
-        $this->setStreet($street);
-        $this->setHouseNumber($houseNumber);
-        $this->setPostalCode($postalCode);
-        $this->setDistrict($district);
-        $this->setCity($city);
-        $this->setState($state);
-        $this->setCountryCode($countryCode);
-        $this->setAddressRemark($addressRemark);
-        $this->setPhone($phone);
-        $this->setLongitude($longitude);
-        $this->setLatitude($latitude);
-        $this->setImageUrl($imageUrl);
-        $this->setPrice($price);
-        $this->setPriceFormatted($priceFormatted);
+        // Properties are set in constructor, this setter has custom functionality
         $this->setOpeningTimes($openingTimes);
-        $this->set_shipper_options_with_value($shipperOptionsWithValue);
     }
 
     /**

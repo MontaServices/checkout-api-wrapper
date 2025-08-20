@@ -13,8 +13,6 @@ class Order
         public float $total_excl,
     )
     {
-        $this->setIncl($total_incl);
-        $this->setExcl($total_excl);
     }
 
     /**

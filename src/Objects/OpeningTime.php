@@ -11,9 +11,6 @@ class OpeningTime
      */
     public function __construct(public string $day, public string $from, public string $to)
     {
-        $this->setDay($day);
-        $this->setFrom($from);
-        $this->setTo($to);
     }
 
     /**
