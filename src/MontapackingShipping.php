@@ -127,6 +127,24 @@ class MontapackingShipping
         $this->address = new Address(...$args);
     }
 
+    /** Separate method for adding from simple array
+     * @param array $cartItem
+     * @return void
+     */
+    public function addProductFromArray(array $cartItem): void
+    {
+        $this->addProduct(
+            sku: $cartItem['sku'],
+            // Various systems might pass quantity in either key
+            quantity: $cartItem['qty'] ?? $cartItem['quantity'],
+            weightGrammes: $cartItem['weight'] ?? null,
+            lengthMm: $cartItem['length'] ?? 0,
+            widthMm: $cartItem['width'] ?? 0,
+            heightMm: $cartItem['height'] ?? 0,
+            price: $cartItem['price'] ?? $cartItem['final_price'],
+        );
+    }
+
     /**
      * @param string $sku
      * @param int $quantity
@@ -135,10 +153,20 @@ class MontapackingShipping
      * @param int $heightMm
      * @param int $weightGrammes
      * @param float $price
+     * @return void
      */
-    public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0): void
+    public function addProduct(
+        string $sku,
+        int $quantity,
+        int $lengthMm = 0,
+        int $widthMm = 0,
+        int $heightMm = 0,
+        int $weightGrammes = 0,
+        float $price = 0
+    ): void
     {
-        $this->_products[] = new Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
+        // Pass along arguments as named arguments
+        $this->_products[] = new Product(...func_get_args());
     }
 
     /**
