@@ -6,29 +6,30 @@ class Product
 {
     /**
      * @param string $sku
+     * @param int $quantity
      * @param int $lengthMm
      * @param int $widthMm
      * @param int $heightMm
      * @param int $weightGrammes
-     * @param int $quantity
      * @param float $price
      */
     public function __construct(
         public string $sku,
+        public int $quantity,
         public int $lengthMm,
         public int $widthMm,
         public int $heightMm,
         public int $weightGrammes,
-        public int $quantity,
         public float $price,
     )
     {
+        // TODO are all these setters obsolete with promoted properties?
         $this->setSku($sku);
+        $this->setQuantity($quantity);
         $this->setLength($lengthMm);
         $this->setWidth($widthMm);
         $this->setHeight($heightMm);
         $this->setWeight($weightGrammes);
-        $this->setQuantity($quantity);
         if ($price != null) {
             $this->setPrice($price);
         }
