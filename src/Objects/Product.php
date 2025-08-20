@@ -23,19 +23,9 @@ class Product
         public float $price,
     )
     {
-        // TODO are all these setters obsolete with promoted properties?
-        $this->setSku($sku);
-        $this->setQuantity($quantity);
-        $this->setLength($lengthMm);
-        $this->setWidth($widthMm);
-        $this->setHeight($heightMm);
-        $this->setWeight($weightGrammes);
-        if ($price != null) {
-            $this->setPrice($price);
-        }
     }
 
-    /**
+    /** TODO are all these setters still necessary? Constructor sets properties already
      * @param $price
      *
      * @return $this
