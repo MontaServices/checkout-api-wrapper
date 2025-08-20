@@ -8,7 +8,9 @@ namespace Monta\CheckoutApiWrapper\Objects;
  */
 class PickupPoint
 {
-    public ?string $imageName;
+    public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
+
+    public ?string $imageName = null;
 
     /**
      * @param string $displayName

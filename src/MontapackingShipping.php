@@ -299,7 +299,7 @@ class MontapackingShipping
 
         return [
             'DeliveryOptions' => $timeframes,
-            'PickupOptions' => $pickups,
+            PickupPoint::PICKUP_OPTIONS_KEY => $pickups,
             'StandardShipper' => $standardShipper,
             'CustomerLocation' => $this->address,
             'StoreLocation' => $storeLocation,
