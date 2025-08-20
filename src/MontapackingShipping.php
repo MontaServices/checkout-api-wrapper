@@ -25,17 +25,17 @@ class MontapackingShipping
      * @var ?Order
      * @deprecated - Property is written but never read
      */
-    private ?Order $_order = null;
+    private ?Order $order = null;
 
     /**
      * @var Product[]
      */
-    private array $_products = [];
+    protected array $products = [];
 
     /**
      * @var bool
      */
-    private bool $_onStock = true;
+    protected bool $onStock = true;
 
     /** @var string|null $lastResponseCode - HTTP response code from latest request */
     protected ?string $lastResponseCode = null;
@@ -66,7 +66,7 @@ class MontapackingShipping
      */
     public function setOnStock($value): void
     {
-        $this->_onStock = $value;
+        $this->onStock = $value;
     }
 
     /**
@@ -75,7 +75,7 @@ class MontapackingShipping
      */
     public function getOnStock(): bool
     {
-        return $this->_onStock;
+        return $this->onStock;
     }
 
     /**
@@ -85,7 +85,7 @@ class MontapackingShipping
      */
     public function setOrder($total_incl, $total_excl): void
     {
-        $this->_order = new Order($total_incl, $total_excl);
+        $this->order = new Order($total_incl, $total_excl);
     }
 
     /** Generic address setter from array
@@ -177,7 +177,7 @@ class MontapackingShipping
     ): void
     {
         // Pass along arguments as named arguments
-        $this->_products[] = new Product(...func_get_args());
+        $this->products[] = new Product(...func_get_args());
     }
 
     /**
@@ -366,7 +366,7 @@ class MontapackingShipping
             'useShipperOptions' => true,
             'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
             'defaultCosts' => $this->getSettings()->getDefaultCosts(),
-            'products' => $this->_products,
+            'products' => $this->products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
@@ -485,7 +485,7 @@ class MontapackingShipping
             'city' => $this->address->city,
             'postalcode' => $this->address->postalCode,
             'countrycode' => $this->address->countryCode,
-            'products' => $this->_products,
+            'products' => $this->products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency(),
