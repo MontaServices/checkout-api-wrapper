@@ -181,20 +181,11 @@ class MontapackingShipping
     }
 
     /**
-     * @param bool $onstock @deprecated - Never used or called
-     * @param bool $mailbox
-     * @param bool $mailboxfit
-     * @param bool $trackingonly
-     * @param bool $insurance
-     *
-     * @return array
-     */
-
-    /**
+     * @param bool $computeKm - Distance is received in meters, return as kilometers?
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(): array
+    public function getShippingOptions(bool $computeKm = false): array
     {
         $timeframes = [];
         $pickups = [];
@@ -227,10 +218,15 @@ class MontapackingShipping
 
             if (isset($result->pickup_locations)) {
                 foreach ($result->pickup_locations as $pickup) {
+                    $distance = $pickup->distanceMeters;
+                    // Recompute meters into kilometers
+                    if ($computeKm) {
+                        $distance = round(num: $distance / 1000, precision: 2);
+                    }
                     $pickups[] = new PickupPoint($pickup->displayName,
                         $pickup->shipperCode,
                         $pickup->code,
-                        $pickup->distanceMeters,
+                        $distance,
                         $pickup->company,
                         $pickup->street,
                         $pickup->houseNumber,
