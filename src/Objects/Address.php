@@ -9,54 +9,15 @@ use GuzzleHttp\Exception\GuzzleException;
 class Address
 {
     /**
-     * @var string
+     * @var float
+     * TODO can these be made protected?
      */
-    public string $street;
-
-    /**
-     * @var string|null
-     */
-    public ?string $houseNumber;
-
-    /**
-     * @var string|null
-     */
-    public ?string $houseNumberAddition;
-
-    /**
-     * @var string
-     */
-    public string $postalCode;
-
-    /**
-     * @var string
-     */
-    public string $city;
-
-    /**
-     * @var string|null
-     */
-    public ?string $state;
-
-    /**
-     * @var string
-     */
-    public string $countryCode;
-
-    /**
-     * @var string|null
-     */
-    public ?string $googleApiKey = null;
+    public float $longitude = 0;
 
     /**
      * @var float
      */
-    public float $longitude;
-
-    /**
-     * @var float
-     */
-    public float $latitude;
+    public float $latitude = 0;
 
     /**
      * @param string $street
@@ -66,23 +27,26 @@ class Address
      * @param string $city
      * @param ?string $state
      * @param string $countryCode
-     * @param string $googleApiKey
+     * @param string $googleApiKey @deprecated - does not belong in Address object
      * @throws GuzzleException
      */
-    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, ?string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
+    public function __construct(
+        public string $street,
+        public ?string $houseNumber,
+        public ?string $houseNumberAddition,
+        public string $postalCode,
+        public string $city,
+        public ?string $state,
+        public string $countryCode,
+        public ?string $googleApiKey = null,
+    )
     {
-        $this->setStreet($street);
-        $this->setHouseNumber($houseNumber);
-        $this->setHouseNumberAddition($houseNumberAddition);
-        $this->setPostalCode($postalCode);
-        $this->setCity($city);
-        $this->setState($state);
-        $this->setCountry($countryCode);
-
-        if ($googleApiKey != null) {
+        // Properties are set in constructor, this setter has custom functionality
+        if ($googleApiKey) {
             $this->setGoogleApiKey(trim($googleApiKey));
         }
 
+        // Calculate coordinates based on address using Google Maps API
         $this->setLongLat();
     }
 

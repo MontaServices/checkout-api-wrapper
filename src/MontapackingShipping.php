@@ -4,65 +4,69 @@ namespace Monta\CheckoutApiWrapper;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Monta\CheckoutApiWrapper\Objects\Address as MontaCheckout_Address;
-use Monta\CheckoutApiWrapper\Objects\Order as MontaCheckout_Order;
-use Monta\CheckoutApiWrapper\Objects\PickupPoint as MontaCheckout_PickupPoint;
-use Monta\CheckoutApiWrapper\Objects\Product as MontaCheckout_Product;
+use Monta\CheckoutApiWrapper\Objects\Address;
+use Monta\CheckoutApiWrapper\Objects\Order;
+use Monta\CheckoutApiWrapper\Objects\PickupPoint;
+use Monta\CheckoutApiWrapper\Objects\Product;
 use Monta\CheckoutApiWrapper\Objects\Settings;
-use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
-use Monta\CheckoutApiWrapper\Objects\TimeFrame as MontaCheckout_TimeFrame;
+use Monta\CheckoutApiWrapper\Objects\ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\TimeFrame;
+use Monta\CheckoutApiWrapper\Service\Address as AddressHelper;
 
 class MontapackingShipping
 {
-    /**
-     * @var Settings
-     */
-    private Settings $settings;
+    /** @var string - URI for deliveryoptions etc. */
+    protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
+
+    /** @var string - URI for testing info TODO why are these separate? Tested both on both and they work either way */
+    protected const string MONTA_REST_INFO_URI = 'https://api-v6.monta.nl/';
 
     /**
-     * @var MontaCheckout_Order
+     * @var ?Order
      * @deprecated - Property is written but never read
      */
-    private MontaCheckout_Order $_order;
+    private ?Order $order = null;
 
     /**
-     * @var MontaCheckout_Product[]
+     * @var Product[]
      */
-    private array $_products = [];
+    protected array $products = [];
 
     /**
      * @var bool
      */
-    private bool $_onStock = true;
+    protected bool $onStock = true;
+
+    /** @var string|null $lastResponseCode - HTTP response code from latest request */
+    protected ?string $lastResponseCode = null;
 
     /**
-     * @var MontaCheckout_Address
+     * @var ?Address
      */
-    public MontaCheckout_Address $address;
+    public ?Address $address = null;
 
     /**
      * MontapackingShipping constructor.
      *
      * @param Settings $settings
-     * @param      $language
-     * @param bool $test
+     * @param string $language
+     * @deprecated - Use ApiFactory method instead
      */
-    public function __construct(Settings $settings, $language, bool $test = false)
+    public function __construct(
+        protected Settings $settings,
+        string $language)
     {
-        $settings->setWebshopLanguage(
-            $language
-        );
+        $settings->setWebshopLanguage($language);
 
         $this->setSettings($settings);
     }
 
     /**
      * @param $value
-     * @deprecated - Never called
      */
     public function setOnStock($value): void
     {
-        $this->_onStock = $value;
+        $this->onStock = $value;
     }
 
     /**
@@ -71,7 +75,7 @@ class MontapackingShipping
      */
     public function getOnStock(): bool
     {
-        return $this->_onStock;
+        return $this->onStock;
     }
 
     /**
@@ -81,7 +85,18 @@ class MontapackingShipping
      */
     public function setOrder($total_incl, $total_excl): void
     {
-        $this->_order = new MontaCheckout_Order($total_incl, $total_excl);
+        $this->order = new Order($total_incl, $total_excl);
+    }
+
+    /** Generic address setter from array
+     *
+     * @param array $address
+     * @return void
+     * @throws GuzzleException
+     */
+    public function setAddressFromArray(array $address): void
+    {
+        $this->address = AddressHelper::convertAddress($address);
     }
 
     /**
@@ -93,18 +108,51 @@ class MontapackingShipping
      * @param $state
      * @param $countryCode
      * @throws GuzzleException
+     * @deprecated - Use setAddressFromArray instead
      */
-    public function setAddress($street, $houseNumber, $houseNumberAddition, $postalCode, $city, $state, $countryCode): void
+    public function setAddress(
+        $street,
+        $houseNumber,
+        $houseNumberAddition,
+        $postalCode,
+        $city,
+        $state,
+        $countryCode
+    ): void
     {
-        $this->address = new MontaCheckout_Address(
-            $street,
-            $houseNumber,
-            $houseNumberAddition,
-            $postalCode,
-            $city,
-            $state,
-            $countryCode,
-            $this->getSettings()->getGoogleKey()
+        $args = func_get_args();
+        // Add GoogleKey to address as well
+        $args[] = $this->getSettings()->getGoogleKey();
+        // Splat parameters to pass along to method
+        $this->address = new Address(...$args);
+    }
+
+    /** Separate method for adding as simple array
+     *
+     * @param array $cartItem
+     * @param string $inputMeasures
+     * @return void
+     */
+    public function addProductFromArray(array $cartItem, string $inputMeasures = 'kilo'): void
+    {
+        // Normalize weight
+        $weight = $cartItem['weight'] ?? 0;
+        switch ($inputMeasures) {
+            case 'kilo':
+                // When input is in kg, convert to gram
+                $weight = $weight * 1000;
+                break;
+        }
+
+        $this->addProduct(
+            sku: $cartItem['sku'],
+            // Various systems might pass quantity in either key
+            quantity: $cartItem['qty'] ?? $cartItem['quantity'],
+            lengthMm: $cartItem['length'] ?? 0,
+            widthMm: $cartItem['width'] ?? 0,
+            heightMm: $cartItem['height'] ?? 0,
+            weightGrammes: $weight,
+            price: $cartItem['price'] ?? $cartItem['final_price'],
         );
     }
 
@@ -116,28 +164,28 @@ class MontapackingShipping
      * @param int $heightMm
      * @param int $weightGrammes
      * @param float $price
+     * @return void
      */
-    public function addProduct(string $sku, int $quantity, int $lengthMm = 0, int $widthMm = 0, int $heightMm = 0, int $weightGrammes = 0, float $price = 0): void
+    public function addProduct(
+        string $sku,
+        int $quantity,
+        int $lengthMm = 0,
+        int $widthMm = 0,
+        int $heightMm = 0,
+        int $weightGrammes = 0,
+        float $price = 0
+    ): void
     {
-        $this->_products[] = new MontaCheckout_Product($sku, $lengthMm, $widthMm, $heightMm, $weightGrammes, $quantity, $price);
+        // Pass along arguments as named arguments
+        $this->products[] = new Product(...func_get_args());
     }
 
     /**
-     * @param bool $onstock - @deprecated - Never used or called
-     * @param bool $mailbox
-     * @param bool $mailboxfit
-     * @param bool $trackingonly
-     * @param bool $insurance
-     *
-     * @return array
-     */
-
-    /**
-     * @param bool $onStock @deprecated - Never used
+     * @param bool $computeKm - Distance is received in meters, return as kilometers?
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(bool $onStock = true): array
+    public function getShippingOptions(bool $computeKm = false): array
     {
         $timeframes = [];
         $pickups = [];
@@ -157,7 +205,7 @@ class MontapackingShipping
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $timeframe) {
-                    $timeframes[] = new MontaCheckout_TimeFrame(
+                    $timeframes[] = new TimeFrame(
                         $timeframe->date,
                         $timeframe->day,
                         $timeframe->month,
@@ -170,16 +218,23 @@ class MontapackingShipping
 
             if (isset($result->pickup_locations)) {
                 foreach ($result->pickup_locations as $pickup) {
-                    $pickups[] = new MontaCheckout_PickupPoint($pickup->displayName,
+                    $distance = $pickup->distanceMeters;
+                    // Recompute meters into kilometers
+                    if ($computeKm) {
+                        $distance = round(num: $distance / 1000, precision: 2);
+                    }
+                    $pickups[] = new PickupPoint(
+                        $pickup->displayName,
                         $pickup->shipperCode,
                         $pickup->code,
-                        $pickup->distanceMeters,
+                        $distance,
                         $pickup->company,
                         $pickup->street,
                         $pickup->houseNumber,
                         $pickup->postalCode,
                         $pickup->district,
-                        $pickup->city, $pickup->state,
+                        $pickup->city,
+                        $pickup->state,
                         $pickup->countryCode,
                         $pickup->addressRemark,
                         $pickup->phone,
@@ -195,7 +250,7 @@ class MontapackingShipping
             }
 
             if (isset($result->standard_shipper)) {
-                $standardShipper = new MontaCheckout_ShippingOption(
+                $standardShipper = new ShippingOption(
                     $result->standard_shipper->shipper,
                     $result->standard_shipper->code,
                     $result->standard_shipper->displayNameShort,
@@ -216,7 +271,7 @@ class MontapackingShipping
             }
 
             if (isset($result->store_location)) {
-                $storeLocation = new MontaCheckout_PickupPoint($result->store_location->displayName,
+                $storeLocation = new PickupPoint($result->store_location->displayName,
                     $result->store_location->shipperCode,
                     $result->store_location->code,
                     $result->store_location->distanceMeters,
@@ -240,17 +295,53 @@ class MontapackingShipping
             }
         }
 
-        return ['DeliveryOptions' => $timeframes, 'PickupOptions' => $pickups, 'StandardShipper' => $standardShipper, 'CustomerLocation' => $this->address, 'StoreLocation' => $storeLocation];
+        return [
+            'DeliveryOptions' => $timeframes,
+            PickupPoint::PICKUP_OPTIONS_KEY => $pickups,
+            'StandardShipper' => $standardShipper,
+            'CustomerLocation' => $this->address,
+            'StoreLocation' => $storeLocation,
+        ];
+    }
+
+    /** Check if connection and credentials are correct
+     *
+     * @return bool
+     */
+    public function testConnection(): bool
+    {
+        $success = false;
+        try {
+            $response = $this->call(
+                method: "info",
+                url: self::MONTA_REST_INFO_URI,
+                // query parameters
+                parameters: [
+                    // TODO this value is irrelevant for the `info` endpoint, output is the identical regardless
+                    'origin' => $this->getSettings()->getOrigin()
+                ],
+                httpMethod: "GET",
+            );
+            // Succesful info test returns some Origins (based on existing Shopware test functionality)
+            if ($this->getLastResponse() == 200 && !empty($response->Origins)) {
+                $success = true;
+            }
+        } catch (GuzzleException $e) {
+            // TODO log erorr, success remains false.
+        }
+        return $success;
     }
 
     /**
-     * @param      $method
+     * @param string $method
+     * @param string $url
+     * @param array $parameters
+     * @param string $httpMethod
      * @return mixed
      * @throws GuzzleException
      */
-    public function call($method): mixed
+    public function call(string $method, string $url = self::MONTA_REST_CHECKOUT_URI, array $parameters = [], string $httpMethod = "POST"): mixed
     {
-        $url = "https://api-gateway.monta.nl/selfhosted/checkout/";
 //        $url = "https://host.docker.internal:52668/selfhosted/";
 
         $client = new Client([
@@ -273,17 +364,23 @@ class MontapackingShipping
             'useShipperOptions' => true,
             'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
             'defaultCosts' => $this->getSettings()->getDefaultCosts(),
-            'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
-            'city' => $this->address->city,
-            'postalcode' => $this->address->postalCode,
-            'countrycode' => $this->address->countryCode,
-            'products' => $this->_products,
+            'products' => $this->products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency(),
             'hideDHLPackstations' => $this->getSettings()->getHideDHLPackstations()
         ];
+        // Add address to request when set
+        if ($this->address) {
+            // Merge arrays, give preference to the actual address object
+            $jsonRequest = array_merge($jsonRequest, [
+                'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
+                'city' => $this->address->city,
+                'postalcode' => $this->address->postalCode,
+                'countrycode' => $this->address->countryCode,
+            ]);
+        }
         if ($this->getOnStock()) {
             $jsonRequest['productsOnStock'] = true;
         }
@@ -291,10 +388,24 @@ class MontapackingShipping
         $response = null;
         $result = (object)[];
         try {
-            $response = $client->post($method, [
-                'json' => $jsonRequest
-            ]);
+            switch ($httpMethod) {
+                case "POST":
+                    $response = $client->post($method, [
+                        'json' => $jsonRequest
+                    ]);
+                    break;
+                case "GET":
+                    if ($parameters) {
+                        $method .= "?" . http_build_query($parameters);
+                    }
+                    $response = $client->get($method);
+                    break;
+                default:
+                    throw new \Exception("Unsupported HTTP method: " . $httpMethod);
+            }
+            $this->lastResponseCode = $response->getStatusCode();
         } catch (\Exception $exception) {
+            $this->lastResponseCode = 404;
             if ($response != null) {
                 // Create abstract logger here later that logs to local file storage
                 $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
@@ -312,13 +423,21 @@ class MontapackingShipping
     }
 
     /**
-     * @return MontaCheckout_TimeFrame
+     * @return string
      */
-    private function getFallbackTimeframe(): MontaCheckout_TimeFrame
+    protected function getLastResponse(): string
     {
-        return new MontaCheckout_TimeFrame(
+        return $this->lastResponseCode;
+    }
+
+    /**
+     * @return TimeFrame
+     */
+    private function getFallbackTimeframe(): TimeFrame
+    {
+        return new TimeFrame(
             dateOnlyFormatted: "Unknown",
-            options: [new MontaCheckout_ShippingOption(
+            options: [new ShippingOption(
                 shipper: 'Standard Shipper',
                 code: 'montapacking_standard',
                 displayNameShort: 'Standard Shipper',
@@ -364,7 +483,7 @@ class MontapackingShipping
             'city' => $this->address->city,
             'postalcode' => $this->address->postalCode,
             'countrycode' => $this->address->countryCode,
-            'products' => $this->_products,
+            'products' => $this->products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency(),
