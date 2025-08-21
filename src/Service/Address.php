@@ -98,7 +98,7 @@ class Address
     /** Try various ways to get a value from an array
      *
      * @param array $array - Source data array
-     * @param string|array $field - camelCase field name, or array of options
+     * @param string|array $field - camelCase field name, or array of multiple fields
      * @return mixed|null - String, array or NULL, could be anything
      */
     protected static function extractValue(array $array, string|array $field): mixed
@@ -111,13 +111,13 @@ class Address
                 }
             }
         } else {
-            // Make 3 variations of this field
+            // Try variations of this field
             $sf = u($field);
             $snake = $sf->snake()->toString();
             $camel = $sf->camel()->toString();
             $title = $sf->title(allWords: true)->toString();
             $lower = strtolower($camel);
-            // TODO try installing symfony/string ^7.3 but Magento requires ^6
+            // TODO try installing symfony/string ^7 but Magento requires ^6
 //            $kebab = $sf->kebab();
 //            $pascal = $sf->pascal();
             return $array[$field] ?? $array[$snake] ?? $array[$camel] ?? $array[$title] ?? $array[$lower] ?? null;

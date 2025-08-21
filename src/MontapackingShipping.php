@@ -223,7 +223,8 @@ class MontapackingShipping
                     if ($computeKm) {
                         $distance = round(num: $distance / 1000, precision: 2);
                     }
-                    $pickups[] = new PickupPoint($pickup->displayName,
+                    $pickups[] = new PickupPoint(
+                        $pickup->displayName,
                         $pickup->shipperCode,
                         $pickup->code,
                         $distance,
@@ -232,7 +233,8 @@ class MontapackingShipping
                         $pickup->houseNumber,
                         $pickup->postalCode,
                         $pickup->district,
-                        $pickup->city, $pickup->state,
+                        $pickup->city,
+                        $pickup->state,
                         $pickup->countryCode,
                         $pickup->addressRemark,
                         $pickup->phone,
