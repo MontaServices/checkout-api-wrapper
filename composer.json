@@ -1,7 +1,7 @@
 {
     "name": "monta/checkout-api-wrapper",
     "type": "library",
-    "description": "An API Wrapper to connect to the Monta Backend",
+    "description": "API Wrapper to connect to the Monta Backend",
     "license": "CC-BY-NC-ND-3.0",
     "autoload": {
         "psr-4": {
