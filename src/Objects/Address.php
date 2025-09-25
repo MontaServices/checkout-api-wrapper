@@ -100,34 +100,41 @@ class Address
         $prepAddr = $this->city . str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
         // TODO deprecated, use maps.googleapis.com which is the V3 standard
-        $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
-                'address' => $prepAddr,
-                'sensor' => false,
-                'key' => $this->googleApiKey,
-            ]);
 
-        try {
-            $client = new Client([
-                'timeout' => 1.0
-            ]);
+        $latitude = 0;
+        $longitude = 0;
+        // If this address was geocoded before, use the cached result
+        if ($coords = Session::get($prepAddr)) {
+            // Array is simply 2 coordinates in an array, assign to variables
+            list($latitude, $longitude) = $coords;
+        } else {
+            $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
+                    'address' => $prepAddr,
+                    'sensor' => false,
+                    'key' => $this->googleApiKey,
+                ]);
 
-            $response = $client->get($google_maps_url);
+            try {
+                $client = new Client([
+                    'timeout' => 1.0
+                ]);
+                $response = $client->get($google_maps_url);
 
-            $output = json_decode($response->getBody());
+                $output = json_decode($response->getBody());
 
-            $result = end($output->results);
+                $result = end($output->results);
 
-            if (isset($result->geometry)) {
-                $latitude = $result->geometry->location->lat;
-                $longitude = $result->geometry->location->lng;
-            } else {
-                // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
-                $latitude = 0;
-                $longitude = 0;
+                // Without geometry, Map will not initalize. Pickup locations will be a plain list.
+                if (isset($result->geometry)) {
+                    $latitude = $result->geometry->location->lat;
+                    $longitude = $result->geometry->location->lng;
+
+                    // Save this result in cache, so we don't have to load it again
+                    Session::save($prepAddr, [$latitude, $longitude]);
+                }
+            } catch (Exception) {
+                // Catch and ignore error, coords remain zero
             }
-        } catch (Exception) {
-            $latitude = 0;
-            $longitude = 0;
         }
 
         $this->longitude = $longitude;
