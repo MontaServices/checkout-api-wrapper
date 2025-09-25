@@ -5,67 +5,36 @@ namespace Monta\CheckoutApiWrapper\Objects;
 class Product
 {
     /**
-     * @var string
-     */
-    public string $sku;
-    /**
-     * @var int
-     */
-    public int $lengthMm;
-    /**
-     * @var int
-     */
-    public int $widthMm;
-    /**
-     * @var int
-     */
-    public int $heightMm;
-    /**
-     * @var int
-     */
-    public int $weightGrammes;
-    /**
-     * @var int
-     */
-    public int $quantity;
-	/**
-	 * @var float
-	 */
-	public float $price;
-
-    /**
      * @param string $sku
+     * @param int $quantity
      * @param int $lengthMm
      * @param int $widthMm
      * @param int $heightMm
      * @param int $weightGrammes
-     * @param int $quantity
      * @param float $price
      */
-    public function __construct(string $sku, int $lengthMm, int $widthMm, int $heightMm, int $weightGrammes, int $quantity, float $price)
+    public function __construct(
+        public string $sku,
+        public int $quantity,
+        public int $lengthMm,
+        public int $widthMm,
+        public int $heightMm,
+        public int $weightGrammes,
+        public float $price,
+    )
     {
-
-        $this->setSku($sku);
-        $this->setLength($lengthMm);
-        $this->setWidth($widthMm);
-        $this->setHeight($heightMm);
-        $this->setWeight($weightGrammes);
-        $this->setQuantity($quantity);
-		if($price != null) {
-			$this->setPrice($price);
-		}
     }
 
-	/**
-	 * @param $price
-	 *
-	 * @return $this
-	 */
-	public function setPrice($price): Product
-	{
-		$this->price = $price;
-		return $this;
-	}
+    /**
+     * @param $price
+     *
+     * @return $this
+     */
+    public function setPrice($price): Product
+    {
+        $this->price = $price;
+        return $this;
+    }
 
     /**
      * @param $sku

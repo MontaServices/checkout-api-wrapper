@@ -1,0 +1,173 @@
+<?php
+/**
+ * @author Jacco.Amersfoort <jacco.amersfoort@monta.nl>
+ * @created 14/08/2025 15:31
+ */
+namespace Monta\CheckoutApiWrapper\Service;
+
+use Monta\CheckoutApiWrapper\Objects\Address as WrapperAddress;
+use function Symfony\Component\String\u;
+
+class Address
+{
+    protected const string RETURN_TYPE_STREET = 'street';
+
+    protected const string RETURN_TYPE_HOUSE_NUMBER = 'house_number';
+
+    protected const string RETURN_TYPE_HOUSE_NUMBER_EXT = 'house_number_ext';
+
+    /** Custom-tailored regex per country */
+    public const array COUNTRIES_ADDRESS_REGEX = [
+        'nl' =>
+            '~(?P<street>.*?)' .              // The rest belongs to the street
+            '\s?' .                           // Separator between street and number
+            '(?P<number>\d{1,4})' .           // Number can contain a maximum of 4 numbers
+            '[/\s\-]{0,2}' .                  // Separators between number and addition
+            '(?P<number_suffix>' .
+            '[a-zA-Z]{1}\d{1,3}|' .           // Numbers suffix starts with a letter followed by numbers or
+            '-\d{1,4}|' .                     // starts with - and has up to 4 numbers or
+            '\d{2}\w{1,2}|' .                 // starts with 2 numbers followed by letters or
+            '[a-zA-Z]{1}[a-zA-Z\s]{0,3}' .    // has up to 4 letters with a space
+            ')?$~',
+        'be' =>
+            '~(?P<street>.*?)\s(?P<street_suffix>(?P<number>\S{1,8})\s?(?P<box_separator>bus?)?\s?(?P<box_number>\d{0,8}$))$~',
+    ];
+
+    /** @var string Generic regular expression for other countries */
+    public const string PREG_MATCH_ADDRESS =
+        '~(?P<street>.*?)' . // named group, any words in front
+        '(?P<number>\d+\D?)' . // named group with any digits after that
+        '(?P<number_suffix>.)~'; // named group with any characters after number
+
+    /** Get normalized address from array
+     *
+     * @param array $address
+     * @return WrapperAddress
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public static function convertAddress(array $address): WrapperAddress
+    {
+        $countryCode = self::extractValue($address, ['countryCode', 'countryId']);
+
+        // Normalize street
+        $street = self::extractValue($address, ['street', 'fullStreet']);
+        if (is_array($street)) {
+            // If it's an array, glue with spaces
+            // Rest of the code expects a string
+            $street = implode(' ', $street);
+            // TODO if sizeof($street) > 3, throw Exception
+        }
+
+        // If street is still empty
+        $houseNr = '';
+        $houseNrAddition = '';
+        if ($street) {
+            // When street is a string, presumably the housenr and addition were included.
+            $houseNr = self::extractValue($address, ['houseNumber', 'houseNr'])
+                // or extract it from street
+                ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
+            $houseNrAddition = self::extractValue($address, ['houseNumberAddition', 'houseNumberExt', 'houseNrAddition', 'houseNrExt', 'addition']) ??
+                // if not passed directly, extract it from street
+                self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
+
+            // Street at the end because it replaces the variable
+            $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
+            // Occasionally street is converted empty, so we use the original street
+            // TODO fix regex for when that occurs
+            if ($convertedStreet) {
+                $street = $convertedStreet;
+            }
+        }
+
+        // Extract values out of any possible array fields
+        $postCode = self::extractValue($address, ['postCode', 'postalCode', 'zip', 'zipCode']) ?? '';
+        $city = self::extractValue($address, ['city', 'city_id']) ?? '';
+        $state = self::extractValue($address, ['state', 'state_id']) ?? '';
+        // Return address as array, exactly in the shape of an Address object (to splat into constructor)
+        return new WrapperAddress(
+            street: trim($street ?? ''),
+            houseNumber: trim($houseNr),
+            houseNumberAddition: trim($houseNrAddition),
+            postalCode: trim($postCode),
+            city: trim($city),
+            state: trim($state),
+            countryCode: trim($countryCode),
+        );
+    }
+
+    /** Try various ways to get a value from an array
+     *
+     * @param array $array - Source data array
+     * @param string|array $field - camelCase field name, or array of multiple fields
+     * @return mixed|null - String, array or NULL, could be anything
+     */
+    protected static function extractValue(array $array, string|array $field): mixed
+    {
+        if (is_array($field)) {
+            foreach ($field as $f) {
+                $value = self::extractValue($array, $f);
+                if ($value) {
+                    return $value;
+                }
+            }
+        } else {
+            // Try variations of this field
+            $sf = u($field);
+            $snake = $sf->snake()->toString();
+            $camel = $sf->camel()->toString();
+            $title = $sf->title(allWords: true)->toString();
+            $lower = strtolower($camel);
+            // TODO try installing symfony/string ^7 but Magento requires ^6
+//            $kebab = $sf->kebab();
+//            $pascal = $sf->pascal();
+            return $array[$field] ?? $array[$snake] ?? $array[$camel] ?? $array[$title] ?? $array[$lower] ?? null;
+        }
+        return null;
+    }
+
+    /**
+     * Get the house number or its addition from a full street.
+     *
+     * @param string $fullStreet - The full street, including house number and addition.
+     * @param string $returnType - which part to return
+     * @param string $countryCode - Different countries have different address formats.
+     * @return string
+     */
+    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): string
+    {
+        // Variables
+        $houseNumber = null;
+        $countryCode = strtolower($countryCode);
+
+        // Get street, house number and extension via preg match
+        preg_match(
+        // use specific regex for country if available, otherwise use generic regex
+            self::COUNTRIES_ADDRESS_REGEX[$countryCode] ?? self::PREG_MATCH_ADDRESS,
+            $fullStreet,
+            $matches
+        );
+
+        $street = $matches['street'] ?? null;
+
+        if (!empty($matches['number']) && is_numeric($matches['number'])) {
+            $houseNumber = $matches['number'];
+        }
+
+        $houseNumberExtension = $matches['number_suffix'] ?? null;
+
+        // Return value depending on requested return type
+        switch ($returnType) {
+            case self::RETURN_TYPE_HOUSE_NUMBER:
+                $return = $houseNumber;
+                break;
+            case self::RETURN_TYPE_HOUSE_NUMBER_EXT:
+                $return = $houseNumberExtension;
+                break;
+            default:
+                $return = $street;
+                break;
+        }
+        // Always return string
+        return (string)$return;
+    }
+}

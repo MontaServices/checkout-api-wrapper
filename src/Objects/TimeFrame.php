@@ -2,17 +2,18 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Objects\ShippingOption as MontaCheckout_ShippingOption;
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
 
 class TimeFrame
 {
     /** Constructor with promoted properties
      *
-     * @param string|null $date
-     * @param string|null $day
-     * @param string|null $month
-     * @param string|null $dateFormatted
-     * @param string|null $dateOnlyFormatted
+     * @param ?string $date
+     * @param ?string $day
+     * @param ?string $month
+     * @param ?string $dateFormatted
+     * @param ?string $dateOnlyFormatted
      * @param array $options
      */
     public function __construct(
@@ -24,11 +25,7 @@ class TimeFrame
         public array $options = [],
     )
     {
-        $this->setDate($date);
-        $this->setDay($day);
-        $this->setMonth($month);
-        $this->setDateFormatted($dateFormatted);
-        $this->setDateOnlyFormatted($dateOnlyFormatted);
+        // Properties are set in constructor, this setter has custom functionality
         $this->setOptions($options);
     }
 
@@ -41,7 +38,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $date
+     * @param ?string $date
      */
     public function setDate(?string $date): void
     {
@@ -57,7 +54,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $day
+     * @param ?string $day
      */
     public function setDay(?string $day): void
     {
@@ -73,7 +70,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $dateFormatted
+     * @param ?string $dateFormatted
      */
     public function setDateFormatted(?string $dateFormatted): void
     {
@@ -81,15 +78,15 @@ class TimeFrame
     }
 
     /**
-     * @return string|null
+     * @return ?string
      */
-    public function getDateOnlyFormatted(): string|null
+    public function getDateOnlyFormatted(): ?string
     {
         return $this->dateOnlyFormatted;
     }
 
     /**
-     * @param string|null $dateOnlyFormatted
+     * @param ?string $dateOnlyFormatted
      */
     public function setDateOnlyFormatted(?string $dateOnlyFormatted): void
     {
@@ -105,7 +102,7 @@ class TimeFrame
     }
 
     /**
-     * @param string|null $month
+     * @param ?string $month
      */
     public function setMonth(?string $month): void
     {
@@ -117,7 +114,7 @@ class TimeFrame
         $list = null;
 
         foreach ($options as $onr => $option) {
-            $list[$onr] = new MontaCheckout_ShippingOption(
+            $list[$onr] = new ShippingOption(
                 $option->shipper,
                 $option->code,
                 $option->displayNameShort,

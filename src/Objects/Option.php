@@ -5,37 +5,17 @@ namespace Monta\CheckoutApiWrapper\Objects;
 class Option
 {
     /**
-     * @var string
+     * @param string $code
+     * @param string $description
+     * @param float $price
+     * @param string $priceFormatted
      */
-    public string $code;
-
-    /**
-     * @var string
-     */
-    public string $description;
-
-    /**
-     * @var float
-     */
-    public float $price;
-
-    /**
-     * @var string
-     */
-    public string $priceFormatted;
-
-    /**
-     * @param $code
-     * @param $description
-     * @param $price
-     * @param $priceFormatted
-     */
-    public function __construct($code, $description, $price, $priceFormatted)
+    public function __construct(public string $code,
+        public string $description,
+        public float $price,
+        public string $priceFormatted,
+    )
     {
-        $this->code = $code;
-        $this->description = $description;
-        $this->price = $price;
-        $this->priceFormatted = $priceFormatted;
     }
 
     /**
