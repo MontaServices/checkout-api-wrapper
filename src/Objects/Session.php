@@ -17,7 +17,10 @@ class Session
      */
     public static function save(string $path, $value): void
     {
-        $_SESSION[self::sessionPath($path)] = $value;
+        // Avoid saving any value to empty path, that would cause value confusion
+        if ($path) {
+            $_SESSION[self::sessionPath($path)] = $value;
+        }
     }
 
     /**
@@ -26,7 +29,12 @@ class Session
      */
     public static function get(string $path): mixed
     {
-        return $_SESSION[self::sessionPath($path)] ?? null;
+        // Empty path should not ever be used as a path
+        if ($path) {
+            return null;
+        } else {
+            return $_SESSION[self::sessionPath($path)] ?? null;
+        }
     }
 
     /** Convert user path into prefixed, usable path
