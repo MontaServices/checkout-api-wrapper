@@ -26,8 +26,8 @@ class ApiFactory
 
     /** Factory method for getting an API instance from array
      *
-     * @param array $settings
-     * @param array $systemInfo
+     * @param array $settings - Array with the exact named parameters of the Settings object
+     * @param array $systemInfo - Pass along system info
      * @return Api
      */
     public function createFromSettings(array $settings = [], array $systemInfo = []): Api
