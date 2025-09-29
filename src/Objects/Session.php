@@ -46,6 +46,8 @@ class Session
     {
         // Add prefix to path
         return self::SESSION_PREFIX
+            // add date to automatically invalidate after one day
+            . date('Ymd')
             // convert special characters
             . htmlentities(
             // make lowercase (no functional difference between case in address values
