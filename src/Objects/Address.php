@@ -27,7 +27,7 @@ class Address
      * @param string $city
      * @param ?string $state
      * @param string $countryCode
-     * @param string $googleApiKey @deprecated - does not belong in Address object
+     * @param string|null $googleApiKey @deprecated - does not belong in Address object
      * @throws GuzzleException
      */
     public function __construct(
@@ -38,10 +38,11 @@ class Address
         public string $city,
         public ?string $state,
         public string $countryCode,
+        #[\SensitiveParameter]
         public ?string $googleApiKey = null,
     )
     {
-        // Properties are set in constructor, this setter has custom functionality
+        // Constructor sets elevated properties, this specific one has custom functionality in setter
         if ($googleApiKey) {
             $this->setGoogleApiKey(trim($googleApiKey));
         }
@@ -58,7 +59,7 @@ class Address
     public function setLongLat(): void
     {
         // Get lat and long by address
-        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode; // Google HQ
+        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
         // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
         // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
         $prepAddr = $this->city . str_replace('  ', ' ', $address);
@@ -187,7 +188,7 @@ class Address
      *
      * @return $this
      */
-    public function setGoogleApiKey($googleApiKey): Address
+    public function setGoogleApiKey(#[\SensitiveParameter] $googleApiKey): Address
     {
         $this->googleApiKey = $googleApiKey;
 

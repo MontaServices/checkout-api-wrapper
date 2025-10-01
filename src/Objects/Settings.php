@@ -27,9 +27,11 @@ class Settings
     public function __construct(
         protected string $origin,
         protected string $user,
+        #[\SensitiveParameter]
         protected string $password,
         protected bool $pickupPointsEnabled = false,
         protected int $maxPickupPoints = 4,
+        #[\SensitiveParameter]
         protected string $googleKey = "",
         protected float $defaultCosts = 0,
         protected ?string $webshopLanguage = 'nl-NL',
@@ -84,7 +86,7 @@ class Settings
     /**
      * @param string $password
      */
-    public function setPassword(string $password): void
+    public function setPassword(#[\SensitiveParameter] string $password): void
     {
         $this->password = htmlspecialchars_decode($password);
     }
@@ -132,7 +134,7 @@ class Settings
     /**
      * @param string $googleKey
      */
-    public function setGoogleKey(string $googleKey): void
+    public function setGoogleKey(#[\SensitiveParameter] string $googleKey): void
     {
         $this->googleKey = $googleKey;
     }
