@@ -47,7 +47,7 @@ class Address
      */
     public static function convertAddress(array $address): WrapperAddress
     {
-        $countryCode = self::extractValue($address, ['countryCode', 'countryId']);
+        $countryCode = self::extractValue($address, ['country', 'countryCode', 'countryId']);
 
         // Normalize street
         $street = self::extractValue($address, ['street', 'fullStreet']);
@@ -65,13 +65,13 @@ class Address
             // When street is a string, presumably the housenr and addition were included.
             $houseNr = self::extractValue($address, ['houseNumber', 'houseNr'])
                 // or extract it from street
-                ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER) ?? '';
+                ?? self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER);
             $houseNrAddition = self::extractValue($address, ['houseNumberAddition', 'houseNumberExt', 'houseNrAddition', 'houseNrExt', 'addition']) ??
                 // if not passed directly, extract it from street
-                self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT) ?? '';
+                self::getAddressParts($street, self::RETURN_TYPE_HOUSE_NUMBER_EXT);
 
             // Street at the end because it replaces the variable
-            $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode) ?? $street;
+            $convertedStreet = self::getAddressParts($street, self::RETURN_TYPE_STREET, $countryCode);
             // Occasionally street is converted empty, so we use the original street
             // TODO fix regex for when that occurs
             if ($convertedStreet) {
