@@ -8,14 +8,15 @@ Instantiate and use the API like thus:
 
 ```php
 use Monta\CheckoutApiWrapper\Objects\Settings;
+
 /** @var Monta\CheckoutApiWrapper\Service\ApiFactory $apiFactory */
-$api = $this->apiFactory->createFromSettings(
-    settings: [
-        'origin' => 'yourwebshop.com',
-        'user' => 'userNameDev',
-        'password' => '$ecr3tpassw0rd!',
-        'googleKey' => 'AIzaPM6ZbzSu5whateverGooglekey',
-    ],
+$api = $this->apiFactory->create(
+    settings: new Settings(
+        origin: $this->montaConfiguration->getOrigin(),
+        user: $this->montaConfiguration->getUsername(),
+        password: $this->montaConfiguration->getPassword(),
+        googleKey: $this->montaConfiguration->getGoogleKey(),
+    ),
     systemInfo: [
         Settings::CORE_SOFTWARE => "Magento",
         Settings::CORE_VERSION => "2.4.8",

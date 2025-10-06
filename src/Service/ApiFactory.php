@@ -29,9 +29,11 @@ class ApiFactory
      * @param array $settings - Array with the exact named parameters of the Settings object
      * @param array $systemInfo - Pass along system info
      * @return Api
+     * @deprecated - Splatting array into constructor parameters is bad design
      */
     public function createFromSettings(array $settings = [], array $systemInfo = []): Api
     {
+        // Splat array into constructor parameters; Clever code but not future-proof
         return $this->create(new Settings(...$settings), $systemInfo);
     }
 }
