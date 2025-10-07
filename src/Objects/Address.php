@@ -8,16 +8,11 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Address
 {
-    /**
-     * @var float
-     * TODO can these be made protected?
-     */
-    public float $longitude = 0;
+    /** @var float $longitude */
+    protected float $longitude = 0.0;
 
-    /**
-     * @var float
-     */
-    public float $latitude = 0;
+    /** @var float $latitude */
+    protected float $latitude = 0.0;
 
     /**
      * @param string $street

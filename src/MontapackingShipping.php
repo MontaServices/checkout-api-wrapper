@@ -106,7 +106,7 @@ class MontapackingShipping
      * @throws GuzzleException
      * @deprecated - Use setAddressFromArray instead
      */
-    public function setAddress(
+    protected function setAddress(
         $street,
         $houseNumber,
         $houseNumberAddition,
@@ -162,7 +162,7 @@ class MontapackingShipping
      * @param float $price
      * @return void
      */
-    public function addProduct(
+    protected function addProduct(
         string $sku,
         int $quantity,
         int $lengthMm = 0,
@@ -331,7 +331,7 @@ class MontapackingShipping
      * @return mixed
      * @throws GuzzleException
      */
-    public function call(string $method, string $url = self::MONTA_REST_CHECKOUT_URI, array $parameters = [], string $httpMethod = "POST"): mixed
+    protected function call(string $method, string $url = self::MONTA_REST_CHECKOUT_URI, array $parameters = [], string $httpMethod = "POST"): mixed
     {
 //        $url = "https://host.docker.internal:52668/selfhosted/";
 
@@ -413,7 +413,8 @@ class MontapackingShipping
         return json_decode($response->getBody());
     }
 
-    /**
+    /** Get HTTP Response code of most recent
+     *
      * @return string
      */
     protected function getLastResponse(): string
@@ -445,7 +446,7 @@ class MontapackingShipping
     /**
      * @return Settings
      */
-    public function getSettings(): Settings
+    protected function getSettings(): Settings
     {
         return $this->settings;
     }

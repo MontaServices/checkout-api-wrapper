@@ -9,7 +9,11 @@ class OpeningTime
      * @param string $from
      * @param string $to
      */
-    public function __construct(public string $day, public string $from, public string $to)
+    public function __construct(
+        public string $day,
+        public string $from,
+        public string $to,
+    )
     {
     }
 
