@@ -315,11 +315,6 @@ class MontapackingShipping
             $response = $this->call(
                 method: "info",
                 url: self::MONTA_REST_INFO_URI,
-                // query parameters
-                parameters: [
-                    // TODO this value is irrelevant for the `info` endpoint, output is the identical regardless
-                    'origin' => $this->getSettings()->getOrigin()
-                ],
                 httpMethod: "GET",
             );
             // Succesful info test returns some Origins (based on existing Shopware test functionality)
