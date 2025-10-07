@@ -2,74 +2,14 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Abstract\SystemInfoInterface;
 use Monta\CheckoutApiWrapper\Traits\SystemInfo;
 
-class Settings implements SystemInfoInterface
+class Settings
 {
     use SystemInfo;
 
-    /**
-     * @var string
-     */
-    private string $origin;
-
-    /**
-     * @var string
-     */
-    private string $user;
-
-    /**
-     * @var string
-     */
-    private string $password;
-
-    /**
-     * @var bool
-     */
-    private bool $pickupPointsEnabled = false;
-
-    /**
-     * @var int
-     */
-    private int $maxPickupPoints = 4;
-
-    /**
-     * @var string
-     */
-    private string $googleKey;
-
-    /**
-     * @var float
-     */
-    private float $defaultCosts;
-
-    /**
-     * @var string
-     */
-    private string $webshopLanguage;
-
-    /**
-     * @var string
-     */
-    private string $currency;
-
-    /**
-     * @var bool
-     */
-    private bool $excludeShippingDiscount;
-
-    /**
-     * @var bool
-     */
-    private bool $showZeroCostsAsFree;
-
-    /**
-     * @var bool
-     */
-    private bool $hideDHLPackstations;
-
-    /**
+    /** Construct Settings object.
+     *
      * @param string $origin
      * @param string $user
      * @param string $password
@@ -82,21 +22,25 @@ class Settings implements SystemInfoInterface
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
      * @param bool $hideDHLPackstations
+     * @deprecated - Use the factory method instead
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false, bool $hideDHLPackstations = false)
+    public function __construct(
+        protected string $origin,
+        protected string $user,
+        #[\SensitiveParameter]
+        protected string $password,
+        protected bool $pickupPointsEnabled = false,
+        protected int $maxPickupPoints = 4,
+        #[\SensitiveParameter]
+        protected string $googleKey = "",
+        protected float $defaultCosts = 0,
+        protected ?string $webshopLanguage = 'nl-NL',
+        protected string $currency = '€',
+        protected bool $excludeShippingDiscount = false,
+        protected bool $showZeroCostsAsFree = false,
+        protected bool $hideDHLPackstations = false,
+    )
     {
-        $this->setOrigin($origin);
-        $this->setUser($user);
-        $this->setPassword($password);
-        $this->setPickupPointsEnabled($pickupPointsEnabled);
-        $this->setMaxPickupPoints($maxPickupPoints);
-        $this->setGoogleKey($googleKey);
-        $this->setDefaultCosts($defaultCosts);
-        $this->setCurrency($currency);
-        $this->setWebshopLanguage($webshopLanguage);
-        $this->setExcludeShippingDiscount($excludeShippingDiscount);
-        $this->setShowZeroCostsAsFree($showZeroCostsAsFree);
-        $this->setHideDHLPackstations($hideDHLPackstations);
     }
 
     /**
@@ -142,7 +86,7 @@ class Settings implements SystemInfoInterface
     /**
      * @param string $password
      */
-    public function setPassword(string $password): void
+    public function setPassword(#[\SensitiveParameter] string $password): void
     {
         $this->password = htmlspecialchars_decode($password);
     }
@@ -190,7 +134,7 @@ class Settings implements SystemInfoInterface
     /**
      * @param string $googleKey
      */
-    public function setGoogleKey(string $googleKey): void
+    public function setGoogleKey(#[\SensitiveParameter] string $googleKey): void
     {
         $this->googleKey = $googleKey;
     }

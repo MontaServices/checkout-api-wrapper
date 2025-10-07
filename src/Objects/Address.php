@@ -8,55 +8,11 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Address
 {
-    /**
-     * @var string
-     */
-    public string $street;
+    /** @var float $longitude */
+    protected float $longitude = 0.0;
 
-    /**
-     * @var string|null
-     */
-    public ?string $houseNumber;
-
-    /**
-     * @var string|null
-     */
-    public ?string $houseNumberAddition;
-
-    /**
-     * @var string
-     */
-    public string $postalCode;
-
-    /**
-     * @var string
-     */
-    public string $city;
-
-    /**
-     * @var string|null
-     */
-    public ?string $state;
-
-    /**
-     * @var string
-     */
-    public string $countryCode;
-
-    /**
-     * @var string|null
-     */
-    public ?string $googleApiKey = null;
-
-    /**
-     * @var float
-     */
-    public float $longitude;
-
-    /**
-     * @var float
-     */
-    public float $latitude;
+    /** @var float $latitude */
+    protected float $latitude = 0.0;
 
     /**
      * @param string $street
@@ -66,23 +22,27 @@ class Address
      * @param string $city
      * @param ?string $state
      * @param string $countryCode
-     * @param string $googleApiKey
+     * @param string|null $googleApiKey @deprecated - does not belong in Address object
      * @throws GuzzleException
      */
-    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, ?string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
+    public function __construct(
+        public string $street,
+        public ?string $houseNumber,
+        public ?string $houseNumberAddition,
+        public string $postalCode,
+        public string $city,
+        public ?string $state,
+        public string $countryCode,
+        #[\SensitiveParameter]
+        public ?string $googleApiKey = null,
+    )
     {
-        $this->setStreet($street);
-        $this->setHouseNumber($houseNumber);
-        $this->setHouseNumberAddition($houseNumberAddition);
-        $this->setPostalCode($postalCode);
-        $this->setCity($city);
-        $this->setState($state);
-        $this->setCountry($countryCode);
-
-        if ($googleApiKey != null) {
+        // Constructor sets elevated properties, this specific one has custom functionality in setter
+        if ($googleApiKey) {
             $this->setGoogleApiKey(trim($googleApiKey));
         }
 
+        // Calculate coordinates based on address using Google Maps API
         $this->setLongLat();
     }
 
@@ -94,7 +54,7 @@ class Address
     public function setLongLat(): void
     {
         // Get lat and long by address
-        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode; // Google HQ
+        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
         // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
         // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
         $prepAddr = $this->city . str_replace('  ', ' ', $address);
@@ -230,7 +190,7 @@ class Address
      *
      * @return $this
      */
-    public function setGoogleApiKey($googleApiKey): Address
+    public function setGoogleApiKey(#[\SensitiveParameter] $googleApiKey): Address
     {
         $this->googleApiKey = $googleApiKey;
 
