@@ -46,19 +46,15 @@ class MontapackingShipping
     public ?Address $address = null;
 
     /**
-     * MontapackingShipping constructor.
-     *
-     * @param Settings $settings
+     * @param Settings $settings - Set in constructor
      * @param string $language
      * @deprecated - Use ApiFactory method instead
      */
     public function __construct(
-        protected Settings $settings,
+        protected readonly Settings $settings,
         string $language)
     {
-        $settings->setWebshopLanguage($language);
-
-        $this->setSettings($settings);
+        $this->settings->setWebshopLanguage($language);
     }
 
     /**
@@ -452,14 +448,6 @@ class MontapackingShipping
     public function getSettings(): Settings
     {
         return $this->settings;
-    }
-
-    /**
-     * @param Settings $settings
-     */
-    public function setSettings(Settings $settings): void
-    {
-        $this->settings = $settings;
     }
 
     public function GetDebugPostBodyJson(): string
