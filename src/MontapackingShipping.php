@@ -15,10 +15,10 @@ use Monta\CheckoutApiWrapper\Service\Address as AddressHelper;
 
 class MontapackingShipping
 {
-    /** @var string - URI for deliveryoptions etc. */
+    /** @var string - URI of CheckoutService for deliveryoptions etc. */
     protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
 
-    /** @var string - URI for testing info TODO why are these separate? Tested both on both and they work either way */
+    /** @var string - URI of API for testing info TODO use gateway URI once CheckoutService adds /info endpoint */
     protected const string MONTA_REST_INFO_URI = 'https://api-v6.monta.nl/';
 
     /**
