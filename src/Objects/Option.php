@@ -10,7 +10,8 @@ class Option
      * @param float $price
      * @param string $priceFormatted
      */
-    public function __construct(public string $code,
+    public function __construct(
+        public string $code,
         public string $description,
         public float $price,
         public string $priceFormatted,

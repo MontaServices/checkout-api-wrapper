@@ -401,6 +401,7 @@ class PickupPoint
 
     /**
      * @return string
+     * @deprecated - No usage in wrapper or Magento module
      */
     public function get_shipper_options_with_value(): string
     {
@@ -409,6 +410,7 @@ class PickupPoint
 
     /**
      * @param string $shipperOptionsWithValue
+     * @deprecated - No usage in wrapper or Magento module
      */
     public function set_shipper_options_with_value(string $shipperOptionsWithValue): void
     {
