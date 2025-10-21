@@ -88,7 +88,6 @@ class MontapackingShipping
      *
      * @param array $address
      * @return void
-     * @throws GuzzleException
      */
     public function setAddressFromArray(array $address): void
     {
@@ -103,7 +102,6 @@ class MontapackingShipping
      * @param $city
      * @param $state
      * @param $countryCode
-     * @throws GuzzleException
      * @deprecated - Use setAddressFromArray instead
      */
     protected function setAddress(
@@ -318,7 +316,7 @@ class MontapackingShipping
                 $success = true;
             }
         } catch (GuzzleException $e) {
-            // TODO log erorr, success remains false.
+            // Catch and ignore
         }
         return $success;
     }

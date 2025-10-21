@@ -2,7 +2,6 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -23,7 +22,6 @@ class Address
      * @param ?string $state
      * @param string $countryCode
      * @param string|null $googleApiKey @deprecated - does not belong in Address object
-     * @throws GuzzleException
      */
     public function __construct(
         public string $street,
@@ -49,7 +47,6 @@ class Address
     /** Geocode address to validate and retrieve coordinates
      *
      * @return void
-     * @throws GuzzleException
      */
     public function setLongLat(): void
     {
@@ -66,6 +63,8 @@ class Address
                 'key' => $this->googleApiKey,
             ]);
 
+        $latitude = 0;
+        $longitude = 0;
         try {
             $client = new Client([
                 'timeout' => 1.0
@@ -77,21 +76,15 @@ class Address
 
             $result = end($output->results);
 
+            // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
             if (isset($result->geometry)) {
-                $latitude = $result->geometry->location->lat;
-                $longitude = $result->geometry->location->lng;
-            } else {
-                // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
-                $latitude = 0;
-                $longitude = 0;
+                $this->latitude = $result->geometry->location->lat;
+                $this->longitude = $result->geometry->location->lng;
             }
-        } catch (Exception) {
-            $latitude = 0;
-            $longitude = 0;
+        } catch (GuzzleException $ge) {
+        } catch (\Exception $e) {
+            // Catch and ignore Exceptions, coordinates remain zero
         }
-
-        $this->longitude = $longitude;
-        $this->latitude = $latitude;
     }
 
     /**

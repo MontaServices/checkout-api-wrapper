@@ -43,7 +43,6 @@ class Address
      *
      * @param array $address
      * @return WrapperAddress
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function convertAddress(array $address): WrapperAddress
     {
