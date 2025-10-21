@@ -62,9 +62,6 @@ class PickupPoint
         public array $openingTimes,
         public string $shipperOptionsWithValue)
     {
-        // Properties are set in constructor, this setter has custom functionality
-        $this->setOpeningTimes($openingTimes);
-
         // Format address
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
     }
@@ -386,16 +383,7 @@ class PickupPoint
      */
     public function setOpeningTimes(array $openingTimes): void
     {
-        $list = [];
-        foreach ($openingTimes as $option) {
-            $list[] = new OpeningTime(
-                $option->day,
-                $option->from,
-                $option->to,
-            );
-        }
-
-        $this->openingTimes = $list;
+        $this->openingTimes = $openingTimes;
     }
 
     /**
