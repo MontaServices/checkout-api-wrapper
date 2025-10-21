@@ -28,7 +28,6 @@ class Option
 
     /**
      * @param $priceFormatted
-     * @return void
      */
     public function setPriceFormatted($priceFormatted): void
     {
@@ -45,7 +44,6 @@ class Option
 
     /**
      * @param string $code
-     * @return void
      */
     public function setCode(string $code): void
     {
@@ -62,7 +60,6 @@ class Option
 
     /**
      * @param string $description
-     * @return void
      */
     public function setDescription(string $description): void
     {
@@ -79,7 +76,6 @@ class Option
 
     /**
      * @param $price
-     * @return void
      */
     public function setPrice($price): void
     {

@@ -9,11 +9,11 @@ class TimeFrame
 {
     /** Constructor with promoted properties
      *
-     * @param ?string $date
-     * @param ?string $day
-     * @param ?string $month
-     * @param ?string $dateFormatted
-     * @param ?string $dateOnlyFormatted
+     * @param string|null $date
+     * @param string|null $day
+     * @param string|null $month
+     * @param string|null $dateFormatted
+     * @param string|null $dateOnlyFormatted
      * @param array $options
      */
     public function __construct(
@@ -38,7 +38,7 @@ class TimeFrame
     }
 
     /**
-     * @param ?string $date
+     * @param string|null $date
      */
     public function setDate(?string $date): void
     {
@@ -54,7 +54,7 @@ class TimeFrame
     }
 
     /**
-     * @param ?string $day
+     * @param string|null $day
      */
     public function setDay(?string $day): void
     {
@@ -70,7 +70,7 @@ class TimeFrame
     }
 
     /**
-     * @param ?string $dateFormatted
+     * @param string|null $dateFormatted
      */
     public function setDateFormatted(?string $dateFormatted): void
     {
@@ -78,7 +78,7 @@ class TimeFrame
     }
 
     /**
-     * @return ?string
+     * @return string|null
      */
     public function getDateOnlyFormatted(): ?string
     {
@@ -86,7 +86,7 @@ class TimeFrame
     }
 
     /**
-     * @param ?string $dateOnlyFormatted
+     * @param string|null $dateOnlyFormatted
      */
     public function setDateOnlyFormatted(?string $dateOnlyFormatted): void
     {
@@ -102,17 +102,22 @@ class TimeFrame
     }
 
     /**
-     * @param ?string $month
+     * @param string|null $month
      */
     public function setMonth(?string $month): void
     {
         $this->month = $month;
     }
 
+    /**
+     * @param array $options
+     * @return $this
+     */
     public function setOptions(array $options): TimeFrame
     {
         $list = null;
 
+        // TODO is all this necessary? $options is already set as promoted property
         foreach ($options as $onr => $option) {
             $list[$onr] = new ShippingOption(
                 $option->shipper,

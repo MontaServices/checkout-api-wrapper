@@ -36,7 +36,7 @@ class Order
     }
 
     /**
-     * @return array
+     * @return float[] - Keyed on type
      */
     public function toArray(): array
     {

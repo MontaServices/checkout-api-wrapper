@@ -23,17 +23,17 @@ class PickupPoint
      * @param float $distanceMeters
      * @param string $company
      * @param string $street
-     * @param ?string $houseNumber
+     * @param string|null $houseNumber
      * @param string $postalCode
-     * @param ?string $district
+     * @param string|null $district
      * @param string $city
-     * @param ?string $state
+     * @param string|null $state
      * @param string $countryCode
-     * @param ?string $addressRemark
-     * @param ?string $phone
+     * @param string|null $addressRemark
+     * @param string|null $phone
      * @param float $longitude
      * @param float $latitude
-     * @param ?string $imageUrl
+     * @param string|null $imageUrl
      * @param float $price
      * @param string $priceFormatted
      * @param array $openingTimes
@@ -203,7 +203,7 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $houseNumber
+     * @param string|null $houseNumber
      */
     public function setHouseNumber(?string $houseNumber): void
     {
@@ -235,7 +235,7 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $district
+     * @param string|null $district
      */
     public function setDistrict(?string $district): void
     {
@@ -267,7 +267,7 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $state
+     * @param string|null $state
      */
     public function setState(?string $state): void
     {
@@ -299,7 +299,7 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $addressRemark
+     * @param string|null $addressRemark
      */
     public function setAddressRemark(?string $addressRemark): void
     {
@@ -315,7 +315,7 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $phone
+     * @param string|null $phone
      */
     public function setPhone(?string $phone): void
     {
@@ -363,7 +363,7 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $imageUrl
+     * @param string|null $imageUrl
      */
     public function setImageUrl(?string $imageUrl): void
     {

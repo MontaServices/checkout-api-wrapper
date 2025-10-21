@@ -87,7 +87,6 @@ class MontapackingShipping
     /** Generic address setter from array
      *
      * @param array $address
-     * @return void
      */
     public function setAddressFromArray(array $address): void
     {
@@ -311,7 +310,7 @@ class MontapackingShipping
                 url: self::MONTA_REST_INFO_URI,
                 httpMethod: "GET",
             );
-            // Succesful info test returns some Origins (based on existing Shopware test functionality)
+            // Successful info test returns some Origins (according to donor Shopware test functionality)
             if ($this->getLastResponse() == 200 && !empty($response->Origins)) {
                 $success = true;
             }

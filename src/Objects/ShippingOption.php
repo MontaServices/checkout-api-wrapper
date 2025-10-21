@@ -13,8 +13,8 @@ class ShippingOption
      * @param string $code
      * @param string $displayNameShort
      * @param string $displayName
-     * @param ?string $from
-     * @param ?string $to
+     * @param string|null $from
+     * @param string|null $to
      * @param string $deliveryType
      * @param string $shippingType
      * @param float $price
@@ -76,8 +76,8 @@ class ShippingOption
     }
 
     /**
-     * @param ?string $from
-     * @return ShippingOption
+     * @param string|null $from
+     * @return $this
      */
     public function setFrom(?string $from): ShippingOption
     {
@@ -94,7 +94,7 @@ class ShippingOption
     }
 
     /**
-     * @param ?string $to
+     * @param string|null $to
      * @return ShippingOption
      */
     public function setTo(?string $to): ShippingOption

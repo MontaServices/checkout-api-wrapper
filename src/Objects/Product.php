@@ -27,7 +27,6 @@ class Product
 
     /**
      * @param $price
-     *
      * @return $this
      */
     public function setPrice($price): Product
@@ -38,7 +37,6 @@ class Product
 
     /**
      * @param $sku
-     *
      * @return $this
      */
     public function setSku($sku): Product
@@ -49,7 +47,6 @@ class Product
 
     /**
      * @param $length
-     *
      * @return $this
      */
     public function setLength($length): Product

@@ -19,7 +19,7 @@ class Address
      * @param string|null $houseNumberAddition
      * @param string $postalCode
      * @param string $city
-     * @param ?string $state
+     * @param string|null $state
      * @param string $countryCode
      * @param string|null $googleApiKey @deprecated - does not belong in Address object
      */
@@ -46,7 +46,6 @@ class Address
 
     /** Geocode address to validate and retrieve coordinates
      *
-     * @return void
      */
     public function setLongLat(): void
     {
