@@ -12,7 +12,11 @@ class PickupPoint
 
     public ?string $imageName = null;
 
-    /**
+    /** @var string|null $formattedAddress - Display value for address */
+    public ?string $formattedAddress = null;
+
+    /** Properties must be public so they are added to JSON object
+     *
      * @param string $displayName
      * @param string $shipperCode
      * @param string $code
@@ -60,6 +64,9 @@ class PickupPoint
     {
         // Properties are set in constructor, this setter has custom functionality
         $this->setOpeningTimes($openingTimes);
+
+        // Format address
+        $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
     }
 
     /**
