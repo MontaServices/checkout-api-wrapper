@@ -21,7 +21,7 @@ class Address
      * @param string $city
      * @param string|null $state
      * @param string $countryCode
-     * @param string|null $googleApiKey @deprecated - does not belong in Address object
+     * @param string|null $googleApiKey @deprecated - duplicate with Settings.googleKey property
      */
     public function __construct(
         public string $street,
@@ -36,9 +36,7 @@ class Address
     )
     {
         // Constructor sets elevated properties, this specific one has custom functionality in setter
-        if ($googleApiKey) {
-            $this->setGoogleApiKey(trim($googleApiKey));
-        }
+        $this->setGoogleApiKey($googleApiKey);
 
         // Calculate coordinates based on address using Google Maps API
         $this->setLongLat();
@@ -171,13 +169,15 @@ class Address
     }
 
     /**
-     * @param $googleApiKey
+     * @param string|null $googleApiKey
      *
      * @return $this
      */
-    public function setGoogleApiKey(#[\SensitiveParameter] $googleApiKey): Address
+    public function setGoogleApiKey(#[\SensitiveParameter] ?string $googleApiKey): Address
     {
-        $this->googleApiKey = $googleApiKey;
+        if ($googleApiKey) {
+            $this->googleApiKey = trim($googleApiKey);
+        }
 
         return $this;
     }
