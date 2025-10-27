@@ -53,15 +53,12 @@ class Address
         // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
         $prepAddr = $this->city . str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
-        // TODO deprecated, use maps.googleapis.com which is the V3 standard
-        $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
+        $google_maps_url = "https://maps.googleapis.com/maps/api/geocode/json?"
+            . http_build_query([
                 'address' => $prepAddr,
                 'sensor' => false,
                 'key' => $this->googleApiKey,
             ]);
-
-        $latitude = 0;
-        $longitude = 0;
         try {
             $client = new Client([
                 'timeout' => 1.0
@@ -71,6 +68,7 @@ class Address
 
             $output = json_decode($response->getBody());
 
+            // Pluck single result from array of one
             $result = end($output->results);
 
             // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
