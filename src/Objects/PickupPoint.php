@@ -15,6 +15,9 @@ class PickupPoint
     /** @var string|null $formattedAddress - Display value for address */
     public ?string $formattedAddress = null;
 
+    /** @var array $position - Format according to Google Maps API */
+    public array $position = [];
+
     /** Properties must be public so they are added to JSON object
      *
      * @param string $displayName
@@ -44,6 +47,7 @@ class PickupPoint
         public string $shipperCode,
         public string $code,
         public float $distanceMeters,
+        // TODO replace all these values with simply an Address object
         public string $company,
         public string $street,
         public ?string $houseNumber,
@@ -64,6 +68,12 @@ class PickupPoint
     {
         // Format address
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
+
+        // Fill this property to use as Marker in Google Maps API
+        $this->position = [
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+        ];
     }
 
     /**
