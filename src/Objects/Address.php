@@ -177,6 +177,9 @@ class Address
             $this->googleApiKey = trim($googleApiKey);
         }
 
+        // After setting Google Key, coordinates can be calculated
+        $this->setLongLat();
+
         return $this;
     }
 
