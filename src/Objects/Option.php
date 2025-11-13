@@ -9,14 +9,26 @@ class Option
      * @param string $description
      * @param float|null $price
      * @param string|null $priceFormatted
+     * @param array $additionalData
      */
     public function __construct(
         public string $code,
         public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
+        // The entire rest of the data
+        protected array $additionalData = [],
     )
     {
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    protected function getAdditionalData(string $key): mixed
+    {
+        return $this->additionalData[$key] ?? null;
     }
 
     /**

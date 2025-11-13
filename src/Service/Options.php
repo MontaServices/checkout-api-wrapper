@@ -23,7 +23,9 @@ class Options
             $converted,
             get_class_vars(Option::class)
         );
-        // TODO also include shipper options in calculations
+        // Keep the entire data string in $data property (splats into constructor)
+        $props['additionalData'] = $converted;
+
         return !empty($props) ? new Option(...$props) : null;
     }
 }
