@@ -107,4 +107,33 @@ class Option
 
         return $option;
     }
+
+    /** Convert selected Option to JSON in proper structure.
+     * Output format determined by old Montapacking module for backwards compatibility
+     *
+     * @return string - JSON string with all it's data ready for DB writing or API output
+     */
+    public function toJson(): string
+    {
+        $data = $this->toArray();
+        if ($this->additionalData) {
+            $data += [
+                'type' => 'delivery', // TODO determine type somehow
+                'details' => [
+                    'short_code' => $this->getAdditionalData('shipper'),
+                    'options' => [], // TODO shipper options
+                ],
+                'additional_info' => [
+                    [
+                        'code' => $this->getCode(),
+                        'name' => $this->getAdditionalData('shipper'),
+                        'date' => date("Y-m-d H:i:s"), // TODO get desired delivery datetime
+                        'time' => date("H:i - H:i"), // TODO desired delivery time slot
+                        'price' => $this->getPrice(), // TODO shipper price only
+                        'total_price' => $this->getPrice(), // TODO shipper price + shipper options
+                    ]
+                ]];
+        }
+        return json_encode($data);
+    }
 }
