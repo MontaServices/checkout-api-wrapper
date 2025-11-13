@@ -115,25 +115,21 @@ class Option
      */
     public function toJson(): string
     {
-        $data = $this->toArray();
-        if ($this->additionalData) {
-            $data += [
-                'type' => 'delivery', // TODO determine type somehow
-                'details' => [
-                    'short_code' => $this->getAdditionalData('shipper'),
-                    'options' => [], // TODO shipper options
-                ],
-                'additional_info' => [
-                    [
-                        'code' => $this->getCode(),
-                        'name' => $this->getAdditionalData('shipper'),
-                        'date' => date("Y-m-d H:i:s"), // TODO get desired delivery datetime
-                        'time' => date("H:i - H:i"), // TODO desired delivery time slot
-                        'price' => $this->getPrice(), // TODO shipper price only
-                        'total_price' => $this->getPrice(), // TODO shipper price + shipper options
-                    ]
-                ]];
-        }
-        return json_encode($data);
+        return json_encode([
+            'type' => 'delivery', // TODO determine type somehow
+            'details' => [
+                'short_code' => $this->getAdditionalData('shipper'),
+                'options' => [], // TODO shipper options
+            ],
+            'additional_info' => [
+                [
+                    'code' => $this->getCode(),
+                    'name' => $this->getAdditionalData('shipper'),
+                    'date' => date("Y-m-d H:i:s"), // TODO get desired delivery datetime
+                    'time' => date("H:i - H:i"), // TODO desired delivery time slot
+                    'price' => $this->getPrice(), // TODO shipper price only
+                    'total_price' => $this->getPrice(), // TODO shipper price + shipper options
+                ]
+            ]]);
     }
 }
