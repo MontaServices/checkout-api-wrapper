@@ -7,14 +7,14 @@ class Option
     /**
      * @param string $code
      * @param string $description
-     * @param float $price
-     * @param string $priceFormatted
+     * @param float|null $price
+     * @param string|null $priceFormatted
      */
     public function __construct(
         public string $code,
-        public string $description,
-        public float $price,
-        public string $priceFormatted,
+        public string $description = "",
+        public ?float $price = null,
+        public ?string $priceFormatted = null,
     )
     {
     }
