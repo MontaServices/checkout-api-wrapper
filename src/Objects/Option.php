@@ -134,31 +134,29 @@ class Option
                 break;
             /** Pickup specific output */
             case self::PICKUP_TYPE:
-                // TODO replace all this with constructing a PickupPoint object and use getters
-                $data['details']['short_code'] = $this->getAdditionalData('shipperCode');
+                // Construct object back, splat all properties into constructor
+                // This is possible because $additionalData started as a PickupPoint, encoded for frontend.
+                // Then returned from frontend to Quote, where it was saved as JSON string.
+                // Then decoded back to array in Monta\CheckoutApiWrapper\Service\Options::convertOption()
+                // Which could return anything but at this point we know it was a Pickup option.
+                $pickup = new PickupPoint(...$this->additionalData);
+                $data['details']['short_code'] = $pickup->getShipperCode();
                 // Pickup point has address in additional data
                 // Old module converted each of these fields in the frontend
-                $mapAdditionalData = [
-                    'city' => 'city',
-                    'code_pickup' => 'shipperOptionsWithValue',
-                    'company' => 'company',
-                    'country' => 'countryCode',
-                    'housenumber' => 'houseNumber',
-                    'postal' => 'postalCode',
-                    'shipper' => 'shipperCode',
-                    'street' => 'street',
+                $additionalInfo += [
+                    'city' => $pickup->getCity(),
+                    'code_pickup' => $pickup->get_shipper_options_with_value(),
+                    'company' => $pickup->getCompany(),
+                    'country' => $pickup->getCountryCode(),
+                    'housenumber' => $pickup->getHouseNumber(),
+                    'postal' => $pickup->getPostalCode(),
+                    'shipper' => $pickup->getShipperCode(),
+                    'street' => $pickup->getStreet(),
+                    'description' => $pickup->getDescription(),
                 ];
-                // Fields in object/additional_data were set by REST objects
-                foreach ($mapAdditionalData as $jsonField => $objectField) {
-                    $additionalInfo[$jsonField] = $this->getAdditionalData($objectField);
-                }
-                // Description has custom format for these
-                $additionalInfo['description'] = $this->getAdditionalData('displayName')
-                    // distance meters is already in kilometers here
-                    . ' | ' . $this->getAdditionalData('distanceMeters') . 'km';
         }
 
-        // Put together all the data
+        // Put together all the data, just as the old module did from frontend
         $data = [
             'type' => $type,
             'details' => [
@@ -168,6 +166,7 @@ class Option
             // This is an array of one JSON object
             'additional_info' => [$additionalInfo],
         ];
+
         return json_encode($data);
     }
 

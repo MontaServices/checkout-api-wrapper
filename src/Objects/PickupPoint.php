@@ -10,14 +10,6 @@ class PickupPoint
 {
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
 
-    public ?string $imageName = null;
-
-    /** @var string|null $formattedAddress - Display value for address */
-    public ?string $formattedAddress = null;
-
-    /** @var array $position - Format according to Google Maps API */
-    public array $position = [];
-
     /** Properties must be public so they are added to JSON object
      *
      * @param string $displayName
@@ -41,6 +33,9 @@ class PickupPoint
      * @param string $priceFormatted
      * @param array $openingTimes
      * @param string $shipperOptionsWithValue
+     * @param string|null $imageName
+     * @param string|null $formattedAddress - Display value for address
+     * @param array $position - Format according to Google Maps API
      */
     public function __construct(
         public string $displayName,
@@ -64,9 +59,12 @@ class PickupPoint
         public float $price,
         public string $priceFormatted,
         public array $openingTimes,
-        public string $shipperOptionsWithValue)
+        public string $shipperOptionsWithValue,
+        public ?string $imageName = null,
+        public ?string $formattedAddress = null,
+        public array $position = [])
     {
-        // Format address
+        // Format address for display on frontend
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
 
         // Fill this property to use as Marker in Google Maps API
@@ -411,7 +409,16 @@ class PickupPoint
 
     /**
      * @return string
-     * @deprecated - No usage in wrapper or Magento module
+     */
+    public function getDescription(): string
+    {
+        return $this->getDisplayName()
+            // name is misleading, distance here is kilometers
+            . ' | ' . $this->getDistanceMeters() . 'km';
+    }
+
+    /** TODO rename to a proper camelCase name
+     * @return string
      */
     public function get_shipper_options_with_value(): string
     {
