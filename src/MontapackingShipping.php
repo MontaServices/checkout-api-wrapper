@@ -345,7 +345,7 @@ class MontapackingShipping
         ]);
 
         $method = strtolower($method);
-        $jsonRequest = $this->GetDebugPostBodyJson(encode: false);
+        $jsonRequest = $this->getJsonRequest();
 
         $response = null;
         $result = (object)[];
@@ -422,12 +422,21 @@ class MontapackingShipping
         return $this->settings;
     }
 
-    /** Pack all data into JSON request body
-     * TODO method is no longer only for Debugging, rename
-     * @param bool $encode - Original method encoded into JSON but new usage does it later
-     * @return string|array - Encoded JSON string or associative array
+    /** Backwards compatible alias for that method
+     *
+     * @return string
+     * @deprecated - TODO Is this ever used??
      */
-    public function GetDebugPostBodyJson(bool $encode = true): string|array
+    public function GetDebugPostBodyJson()
+    {
+        return json_encode($this->getJsonRequest());
+    }
+
+    /** Pack all data into JSON request body
+     *
+     * @return array - Encoded JSON string or associative array
+     */
+    protected function getJsonRequest(): array
     {
         $jsonRequest = [
             'userName' => $this->getSettings()->getUser(),
@@ -462,6 +471,6 @@ class MontapackingShipping
             $jsonRequest['productsOnStock'] = true;
         }
 
-        return $encode ? json_encode($jsonRequest) : $jsonRequest;
+        return $jsonRequest;
     }
 }
