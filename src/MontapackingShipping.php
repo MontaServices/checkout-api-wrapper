@@ -345,36 +345,7 @@ class MontapackingShipping
         ]);
 
         $method = strtolower($method);
-        $jsonRequest = [
-            'userName' => $this->getSettings()->getUser(),
-            'password' => $this->getSettings()->getPassword(),
-            'channel' => $this->getSettings()->getOrigin(),
-            'webshopLanguage' => $this->getSettings()->getWebshopLanguage(),
-            'googleAPIKey' => $this->getSettings()->getGoogleKey(),
-            'usePickupPoints' => $this->getSettings()->getIsPickupPointsEnabled(),
-            'useShipperOptions' => true,
-            'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
-            'defaultCosts' => $this->getSettings()->getDefaultCosts(),
-            'products' => $this->products,
-            'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
-            Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
-            'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
-            'currencySymbol' => $this->getSettings()->getCurrency(),
-            'hideDHLPackstations' => $this->getSettings()->getHideDHLPackstations()
-        ];
-        // Add address to request when set
-        if ($this->address) {
-            // Merge arrays, give preference to the actual address object
-            $jsonRequest = array_merge($jsonRequest, [
-                'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
-                'city' => $this->address->city,
-                'postalcode' => $this->address->postalCode,
-                'countrycode' => $this->address->countryCode,
-            ]);
-        }
-        if ($this->getOnStock()) {
-            $jsonRequest['productsOnStock'] = true;
-        }
+        $jsonRequest = $this->GetDebugPostBodyJson(encode: false);
 
         $response = null;
         $result = (object)[];
@@ -451,7 +422,12 @@ class MontapackingShipping
         return $this->settings;
     }
 
-    public function GetDebugPostBodyJson(): string
+    /** Pack all data into JSON request body
+     * TODO method is no longer only for Debugging, rename
+     * @param bool $encode - Original method encoded into JSON but new usage does it later
+     * @return string|array - Encoded JSON string or associative array
+     */
+    public function GetDebugPostBodyJson(bool $encode = true): string|array
     {
         $jsonRequest = [
             'userName' => $this->getSettings()->getUser(),
@@ -463,17 +439,29 @@ class MontapackingShipping
             'useShipperOptions' => true,
             'numberOfPickupPoints' => $this->getSettings()->getMaxPickupPoints(),
             'defaultCosts' => $this->getSettings()->getDefaultCosts(),
-            'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
-            'city' => $this->address->city,
-            'postalcode' => $this->address->postalCode,
-            'countrycode' => $this->address->countryCode,
             'products' => $this->products,
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency(),
-            'hideDHLPackstations ' => $this->getSettings()->getHideDHLPackstations()
+            'hideDHLPackstations ' => $this->getSettings()->getHideDHLPackstations(),
+            Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
         ];
 
-        return json_encode($jsonRequest);
+        // Add address to request when set
+        if ($this->address) {
+            // Merge arrays, give preference to the actual address object
+            $jsonRequest = array_merge($jsonRequest, [
+                'streetaddress' => $this->address->street . ' ' . $this->address->houseNumber . $this->address->houseNumberAddition,
+                'city' => $this->address->city,
+                'postalcode' => $this->address->postalCode,
+                'countrycode' => $this->address->countryCode,
+            ]);
+        }
+
+        if ($this->getOnStock()) {
+            $jsonRequest['productsOnStock'] = true;
+        }
+
+        return $encode ? json_encode($jsonRequest) : $jsonRequest;
     }
 }
