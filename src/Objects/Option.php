@@ -123,9 +123,9 @@ class Option extends Objectable
             /** Pickup specific output */
             case self::PICKUP_TYPE:
                 // Construct object back, splat all properties into constructor
-                // This is possible because $additionalData started as a PickupPoint, encoded for frontend.
+                // This is possible because $additionalData started as a PickupPoint, encoded to JSON for frontend.
                 // Then returned from frontend to Quote, where it was saved as JSON string.
-                // Then decoded back to array in Monta\CheckoutApiWrapper\Service\Options::convertOption()
+                // Then decoded back to array in Monta\CheckoutApiWrapper\Objects\Objectable::constructFromJson()
                 // Which could return anything but at this point we know it was a Pickup option.
                 $pickup = new PickupPoint(...$this->additionalData);
                 $data['details']['short_code'] = $pickup->getShipperCode();
