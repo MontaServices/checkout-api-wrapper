@@ -4,12 +4,9 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Monta\CheckoutApiWrapper\Traits\Objectable;
 
-class Address
+class Address extends Objectable
 {
-    use Objectable;
-
     /** @var float $longitude - Public to use on frontend */
     public float $longitude = 0.0;
 

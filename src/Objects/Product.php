@@ -2,11 +2,8 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Traits\Objectable;
-
-class Product
+class Product extends Objectable
 {
-    use Objectable;
 
     /**
      * @param string $sku

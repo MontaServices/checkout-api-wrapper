@@ -4,11 +4,9 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
-use Monta\CheckoutApiWrapper\Traits\Objectable;
 
-class ShippingOption
+class ShippingOption extends Objectable
 {
-    use Objectable;
 
     /** Constructor with promoted properties
      *

@@ -4,11 +4,9 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
-use Monta\CheckoutApiWrapper\Traits\Objectable;
 
-class TimeFrame
+class TimeFrame extends Objectable
 {
-    use Objectable;
 
     /** Constructor with promoted properties
      *

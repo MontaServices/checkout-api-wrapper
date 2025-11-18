@@ -2,7 +2,7 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-class OpeningTime
+class OpeningTime extends Objectable
 {
     /**
      * @param string $day

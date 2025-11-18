@@ -2,15 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Traits\Objectable;
-
 /**
  * Class PickupPoint
  *
  */
-class PickupPoint
+class PickupPoint extends Objectable
 {
-    use Objectable;
 
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
 

@@ -2,11 +2,8 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Traits\Objectable;
-
-class Option
+class Option extends Objectable
 {
-    use Objectable;
 
     protected const string DELIVERY_TYPE = 'delivery';
 
