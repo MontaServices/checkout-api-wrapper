@@ -197,97 +197,35 @@ class MontapackingShipping
                 $this->getSettings()->setMaxPickupPoints(0);
             }
 
+            /** @var object $result - Call REST API, get arrays of stdClass objects */
             $result = $this->call('shippingrates');
 
             if (isset($result->timeframes)) {
-                foreach ($result->timeframes as $timeframe) {
-                    $timeframes[] = new TimeFrame(
-                        $timeframe->date,
-                        $timeframe->day,
-                        $timeframe->month,
-                        $timeframe->dateFormatted,
-                        $timeframe->dateOnlyFormatted,
-                        $timeframe->ShippingOptions ?? $timeframe->options ?? []
-                    );
+                foreach ($result->timeframes as $stdTimeframe) {
+                    // Convert stdClass into TimeFrame class
+                    $timeframe = TimeFrame::construct((array)$stdTimeframe);
+                    // Options in result might be in different keys, try both
+                    $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
+                    $timeframes[] = $timeframe;
                 }
             }
 
             if (isset($result->pickup_locations)) {
-                foreach ($result->pickup_locations as $pickup) {
-                    $distance = $pickup->distanceMeters;
-                    // Recompute meters into kilometers
+                foreach ($result->pickup_locations as $stdPickup) {
                     if ($computeKm) {
-                        $distance = round(num: $distance / 1000, precision: 2);
+                        // Recompute meters into kilometers
+                        $stdPickup->distanceMeters = round(num: $stdPickup->distanceMeters / 1000, precision: 2);
                     }
-                    $pickups[] = new PickupPoint(
-                        $pickup->displayName,
-                        $pickup->shipperCode,
-                        $pickup->code,
-                        $distance,
-                        $pickup->company,
-                        $pickup->street,
-                        $pickup->houseNumber,
-                        $pickup->postalCode,
-                        $pickup->district,
-                        $pickup->city,
-                        $pickup->state,
-                        $pickup->countryCode,
-                        $pickup->addressRemark,
-                        $pickup->phone,
-                        $pickup->longitude,
-                        $pickup->latitude,
-                        $pickup->imageUrl,
-                        $pickup->price,
-                        $pickup->priceFormatted,
-                        $pickup->openingTimes,
-                        $pickup->shipperOptionsWithValue
-                    );
+                    $pickups[] = PickupPoint::construct((array)$stdPickup);
                 }
             }
 
             if (isset($result->standard_shipper)) {
-                $standardShipper = new ShippingOption(
-                    $result->standard_shipper->shipper,
-                    $result->standard_shipper->code,
-                    $result->standard_shipper->displayNameShort,
-                    $result->standard_shipper->displayName,
-                    $result->standard_shipper->from,
-                    $result->standard_shipper->to,
-                    $result->standard_shipper->deliveryType,
-                    $result->standard_shipper->shippingType,
-                    $result->standard_shipper->price,
-                    $result->standard_shipper->priceFormatted,
-                    $result->standard_shipper->discountPercentage,
-                    $result->standard_shipper->isPreferred,
-                    $result->standard_shipper->isSustainable,
-                    $result->standard_shipper->deliveryOptions,
-                    $result->standard_shipper->optionCodes,
-                    $result->standard_shipper->shipperCodes
-                );
+                $standardShipper = ShippingOption::construct((array)$result->standard_shipper);
             }
 
             if (isset($result->store_location)) {
-                $storeLocation = new PickupPoint($result->store_location->displayName,
-                    $result->store_location->shipperCode,
-                    $result->store_location->code,
-                    $result->store_location->distanceMeters,
-                    $result->store_location->company,
-                    $result->store_location->street,
-                    $result->store_location->houseNumber,
-                    $result->store_location->postalCode,
-                    $result->store_location->district,
-                    $result->store_location->city, $result->store_location->state,
-                    $result->store_location->countryCode,
-                    $result->store_location->addressRemark,
-                    $result->store_location->phone,
-                    $result->store_location->longitude,
-                    $result->store_location->latitude,
-                    $result->store_location->imageUrl,
-                    $result->store_location->price,
-                    $result->store_location->priceFormatted,
-                    $result->store_location->openingTimes,
-                    $result->store_location->shipperOptionsWithValue
-                );
+                $storeLocation = PickupPoint::construct((array)$result->store_location);
             }
         }
 
@@ -369,13 +307,12 @@ class MontapackingShipping
         } catch (\Exception $exception) {
             $this->lastResponseCode = 404;
             if ($response != null) {
-                // Create abstract logger here later that logs to local file storage
+                // TODO how can CheckoutApiWrapper log when it has no DB and no filesystem?
                 $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
             }
         }
 
         if ($response == null || $response->getStatusCode() != 200) {
-//            $context = ['source' => 'Montapacking Checkout'];
             $result->timeframes = [self::getFallbackTimeframe()];
 
             return $result;

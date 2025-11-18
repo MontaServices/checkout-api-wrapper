@@ -316,7 +316,8 @@ class ShippingOption extends Objectable
     {
         $list = [];
         foreach ($deliveryOptions as $option) {
-            $list[] = new Option($option->code, $option->description, $option->price, $option->priceFormatted);
+            // Convert stdClass into class
+            $list[] = Option::construct((array)$option);
         }
 
         $this->deliveryOptions = $list;

@@ -24,7 +24,7 @@ class TimeFrame extends Objectable
         public ?string $month = null,
         public ?string $dateFormatted = null,
         public ?string $dateOnlyFormatted = null,
-        public array $options = [],
+        public ?array $options = [],
     )
     {
         // Properties are set in constructor, this setter has custom functionality
@@ -119,26 +119,9 @@ class TimeFrame extends Objectable
     {
         $list = null;
 
-        // TODO is all this necessary? $options is already set as promoted property
         foreach ($options as $onr => $option) {
-            $list[$onr] = new ShippingOption(
-                $option->shipper,
-                $option->code,
-                $option->displayNameShort,
-                $option->displayName,
-                $option->from,
-                $option->to,
-                $option->deliveryType,
-                $option->shippingType,
-                $option->price,
-                $option->priceFormatted,
-                $option->discountPercentage,
-                $option->isPreferred,
-                $option->isSustainable,
-                $option->deliveryOptions,
-                $option->optionCodes,
-                $option->shipperCodes
-            );
+            // Convert each stdClass into ShippingOption object
+            $list[$onr] = ShippingOption::construct((array)$option);
         }
 
         $this->options = $list;
