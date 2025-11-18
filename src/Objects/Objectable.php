@@ -7,6 +7,33 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 abstract class Objectable
 {
+    /** @var array - Source data */
+    protected array $additionalData = [];
+
+    /**
+     * @param array $additionalData
+     * @return $this
+     */
+    public function setAdditionalData(array $additionalData): static
+    {
+        $this->additionalData = $additionalData;
+        return $this;
+    }
+
+    /**
+     * @param string|null $key
+     * @return mixed
+     */
+    protected function getAdditionalData(string $key = null): mixed
+    {
+        if ($key) {
+            return $this->additionalData[$key] ?? null;
+        } else {
+            // Otherwise return the entire array
+            return $this->additionalData;
+        }
+    }
+
     /**
      * @return array
      */
@@ -57,8 +84,6 @@ abstract class Objectable
      */
     public static function construct(array $data): ?static
     {
-        // Keep the entire data string in $data property
-        $data['additionalData'] = $data;
         // Get array with only the keys that are a property (to splat into constructor)
         $props = array_intersect_key(
             $data,
@@ -66,6 +91,11 @@ abstract class Objectable
             static::getVars()
         );
 
-        return !empty($props) ? new static(...$props) : null;
+        return !empty($props) ?
+            // construct class
+            (new static(...$props))
+                // keep the source data
+                ->setAdditionalData($data) : null;
     }
+
 }

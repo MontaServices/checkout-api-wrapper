@@ -23,9 +23,9 @@ class ShippingOption extends Objectable
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
-     * @param array $deliveryOptions
+     * @param ShippingOption[] $deliveryOptions
      * @param string $optionCodes @deprecated, not referenced anywhere
-     * @param array $shipperCodes
+     * @param string[] $shipperCodes
      */
     public function __construct(
         public string $shipper,
@@ -306,7 +306,8 @@ class ShippingOption extends Objectable
         return $this->deliveryOptions;
     }
 
-    /**
+    /** Convert stdClass from API to array of Option objects
+     *
      * @param array $deliveryOptions
      * @return ShippingOption
      */

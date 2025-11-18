@@ -1,7 +1,10 @@
 <?php
 
 namespace Monta\CheckoutApiWrapper\Objects;
-
+/**
+ * I have hijacked this class to represent either delivery and pickup options.
+ * Originally meant for ShipperOptions
+ */
 class Option extends Objectable
 {
 
@@ -14,32 +17,17 @@ class Option extends Objectable
      * @param string $description
      * @param float|null $price
      * @param string|null $priceFormatted
-     * @param array $additionalData
      */
     public function __construct(
         public string $code,
         public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
-        // The entire rest of the data
-        protected array $additionalData = [],
     )
     {
     }
 
-    /**
-     * @param string|null $key
-     * @return mixed
-     */
-    protected function getAdditionalData(string $key = null): mixed
-    {
-        if ($key) {
-            return $this->additionalData[$key] ?? null;
-        } else {
-            // Otherwise return the entire array
-            return $this->additionalData;
-        }
-    }
+
 
     /**
      * @return string
