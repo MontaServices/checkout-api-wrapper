@@ -146,7 +146,8 @@ class Option extends Objectable
         // Put together all the data, just as the old module did from frontend
         $data = [
             'type' => $type,
-            'details' => $details,
+            // Details was an array of one JSON object in old module
+            'details' => [$details],
             // This is an array of one JSON object
             'additional_info' => [$additionalInfo],
         ];
