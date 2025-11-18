@@ -5,7 +5,7 @@
  */
 namespace Monta\CheckoutApiWrapper\Objects;
 
-class Objectable
+abstract class Objectable
 {
     /**
      * @return array
@@ -30,6 +30,7 @@ class Objectable
     }
 
     /** Public function for getting all properties (including protected) of this class
+     * Call as `static` instead of `self` for child class
      *
      * @return string[]
      */
@@ -40,19 +41,27 @@ class Objectable
     }
 
     /**
-     * @param string $json
+     * @param string $json - JSON-encoded array of properties
      * @return static|null
      */
     public static function constructFromJson(string $json): ?static
     {
-        // Convert JSON into array, splat into property constructor
-        $converted = json_decode($json, true);
+        // Convert JSON into array
+        return static::construct(json_decode($json, true));
+    }
 
+    /** Construct object from array
+     *
+     * @param array $data
+     * @return static|null
+     */
+    public static function construct(array $data): ?static
+    {
         // Keep the entire data string in $data property
-        $converted['additionalData'] = $converted;
+        $data['additionalData'] = $data;
         // Get array with only the keys that are a property (to splat into constructor)
         $props = array_intersect_key(
-            $converted,
+            $data,
             // call `static` instead of `self` to call the child class
             static::getVars()
         );

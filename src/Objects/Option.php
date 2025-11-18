@@ -28,12 +28,17 @@ class Option extends Objectable
     }
 
     /**
-     * @param string $key
+     * @param string|null $key
      * @return mixed
      */
-    protected function getAdditionalData(string $key): mixed
+    protected function getAdditionalData(string $key = null): mixed
     {
-        return $this->additionalData[$key] ?? null;
+        if ($key) {
+            return $this->additionalData[$key] ?? null;
+        } else {
+            // Otherwise return the entire array
+            return $this->additionalData;
+        }
     }
 
     /**
@@ -126,12 +131,12 @@ class Option extends Objectable
                 break;
             /** Pickup specific output */
             case self::PICKUP_TYPE:
-                // Construct object back, splat all properties into constructor
+                // Construct object back from array
                 // This is possible because $additionalData started as a PickupPoint, encoded to JSON for frontend.
                 // Then returned from frontend to Quote, where it was saved as JSON string.
                 // Then decoded back to array in Monta\CheckoutApiWrapper\Objects\Objectable::constructFromJson()
                 // Which could return anything but at this point we know it was a Pickup option.
-                $pickup = new PickupPoint(...$this->additionalData);
+                $pickup = PickupPoint::construct($this->getAdditionalData());
                 $details['short_code'] = $pickup->getShipperCode();
                 // Pickup point has address in additional data
                 // Old module converted each of these fields in the frontend
