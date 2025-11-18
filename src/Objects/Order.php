@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\Objectable;
+
 class Order
 {
+    use Objectable;
+
     /**
      * @param float $total_incl
      * @param float $total_excl

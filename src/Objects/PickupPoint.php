@@ -2,12 +2,16 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\Objectable;
+
 /**
  * Class PickupPoint
  *
  */
 class PickupPoint
 {
+    use Objectable;
+
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
 
     /** Properties must be public so they are added to JSON object
@@ -392,19 +396,6 @@ class PickupPoint
     public function setOpeningTimes(array $openingTimes): void
     {
         $this->openingTimes = $openingTimes;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
     }
 
     /**

@@ -4,9 +4,12 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
+use Monta\CheckoutApiWrapper\Traits\Objectable;
 
 class ShippingOption
 {
+    use Objectable;
+
     /** Constructor with promoted properties
      *
      * @param string $shipper
@@ -319,19 +322,6 @@ class ShippingOption
         $this->deliveryOptions = $list;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
     }
 
     /**

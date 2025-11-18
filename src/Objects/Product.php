@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\Objectable;
+
 class Product
 {
+    use Objectable;
+
     /**
      * @param string $sku
      * @param int $quantity

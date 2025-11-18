@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\Objectable;
+
 class Option
 {
+    use Objectable;
+
     protected const string DELIVERY_TYPE = 'delivery';
 
     protected const string PICKUP_TYPE = 'pickup';
@@ -97,19 +101,6 @@ class Option
     public function setPrice($price): void
     {
         $this->price = $price;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
     }
 
     /** Convert selected Option to JSON in proper structure.

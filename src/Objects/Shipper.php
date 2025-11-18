@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use Monta\CheckoutApiWrapper\Traits\Objectable;
+
 class Shipper
 {
+    use Objectable;
+
     /**
      * @param string $name
      * @param string $code

@@ -4,9 +4,12 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
+use Monta\CheckoutApiWrapper\Traits\Objectable;
 
 class TimeFrame
 {
+    use Objectable;
+
     /** Constructor with promoted properties
      *
      * @param string|null $date
@@ -143,16 +146,4 @@ class TimeFrame
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
-    }
 }
