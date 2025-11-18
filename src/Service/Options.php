@@ -18,13 +18,15 @@ class Options
     {
         // Convert JSON into array, splat into property constructor
         $converted = json_decode($json, true);
-        // Get array values with only the keys that are a property
+
+        // Keep the entire data string in $data property
+        $converted['additionalData'] = $converted;
+
+        // Get array with only the keys that are a property (to splat into constructor)
         $props = array_intersect_key(
             $converted,
-            get_class_vars(Option::class)
+            Option::getVars()
         );
-        // Keep the entire data string in $data property (splats into constructor)
-        $props['additionalData'] = $converted;
 
         return !empty($props) ? new Option(...$props) : null;
     }
