@@ -2,6 +2,9 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+
 class Shipper extends Objectable
 {
 

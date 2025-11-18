@@ -1,6 +1,10 @@
 <?php
 
 namespace Monta\CheckoutApiWrapper\Objects;
+
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+
 /**
  * I have hijacked this class to represent either delivery and pickup options.
  * Originally meant for ShipperOptions
@@ -26,8 +30,6 @@ class Option extends Objectable
     )
     {
     }
-
-
 
     /**
      * @return string

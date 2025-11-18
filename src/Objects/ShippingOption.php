@@ -3,6 +3,7 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
 class ShippingOption extends Objectable
@@ -23,7 +24,7 @@ class ShippingOption extends Objectable
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
-     * @param ShippingOption[] $deliveryOptions
+     * @param ShippingOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
      */

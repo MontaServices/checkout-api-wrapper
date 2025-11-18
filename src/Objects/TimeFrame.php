@@ -4,6 +4,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 
 class TimeFrame extends Objectable
 {
@@ -15,7 +16,7 @@ class TimeFrame extends Objectable
      * @param string|null $month
      * @param string|null $dateFormatted
      * @param string|null $dateOnlyFormatted
-     * @param array $options
+     * @param ShippingOption[] $options - converted into object in setter
      */
     public function __construct(
         public ?string $date = null,

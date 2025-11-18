@@ -2,6 +2,9 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+
 /**
  * Class PickupPoint
  *
@@ -36,7 +39,7 @@ class PickupPoint extends Objectable
      * @param string $shipperOptionsWithValue
      * @param string|null $imageName
      * @param string|null $formattedAddress - Display value for address
-     * @param array $position - Format according to Google Maps API
+     * @param string[] $position - Format according to Google Maps API
      */
     public function __construct(
         public string $displayName,

@@ -1,6 +1,9 @@
 <?php
 
+// alias for sibling must remain or not all autoloading will work
 namespace Monta\CheckoutApiWrapper\Objects;
+
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 
 class OpeningTime extends Objectable
 {
