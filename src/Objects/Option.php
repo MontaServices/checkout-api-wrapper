@@ -113,6 +113,10 @@ class Option extends Objectable
             'price' => $this->getPrice(), // TODO shipper price only
             'total_price' => $this->getPrice(), // TODO shipper price + shipper options
         ];
+        $details = [
+            'short_code' => $this->getAdditionalData('shipper'),
+            'options' => [], // TODO shipper options
+        ];
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
@@ -128,7 +132,7 @@ class Option extends Objectable
                 // Then decoded back to array in Monta\CheckoutApiWrapper\Objects\Objectable::constructFromJson()
                 // Which could return anything but at this point we know it was a Pickup option.
                 $pickup = new PickupPoint(...$this->additionalData);
-                $data['details']['short_code'] = $pickup->getShipperCode();
+                $details['short_code'] = $pickup->getShipperCode();
                 // Pickup point has address in additional data
                 // Old module converted each of these fields in the frontend
                 $additionalInfo += [
@@ -147,10 +151,7 @@ class Option extends Objectable
         // Put together all the data, just as the old module did from frontend
         $data = [
             'type' => $type,
-            'details' => [
-                'short_code' => $this->getAdditionalData('shipper'),
-                'options' => [], // TODO shipper options
-            ],
+            'details' => $details,
             // This is an array of one JSON object
             'additional_info' => [$additionalInfo],
         ];
