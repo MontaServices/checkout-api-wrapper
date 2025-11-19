@@ -32,6 +32,7 @@ class ShippingOption extends Objectable
      * @param ShippingOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
+     * @param string $shipperGroupName
      * @param string $shipperImageUrl - Constructed based on other properties
      */
     public function __construct(
@@ -51,6 +52,7 @@ class ShippingOption extends Objectable
         public array $deliveryOptions = [],
         public string $optionCodes = "",
         public array $shipperCodes = [],
+        protected string $shipperGroupName = "",
         public string $shipperImageUrl = "",
     )
     {
@@ -68,7 +70,7 @@ class ShippingOption extends Objectable
      */
     protected function getShipperImageUrl(): string
     {
-        // TODO use ShipperGroupName as soon as that's added to REST API output
+        // TODO use $this->shipperGroupName as soon as that's added to REST API output
         return sprintf(self::SHIPPER_IMAGE_URL, reset($this->shipperCodes));
     }
 

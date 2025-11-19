@@ -37,6 +37,7 @@ class PickupPoint extends Objectable
      * @param string $priceFormatted
      * @param array $openingTimes
      * @param string $shipperOptionsWithValue
+     * @param string $shipperGroupName
      * @param string|null $imageName
      * @param string|null $formattedAddress - Display value for address
      * @param string[] $position - Format according to Google Maps API
@@ -64,6 +65,7 @@ class PickupPoint extends Objectable
         public string $priceFormatted,
         public array $openingTimes,
         public string $shipperOptionsWithValue,
+        protected string $shipperGroupName = "",
         public ?string $imageName = null,
         public ?string $formattedAddress = null,
         public array $position = [])
