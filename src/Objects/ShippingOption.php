@@ -11,8 +11,6 @@ use Monta\CheckoutApiWrapper\Objects\Option as Option;
  */
 class ShippingOption extends Objectable
 {
-    /** @var string - Shipper images are located here, grouped on ShipperGroupName (placeholder) */
-    protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
 
     /** Constructor with promoted properties
      *
@@ -61,17 +59,9 @@ class ShippingOption extends Objectable
 
         if ($shipperCodes) {
             // ShipperCodes is usually an array of one code, pick the first one
-            $this->shipperImageUrl = $this->getShipperImageUrl();
+            // TODO use $this->shipperGroupName as soon as that's added to REST API output
+            $this->shipperImageUrl = $this->getShipperImageUrl(reset($this->shipperCodes));
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected function getShipperImageUrl(): string
-    {
-        // TODO use $this->shipperGroupName as soon as that's added to REST API output
-        return sprintf(self::SHIPPER_IMAGE_URL, reset($this->shipperCodes));
     }
 
     /**

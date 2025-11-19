@@ -7,6 +7,9 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 abstract class Objectable
 {
+    /** @var string - Shipper images are located here, grouped on ShipperGroupName (placeholder) */
+    protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
+
     /** @var array - Source data */
     protected array $additionalData = [];
 
@@ -32,6 +35,16 @@ abstract class Objectable
             // Otherwise return the entire array
             return $this->additionalData;
         }
+    }
+
+    /** Get Monta CDN image URL based on shipper group name
+     *
+     * @param string $value
+     * @return string
+     */
+    protected function getShipperImageUrl(string $value): string
+    {
+        return sprintf(self::SHIPPER_IMAGE_URL, $value);
     }
 
     /**
