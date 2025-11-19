@@ -2,10 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+// alias for sibling must remain or not all autoloading will work
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 
-class Address
+class Address extends Objectable
 {
     /** @var float $longitude - Public to use on frontend */
     public float $longitude = 0.0;

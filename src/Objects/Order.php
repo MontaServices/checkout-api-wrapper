@@ -2,8 +2,12 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-class Order
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+
+class Order extends Objectable
 {
+
     /**
      * @param float $total_incl
      * @param float $total_excl

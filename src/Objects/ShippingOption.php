@@ -3,10 +3,12 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
-class ShippingOption
+class ShippingOption extends Objectable
 {
+
     /** Constructor with promoted properties
      *
      * @param string $shipper
@@ -22,9 +24,9 @@ class ShippingOption
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
-     * @param array $deliveryOptions
+     * @param ShippingOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
-     * @param array $shipperCodes
+     * @param string[] $shipperCodes
      */
     public function __construct(
         public string $shipper,
@@ -305,7 +307,8 @@ class ShippingOption
         return $this->deliveryOptions;
     }
 
-    /**
+    /** Convert stdClass from API to array of Option objects
+     *
      * @param array $deliveryOptions
      * @return ShippingOption
      */
@@ -313,25 +316,13 @@ class ShippingOption
     {
         $list = [];
         foreach ($deliveryOptions as $option) {
-            $list[] = new Option($option->code, $option->description, $option->price, $option->priceFormatted);
+            // Convert stdClass into class
+            $list[] = Option::construct((array)$option);
         }
 
         $this->deliveryOptions = $list;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
     }
 
     /**

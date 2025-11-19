@@ -4,9 +4,11 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 
-class TimeFrame
+class TimeFrame extends Objectable
 {
+
     /** Constructor with promoted properties
      *
      * @param string|null $date
@@ -14,7 +16,7 @@ class TimeFrame
      * @param string|null $month
      * @param string|null $dateFormatted
      * @param string|null $dateOnlyFormatted
-     * @param array $options
+     * @param ShippingOption[] $options - converted into object in setter
      */
     public function __construct(
         public ?string $date = null,
@@ -22,7 +24,7 @@ class TimeFrame
         public ?string $month = null,
         public ?string $dateFormatted = null,
         public ?string $dateOnlyFormatted = null,
-        public array $options = [],
+        public ?array $options = [],
     )
     {
         // Properties are set in constructor, this setter has custom functionality
@@ -117,42 +119,13 @@ class TimeFrame
     {
         $list = null;
 
-        // TODO is all this necessary? $options is already set as promoted property
         foreach ($options as $onr => $option) {
-            $list[$onr] = new ShippingOption(
-                $option->shipper,
-                $option->code,
-                $option->displayNameShort,
-                $option->displayName,
-                $option->from,
-                $option->to,
-                $option->deliveryType,
-                $option->shippingType,
-                $option->price,
-                $option->priceFormatted,
-                $option->discountPercentage,
-                $option->isPreferred,
-                $option->isSustainable,
-                $option->deliveryOptions,
-                $option->optionCodes,
-                $option->shipperCodes
-            );
+            // Convert each stdClass into ShippingOption object
+            $list[$onr] = ShippingOption::construct((array)$option);
         }
 
         $this->options = $list;
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
-    }
 }
