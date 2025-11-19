@@ -78,6 +78,12 @@ class PickupPoint extends Objectable
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
         ];
+
+        // When image URL was not set, construct it from here
+        if (!$this->getImageUrl()) {
+            // TODO use $this->shipperGroupName as soon as that's added to REST API output, instead of this temp "DHL" placeholder
+            $this->setImageUrl($this->getShipperImageUrl("DHL"));
+        }
     }
 
     /**
@@ -369,9 +375,9 @@ class PickupPoint extends Objectable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getImageUrl(): string
+    public function getImageUrl(): ?string
     {
         return $this->imageUrl;
     }
