@@ -6,8 +6,13 @@ namespace Monta\CheckoutApiWrapper\Objects;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
+/**
+ * This is a Delivery Option, typically under a Timeframe.
+ */
 class ShippingOption extends Objectable
 {
+    /** @var string - Shipper images are located here, grouped on ShipperGroupName (placeholder) */
+    protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
 
     /** Constructor with promoted properties
      *
@@ -27,6 +32,7 @@ class ShippingOption extends Objectable
      * @param ShippingOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
+     * @param string $shipperImageUrl - Constructed based on other properties
      */
     public function __construct(
         public string $shipper,
@@ -45,10 +51,25 @@ class ShippingOption extends Objectable
         public array $deliveryOptions = [],
         public string $optionCodes = "",
         public array $shipperCodes = [],
+        public string $shipperImageUrl = "",
     )
     {
         // Properties are set in constructor, this setter has custom functionality
         $this->setDeliveryOptions($deliveryOptions);
+
+        if ($shipperCodes) {
+            // ShipperCodes is usually an array of one code, pick the first one
+            $this->shipperImageUrl = $this->getShipperImageUrl();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getShipperImageUrl(): string
+    {
+        // TODO use ShipperGroupName as soon as that's added to REST API output
+        return sprintf(self::SHIPPER_IMAGE_URL, reset($this->shipperCodes));
     }
 
     /**
