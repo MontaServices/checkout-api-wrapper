@@ -39,12 +39,14 @@ abstract class Objectable
 
     /** Get Monta CDN image URL based on shipper group name
      *
-     * @param string $value
+     * @param string|null $value
      * @return string
      */
-    protected function getShipperImageUrl(string $value): string
+    protected function getShipperImageUrl(string $value = null): string
     {
-        return sprintf(self::SHIPPER_IMAGE_URL, $value);
+        // Use passed value, otherwise fallback to Monta image
+        // TODO this will not catch missing images when $value is a nonexistent image
+        return sprintf(self::SHIPPER_IMAGE_URL, $value ?? "monta");
     }
 
     /**
