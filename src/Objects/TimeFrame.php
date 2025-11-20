@@ -3,8 +3,8 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
-use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
 
 class TimeFrame extends Objectable
 {

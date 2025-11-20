@@ -31,7 +31,7 @@ class ShippingOption extends Objectable
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
      * @param string $shipperGroupName
-     * @param string $shipperImageUrl - Constructed based on other properties
+     * @param string $imageUrl - Constructed based on other properties
      */
     public function __construct(
         public string $shipper,
@@ -51,7 +51,7 @@ class ShippingOption extends Objectable
         public string $optionCodes = "",
         public array $shipperCodes = [],
         protected string $shipperGroupName = "",
-        public string $shipperImageUrl = "",
+        public string $imageUrl = "",
     )
     {
         // Properties are set in constructor, this setter has custom functionality
@@ -60,7 +60,7 @@ class ShippingOption extends Objectable
         if ($shipperCodes) {
             // ShipperCodes is usually an array of one code, pick the first one
             // TODO use $this->shipperGroupName as soon as that's added to REST API output
-            $this->shipperImageUrl = $this->getShipperImageUrl(reset($this->shipperCodes));
+            $this->imageUrl = $this->getImageUrl(reset($this->shipperCodes));
         }
     }
 

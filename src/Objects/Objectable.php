@@ -42,7 +42,7 @@ abstract class Objectable
      * @param string|null $value
      * @return string
      */
-    protected function getShipperImageUrl(string $value = null): string
+    protected function getImageUrl(string $value = null): string
     {
         // Use passed value, otherwise fallback to Monta image
         // TODO this will not catch missing images when $value is a nonexistent image
