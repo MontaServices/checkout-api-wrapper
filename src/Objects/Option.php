@@ -7,7 +7,7 @@ use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 
 /**
  * I have hijacked this class to represent either delivery and pickup options.
- * Originally meant for ShipperOptions
+ * Originally meant for ShipperOptions but not really functional that way.
  */
 class Option extends Objectable
 {
@@ -21,12 +21,14 @@ class Option extends Objectable
      * @param string $description
      * @param float|null $price
      * @param string|null $priceFormatted
+     * @param array $extras - Shipper options, e.g. "NoNeighbor" etc.
      */
     public function __construct(
         public string $code,
         public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
+        protected array $extras = [],
     )
     {
     }
@@ -80,11 +82,16 @@ class Option extends Objectable
     }
 
     /**
+     * @param bool $full - Include price of all extras
      * @return float
      */
-    public function getPrice(): float
+    public function getPrice(bool $full = false): float
     {
-        return $this->price;
+        // own shipping price
+        return $this->price
+
+            // if requested, add sum of all extras
+            + ($full ? array_sum($this->getExtras('price')) : 0);
     }
 
     /**
@@ -93,6 +100,15 @@ class Option extends Objectable
     public function setPrice($price): void
     {
         $this->price = $price;
+    }
+
+    /**
+     * @param string|null $onlyColumn - Pluck a specific column from the extras array
+     * @return object[]|string[]
+     */
+    public function getExtras(string $onlyColumn = null): array
+    {
+        return $onlyColumn ? array_column($this->extras, $onlyColumn) : $this->extras;
     }
 
     /** Convert selected Option to JSON in proper structure.
@@ -105,12 +121,13 @@ class Option extends Objectable
         $type = $this->getShippingType();
         $additionalInfo = [
             'code' => $this->getCode(),
-            'price' => $this->getPrice(), // TODO shipper price only
-            'total_price' => $this->getPrice(), // TODO shipper price + shipper options
+            'price' => $this->getPrice(),
+            'total_price' => $this->getPrice(true),
         ];
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
-            'options' => [], // TODO shipper options
+            // Options is just an array of codes, total_price includes their price
+            'options' => $this->getExtras(onlyColumn: 'code'),
         ];
         switch ($type) {
             /** Delivery specific fields */
