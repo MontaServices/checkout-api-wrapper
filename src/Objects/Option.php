@@ -11,7 +11,6 @@ use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
  */
 class Option extends Objectable
 {
-
     protected const string DELIVERY_TYPE = 'delivery';
 
     protected const string PICKUP_TYPE = 'pickup';
@@ -87,9 +86,8 @@ class Option extends Objectable
      */
     public function getPrice(bool $full = false): float
     {
-        // own shipping price
+        // base shipping price
         return $this->price
-
             // if requested, add sum of all extras
             + ($full ? array_sum($this->getExtras('price')) : 0);
     }
@@ -121,8 +119,8 @@ class Option extends Objectable
         $type = $this->getShippingType();
         $additionalInfo = [
             'code' => $this->getCode(),
-            'price' => $this->getPrice(),
-            'total_price' => $this->getPrice(true),
+            'price' => $this->getPrice(full: false),
+            'total_price' => $this->getPrice(full: true),
         ];
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
