@@ -20,14 +20,14 @@ class Option extends Objectable
      * @param string $description
      * @param float|null $price
      * @param string|null $priceFormatted
-     * @param array $extras - Shipper options, e.g. "NoNeighbor" etc.
+     * @param array $shipperOptions - e.g. "NoNeighbor" etc.
      */
     public function __construct(
         public string $code,
         public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
-        protected array $extras = [],
+        protected array $shipperOptions = [],
     )
     {
     }
@@ -89,7 +89,7 @@ class Option extends Objectable
         // base shipping price
         return $this->price
             // if requested, add sum of all options
-            + ($includeShipperOptions ? array_sum($this->getExtras('price')) : 0);
+            + ($includeShipperOptions ? array_sum($this->getShipperOptions('price')) : 0);
     }
 
     /**
@@ -101,12 +101,12 @@ class Option extends Objectable
     }
 
     /**
-     * @param string|null $onlyColumn - Pluck a specific column from the extras array
+     * @param string|null $onlyColumn - Pluck a specific column from the shipperOptions array
      * @return object[]|string[]
      */
-    public function getExtras(string $onlyColumn = null): array
+    public function getShipperOptions(string $onlyColumn = null): array
     {
-        return $onlyColumn ? array_column($this->extras, $onlyColumn) : $this->extras;
+        return $onlyColumn ? array_column($this->shipperOptions, $onlyColumn) : $this->shipperOptions;
     }
 
     /** Convert selected Option to JSON in proper structure.
@@ -125,7 +125,7 @@ class Option extends Objectable
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
             // Options is just an array of codes, total_price includes their price
-            'options' => $this->getExtras(onlyColumn: 'code'),
+            'options' => $this->getShipperOptions(onlyColumn: 'code'),
         ];
         switch ($type) {
             /** Delivery specific fields */
