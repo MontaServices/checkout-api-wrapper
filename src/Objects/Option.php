@@ -7,11 +7,10 @@ use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 
 /**
  * I have hijacked this class to represent either delivery and pickup options.
- * Originally meant for ShipperOptions
+ * Originally meant for ShipperOptions but not really functional that way.
  */
 class Option extends Objectable
 {
-
     protected const string DELIVERY_TYPE = 'delivery';
 
     protected const string PICKUP_TYPE = 'pickup';
@@ -21,14 +20,17 @@ class Option extends Objectable
      * @param string $description
      * @param float|null $price
      * @param string|null $priceFormatted
+     * @param array $shipperOptions - e.g. "NoNeighbor" etc.
      */
     public function __construct(
         public string $code,
         public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
+        protected array $shipperOptions = [],
     )
     {
+        $this->setShipperOptions($shipperOptions);
     }
 
     /**
@@ -80,11 +82,15 @@ class Option extends Objectable
     }
 
     /**
+     * @param bool $includeShipperOptions - Include price of all options
      * @return float
      */
-    public function getPrice(): float
+    public function getPrice(bool $includeShipperOptions = false): float
     {
-        return $this->price;
+        // base shipping price
+        return $this->price
+            // if requested, add sum of all options
+            + ($includeShipperOptions ? array_sum($this->getShipperOptions('price')) : 0);
     }
 
     /**
@@ -93,6 +99,28 @@ class Option extends Objectable
     public function setPrice($price): void
     {
         $this->price = $price;
+    }
+
+    /**
+     * @param string|null $onlyColumn - Pluck a specific column from the shipperOptions array
+     * @return object[]|string[]
+     */
+    public function getShipperOptions(string $onlyColumn = null): array
+    {
+        return $onlyColumn ? array_column($this->shipperOptions, $onlyColumn) : $this->shipperOptions;
+    }
+
+    /** Custom setter for custom functionality
+     *
+     * @param array $shipperOptions
+     * @return $this
+     */
+    public function setShipperOptions(array $shipperOptions): self
+    {
+        // Index by 'code' to remove duplicates, then reset keys
+        $this->shipperOptions = array_values(array_column($shipperOptions, null, 'code'));
+
+        return $this;
     }
 
     /** Convert selected Option to JSON in proper structure.
@@ -105,12 +133,13 @@ class Option extends Objectable
         $type = $this->getShippingType();
         $additionalInfo = [
             'code' => $this->getCode(),
-            'price' => $this->getPrice(), // TODO shipper price only
-            'total_price' => $this->getPrice(), // TODO shipper price + shipper options
+            'price' => $this->getPrice(false), // only base shipping price
+            'total_price' => $this->getPrice(true), // including options
         ];
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
-            'options' => [], // TODO shipper options
+            // Options is just an array of codes, total_price includes their price
+            'options' => $this->getShipperOptions(onlyColumn: 'code'),
         ];
         switch ($type) {
             /** Delivery specific fields */

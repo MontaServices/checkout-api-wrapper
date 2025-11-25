@@ -37,6 +37,7 @@ class PickupPoint extends Objectable
      * @param string $priceFormatted
      * @param array $openingTimes
      * @param string $shipperOptionsWithValue
+     * @param string $shipperGroupName
      * @param string|null $imageName
      * @param string|null $formattedAddress - Display value for address
      * @param string[] $position - Format according to Google Maps API
@@ -64,6 +65,7 @@ class PickupPoint extends Objectable
         public string $priceFormatted,
         public array $openingTimes,
         public string $shipperOptionsWithValue,
+        protected string $shipperGroupName = "",
         public ?string $imageName = null,
         public ?string $formattedAddress = null,
         public array $position = [])
@@ -76,6 +78,12 @@ class PickupPoint extends Objectable
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
         ];
+
+        // When image URL was not passed, construct it from here
+        if (!$imageUrl) {
+            // TODO use $this->shipperGroupName as soon as that's added to REST API output, instead of this temp "DHL" placeholder
+            $this->setImageUrl($this->getImageUrl("DHL"));
+        }
     }
 
     /**
@@ -364,14 +372,6 @@ class PickupPoint extends Objectable
     public function setLatitude(float $latitude): void
     {
         $this->latitude = $latitude;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImageUrl(): string
-    {
-        return $this->imageUrl;
     }
 
     /**

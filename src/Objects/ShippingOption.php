@@ -6,6 +6,9 @@ namespace Monta\CheckoutApiWrapper\Objects;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
+/**
+ * This is a Delivery Option, typically under a Timeframe.
+ */
 class ShippingOption extends Objectable
 {
 
@@ -27,6 +30,8 @@ class ShippingOption extends Objectable
      * @param ShippingOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
+     * @param string $shipperGroupName
+     * @param string $imageUrl - Constructed based on other properties
      */
     public function __construct(
         public string $shipper,
@@ -45,10 +50,18 @@ class ShippingOption extends Objectable
         public array $deliveryOptions = [],
         public string $optionCodes = "",
         public array $shipperCodes = [],
+        protected string $shipperGroupName = "",
+        public string $imageUrl = "",
     )
     {
         // Properties are set in constructor, this setter has custom functionality
         $this->setDeliveryOptions($deliveryOptions);
+
+        if ($shipperCodes) {
+            // ShipperCodes is usually an array of one code, pick the first one
+            // TODO use $this->shipperGroupName as soon as that's added to REST API output
+            $this->imageUrl = $this->getImageUrl(reset($this->shipperCodes));
+        }
     }
 
     /**
