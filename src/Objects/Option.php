@@ -30,6 +30,7 @@ class Option extends Objectable
         protected array $shipperOptions = [],
     )
     {
+        $this->setShipperOptions($shipperOptions);
     }
 
     /**
@@ -107,6 +108,19 @@ class Option extends Objectable
     public function getShipperOptions(string $onlyColumn = null): array
     {
         return $onlyColumn ? array_column($this->shipperOptions, $onlyColumn) : $this->shipperOptions;
+    }
+
+    /** Custom setter for custom functionality
+     *
+     * @param array $shipperOptions
+     * @return $this
+     */
+    public function setShipperOptions(array $shipperOptions): self
+    {
+        // Index by 'code' to remove duplicates, then reset keys
+        $this->shipperOptions = array_values(array_column($shipperOptions, null, 'code'));
+
+        return $this;
     }
 
     /** Convert selected Option to JSON in proper structure.
