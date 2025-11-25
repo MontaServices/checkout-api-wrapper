@@ -81,15 +81,15 @@ class Option extends Objectable
     }
 
     /**
-     * @param bool $full - Include price of all extras
+     * @param bool $includeShipperOptions - Include price of all options
      * @return float
      */
-    public function getPrice(bool $full = false): float
+    public function getPrice(bool $includeShipperOptions = false): float
     {
         // base shipping price
         return $this->price
-            // if requested, add sum of all extras
-            + ($full ? array_sum($this->getExtras('price')) : 0);
+            // if requested, add sum of all options
+            + ($includeShipperOptions ? array_sum($this->getExtras('price')) : 0);
     }
 
     /**
@@ -119,8 +119,8 @@ class Option extends Objectable
         $type = $this->getShippingType();
         $additionalInfo = [
             'code' => $this->getCode(),
-            'price' => $this->getPrice(full: false),
-            'total_price' => $this->getPrice(full: true),
+            'price' => $this->getPrice(false), // only base shipping price
+            'total_price' => $this->getPrice(true), // including options
         ];
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
