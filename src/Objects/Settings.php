@@ -176,7 +176,8 @@ class Settings
      */
     public function getWebshopLanguage(): string
     {
-        return $this->webshopLanguage;
+        // Replace underscore with dash for proper API format
+        return str_replace(search: "_", replace: "-", subject: $this->webshopLanguage);
     }
 
     /**
