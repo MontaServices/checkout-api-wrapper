@@ -47,18 +47,7 @@ class Address extends Objectable
      */
     public function setLongLat(): void
     {
-        // Get lat and long by address
-        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
-        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
-        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
-        $prepAddr = $this->city . str_replace('  ', ' ', $address);
-        $prepAddr = str_replace(' ', '+', $prepAddr);
-
-        // If this address was geocoded before, use the cached result
-        if ($coords = Session::get($prepAddr)) {
-            // Array is simply 2 coordinates in an array, assign to variables
-            list($this->latitude, $this->longitude) = $coords;
-        } else {
+        $prepAddr = $this->getPrepareAddress();
             try {
                 $response = Guzzle::call(
                     route: "maps/api/geocode/json",
@@ -89,6 +78,19 @@ class Address extends Objectable
                 // Catch and ignore Exceptions, coordinates remain zero
             }
         }
+    /**
+     * @return string
+     */
+    public function getPrepareAddress(): string
+    {
+        // Get lat and long by address
+        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
+        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
+        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
+        $prepAddress = $this->city . str_replace('  ', ' ', $address);
+
+        // Replace spaces with pluses to make it Google-friendly
+        return str_replace(' ', '+', $prepAddress);
     }
 
     /**
