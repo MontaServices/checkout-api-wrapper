@@ -30,11 +30,7 @@ class Session
     public static function get(string $path): mixed
     {
         // Empty path should not ever be used as a path
-        if ($path) {
-            return null;
-        } else {
-            return $_SESSION[self::sessionPath($path)] ?? null;
-        }
+        return $path ? $_SESSION[self::sessionPath($path)] ?? null : null;
     }
 
     /** Convert user path into prefixed, usable path
