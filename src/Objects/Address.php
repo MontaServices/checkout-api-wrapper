@@ -48,6 +48,12 @@ class Address extends Objectable
     public function setLongLat(): void
     {
         $prepAddr = $this->getPrepareAddress();
+        $sessionPath = $prepAddr . "-coordinates";
+
+        // Get address from cache if already there
+        $coords = Session::get($sessionPath);
+        // If not, retrieve from API and write into cache
+        if (!$coords) {
             try {
                 $response = Guzzle::call(
                     route: "maps/api/geocode/json",
@@ -67,17 +73,24 @@ class Address extends Objectable
 
                 // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 if (isset($result->geometry)) {
-                    $this->latitude = $result->geometry->location->lat;
-                    $this->longitude = $result->geometry->location->lng;
+                    $coords = [
+                        $result->geometry->location->lat,
+                        $result->geometry->location->lng,
+                    ];
 
-                    // Save this result in cache, so we don't have to load it again
-                    Session::save($prepAddr, [$this->latitude, $this->longitude]);
+                    // Save this result in cache, avoid multiple duplicate API calls
+                    Session::save($sessionPath, $coords);
                 }
             } catch (GuzzleException $ge) {
             } catch (\Exception $e) {
                 // Catch and ignore Exceptions, coordinates remain zero
             }
         }
+
+        // Whether retrieved from cache or from API, assign both variables here
+        list($this->latitude, $this->longitude) = $coords;
+    }
+
     /**
      * @return string
      */
