@@ -3,9 +3,9 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Service\Guzzle;
 
 class Address extends Objectable
 {
@@ -61,19 +61,17 @@ class Address extends Objectable
             // Array is simply 2 coordinates in an array, assign to variables
             list($this->latitude, $this->longitude) = $coords;
         } else {
-            // TODO replace all this with just $this->call() which can handle this
-            $google_maps_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-                . http_build_query([
-                    'address' => $prepAddr,
-                    'sensor' => false,
-                    'key' => $this->googleApiKey,
-                ]);
             try {
-                $client = new Client([
-                    'timeout' => 1.0
-                ]);
-
-                $response = $client->get($google_maps_url);
+                $response = Guzzle::call(
+                    route: "maps/api/geocode/json",
+                    baseUri: "https://maps.googleapis.com", // V3 standard
+                    httpMethod: "GET",
+                    parameters: [
+                        'address' => $prepAddr,
+                        'sensor' => false,
+                        'key' => $this->googleApiKey,
+                    ],
+                );
 
                 $output = json_decode($response->getBody());
 

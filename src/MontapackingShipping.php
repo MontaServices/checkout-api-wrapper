@@ -2,7 +2,6 @@
 
 namespace Monta\CheckoutApiWrapper;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Monta\CheckoutApiWrapper\Objects\Address;
 use Monta\CheckoutApiWrapper\Objects\Order;
@@ -12,6 +11,7 @@ use Monta\CheckoutApiWrapper\Objects\Settings;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Service\Address as AddressHelper;
+use Monta\CheckoutApiWrapper\Service\Guzzle;
 
 class MontapackingShipping
 {
@@ -198,7 +198,7 @@ class MontapackingShipping
             }
 
             /** @var object $result - Call REST API, get arrays of stdClass objects */
-            $result = $this->call('shippingrates');
+            $result = $this->call(method: 'shippingrates', parameters: $this->getJsonRequest());
 
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $stdTimeframe) {
@@ -269,40 +269,30 @@ class MontapackingShipping
      * @return mixed
      * @throws GuzzleException
      */
-    protected function call(string $method, string $url = self::MONTA_REST_CHECKOUT_URI, array $parameters = [], string $httpMethod = "POST"): mixed
+    protected function call(
+        string $method,
+        string $url = self::MONTA_REST_CHECKOUT_URI,
+        array $parameters = [],
+        string $httpMethod = "POST"): mixed
     {
 //        $url = "https://host.docker.internal:52668/selfhosted/";
 
-        $client = new Client([
-            'verify' => false,
-            'base_uri' => $url,
-            'timeout' => 10.0,
-            'headers' => [
-                'Authorization' => 'Basic ' . base64_encode($this->getSettings()->getUser() . ":" . $this->getSettings()->getPassword())
-            ]
-        ]);
+        $headers = [
+            'Authorization' => 'Basic ' . base64_encode($this->getSettings()->getUser() . ":" . $this->getSettings()->getPassword())
+        ];
 
         $method = strtolower($method);
-        $jsonRequest = $this->getJsonRequest();
 
         $response = null;
         $result = (object)[];
         try {
-            switch ($httpMethod) {
-                case "POST":
-                    $response = $client->post($method, [
-                        'json' => $jsonRequest
-                    ]);
-                    break;
-                case "GET":
-                    if ($parameters) {
-                        $method .= "?" . http_build_query($parameters);
-                    }
-                    $response = $client->get($method);
-                    break;
-                default:
-                    throw new \Exception("Unsupported HTTP method: " . $httpMethod);
-            }
+            $response = Guzzle::call(
+                route: $method,
+                baseUri: $url,
+                httpMethod: $httpMethod,
+                parameters: $parameters,
+                headers: $headers,
+            );
             $this->lastResponseCode = $response->getStatusCode();
         } catch (\Exception $exception) {
             $this->lastResponseCode = 404;
