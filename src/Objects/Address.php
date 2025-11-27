@@ -55,6 +55,13 @@ class Address extends Objectable
         // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
         $prepAddr = $this->city . str_replace('  ', ' ', $address);
         $prepAddr = str_replace(' ', '+', $prepAddr);
+
+        // If this address was geocoded before, use the cached result
+        if ($coords = Session::get($prepAddr)) {
+        // Array is simply 2 coordinates in an array, assign to variables
+        list($this->latitude, $this->longitude) = $coords;
+        } else {
+            // TODO replace all this with just $this->call() which can handle this
         $google_maps_url = "https://maps.googleapis.com/maps/api/geocode/json?"
             . http_build_query([
                 'address' => $prepAddr,
@@ -81,6 +88,7 @@ class Address extends Objectable
         } catch (GuzzleException $ge) {
         } catch (\Exception $e) {
             // Catch and ignore Exceptions, coordinates remain zero
+        }
         }
     }
 
