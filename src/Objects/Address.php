@@ -199,10 +199,10 @@ class Address extends Objectable
     {
         if ($googleApiKey) {
             $this->googleApiKey = trim($googleApiKey);
-        }
 
-        // After setting Google Key, coordinates can be calculated
-        $this->setLongLat();
+            // After setting Google Key, coordinates can be calculated
+            $this->setLongLat();
+        }
 
         return $this;
     }
