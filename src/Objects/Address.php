@@ -58,37 +58,37 @@ class Address extends Objectable
 
         // If this address was geocoded before, use the cached result
         if ($coords = Session::get($prepAddr)) {
-        // Array is simply 2 coordinates in an array, assign to variables
-        list($this->latitude, $this->longitude) = $coords;
+            // Array is simply 2 coordinates in an array, assign to variables
+            list($this->latitude, $this->longitude) = $coords;
         } else {
             // TODO replace all this with just $this->call() which can handle this
-        $google_maps_url = "https://maps.googleapis.com/maps/api/geocode/json?"
-            . http_build_query([
-                'address' => $prepAddr,
-                'sensor' => false,
-                'key' => $this->googleApiKey,
-            ]);
-        try {
-            $client = new Client([
-                'timeout' => 1.0
-            ]);
+            $google_maps_url = "https://maps.googleapis.com/maps/api/geocode/json?"
+                . http_build_query([
+                    'address' => $prepAddr,
+                    'sensor' => false,
+                    'key' => $this->googleApiKey,
+                ]);
+            try {
+                $client = new Client([
+                    'timeout' => 1.0
+                ]);
 
-            $response = $client->get($google_maps_url);
+                $response = $client->get($google_maps_url);
 
-            $output = json_decode($response->getBody());
+                $output = json_decode($response->getBody());
 
-            // Pluck single result from array of one
-            $result = end($output->results);
+                // Pluck single result from array of one
+                $result = end($output->results);
 
-            // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
-            if (isset($result->geometry)) {
-                $this->latitude = $result->geometry->location->lat;
-                $this->longitude = $result->geometry->location->lng;
+                // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
+                if (isset($result->geometry)) {
+                    $this->latitude = $result->geometry->location->lat;
+                    $this->longitude = $result->geometry->location->lng;
+                }
+            } catch (GuzzleException $ge) {
+            } catch (\Exception $e) {
+                // Catch and ignore Exceptions, coordinates remain zero
             }
-        } catch (GuzzleException $ge) {
-        } catch (\Exception $e) {
-            // Catch and ignore Exceptions, coordinates remain zero
-        }
         }
     }
 
