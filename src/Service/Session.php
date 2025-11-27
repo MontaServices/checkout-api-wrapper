@@ -3,7 +3,7 @@
  * @author Jacco.Amersfoort <jacco.amersfoort@monta.nl>
  * @created 9/25/2025 10:43
  */
-namespace Monta\CheckoutApiWrapper\Objects;
+namespace Monta\CheckoutApiWrapper\Service;
 
 class Session
 {

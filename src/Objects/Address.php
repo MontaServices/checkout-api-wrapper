@@ -6,6 +6,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 use GuzzleHttp\Exception\GuzzleException;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Service\Guzzle;
+use Monta\CheckoutApiWrapper\Service\Session;
 
 class Address extends Objectable
 {
@@ -79,6 +80,9 @@ class Address extends Objectable
                 if (isset($result->geometry)) {
                     $this->latitude = $result->geometry->location->lat;
                     $this->longitude = $result->geometry->location->lng;
+
+                    // Save this result in cache, so we don't have to load it again
+                    Session::save($prepAddr, [$this->latitude, $this->longitude]);
                 }
             } catch (GuzzleException $ge) {
             } catch (\Exception $e) {
