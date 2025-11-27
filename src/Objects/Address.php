@@ -39,9 +39,6 @@ class Address extends Objectable
     {
         // Constructor sets elevated properties, this specific one has custom functionality in setter
         $this->setGoogleApiKey($googleApiKey);
-
-        // Calculate coordinates based on address using Google Maps API
-        $this->setLongLat();
     }
 
     /** Geocode address to validate and retrieve coordinates
