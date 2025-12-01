@@ -11,6 +11,9 @@ use Monta\CheckoutApiWrapper\Objects\Option as Option;
  */
 class ShippingOption extends Objectable
 {
+    public const string SHIPPING_OPTIONS_KEY = 'DeliveryOptions';
+
+    public const string SHIPPING_STANDARD_KEY = 'StandardShipper';
 
     /** Constructor with promoted properties
      *

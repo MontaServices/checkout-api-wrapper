@@ -14,6 +14,8 @@ class PickupPoint extends Objectable
 
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
 
+    public const string PICKUP_STORE_KEY = 'StoreLocation';
+
     /** Properties must be public so they are added to JSON object
      *
      * @param string $displayName

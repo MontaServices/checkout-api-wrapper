@@ -231,11 +231,11 @@ class MontapackingShipping
         }
 
         return [
-            'DeliveryOptions' => $timeframes,
+            ShippingOption::SHIPPING_OPTIONS_KEY => $timeframes,
             PickupPoint::PICKUP_OPTIONS_KEY => $pickups,
-            'StandardShipper' => $standardShipper,
+            ShippingOption::SHIPPING_STANDARD_KEY => $standardShipper,
             'CustomerLocation' => $this->address,
-            'StoreLocation' => $storeLocation,
+            PickupPoint::PICKUP_STORE_KEY => $storeLocation,
         ];
     }
 
