@@ -90,10 +90,11 @@ class MontapackingShipping
      */
     public function setAddressFromArray(array $address): void
     {
-        $this->address = AddressHelper::convertAddress($address);
-
-        // Google Key must be included in address
-        $this->address->setGoogleApiKey($this->getSettings()->getGoogleKey());
+        $this->address = AddressHelper::convertAddress(
+            address: $address,
+            // Pass along api key if available
+            googleApiKey: $this->getSettings()->getGoogleKey()
+        );
     }
 
     /**

@@ -42,9 +42,10 @@ class Address
     /** Get normalized address from array
      *
      * @param array $address
+     * @param string|null $googleApiKey - Optionally pass API key for geocoding
      * @return WrapperAddress
      */
-    public static function convertAddress(array $address): WrapperAddress
+    public static function convertAddress(array $address, ?string $googleApiKey = null): WrapperAddress
     {
         $countryCode = self::extractValue($address, ['country', 'countryCode', 'countryId']);
 
@@ -82,7 +83,8 @@ class Address
         $postCode = self::extractValue($address, ['postCode', 'postalCode', 'zip', 'zipCode']) ?? '';
         $city = self::extractValue($address, ['city', 'city_id']) ?? '';
         $state = self::extractValue($address, ['state', 'state_id']) ?? '';
-        // Return address as array, exactly in the shape of an Address object (to splat into constructor)
+
+        // Return Address object
         return new WrapperAddress(
             street: trim($street ?? ''),
             houseNumber: trim($houseNr),
@@ -91,6 +93,7 @@ class Address
             city: trim($city),
             state: trim($state),
             countryCode: trim($countryCode),
+            googleApiKey: $googleApiKey,
         );
     }
 

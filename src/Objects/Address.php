@@ -6,6 +6,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 use GuzzleHttp\Exception\GuzzleException;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Service\Guzzle;
+use Monta\CheckoutApiWrapper\Service\Session;
 
 class Address extends Objectable
 {
@@ -46,18 +47,13 @@ class Address extends Objectable
      */
     public function setLongLat(): void
     {
-        // Get lat and long by address
-        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
-        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
-        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
-        $prepAddr = $this->city . str_replace('  ', ' ', $address);
-        $prepAddr = str_replace(' ', '+', $prepAddr);
+        $prepAddr = $this->getPrepareAddress();
+        $sessionPath = $prepAddr . "-coordinates";
 
-        // If this address was geocoded before, use the cached result
-        if ($coords = Session::get($prepAddr)) {
-            // Array is simply 2 coordinates in an array, assign to variables
-            list($this->latitude, $this->longitude) = $coords;
-        } else {
+        // Get address from cache if already there
+        $coords = Session::get($sessionPath);
+        // If not, retrieve from API and write into cache
+        if (!$coords) {
             try {
                 $response = Guzzle::call(
                     route: "maps/api/geocode/json",
@@ -77,14 +73,37 @@ class Address extends Objectable
 
                 // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 if (isset($result->geometry)) {
-                    $this->latitude = $result->geometry->location->lat;
-                    $this->longitude = $result->geometry->location->lng;
+                    $coords = [
+                        $result->geometry->location->lat,
+                        $result->geometry->location->lng,
+                    ];
+
+                    // Save this result in cache, avoid multiple duplicate API calls
+                    Session::save($sessionPath, $coords);
                 }
             } catch (GuzzleException $ge) {
             } catch (\Exception $e) {
                 // Catch and ignore Exceptions, coordinates remain zero
             }
         }
+
+        // Whether retrieved from cache or from API, assign both variables here
+        list($this->latitude, $this->longitude) = $coords;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrepareAddress(): string
+    {
+        // Get lat and long by address
+        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
+        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
+        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
+        $prepAddress = $this->city . str_replace('  ', ' ', $address);
+
+        // Replace spaces with pluses to make it Google-friendly
+        return str_replace(' ', '+', $prepAddress);
     }
 
     /**
@@ -180,10 +199,10 @@ class Address extends Objectable
     {
         if ($googleApiKey) {
             $this->googleApiKey = trim($googleApiKey);
-        }
 
-        // After setting Google Key, coordinates can be calculated
-        $this->setLongLat();
+            // After setting Google Key, coordinates can be calculated
+            $this->setLongLat();
+        }
 
         return $this;
     }

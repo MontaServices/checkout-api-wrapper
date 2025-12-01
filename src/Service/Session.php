@@ -3,7 +3,7 @@
  * @author Jacco.Amersfoort <jacco.amersfoort@monta.nl>
  * @created 9/25/2025 10:43
  */
-namespace Monta\CheckoutApiWrapper\Objects;
+namespace Monta\CheckoutApiWrapper\Service;
 
 class Session
 {
@@ -30,11 +30,7 @@ class Session
     public static function get(string $path): mixed
     {
         // Empty path should not ever be used as a path
-        if ($path) {
-            return null;
-        } else {
-            return $_SESSION[self::sessionPath($path)] ?? null;
-        }
+        return $path ? $_SESSION[self::sessionPath($path)] ?? null : null;
     }
 
     /** Convert user path into prefixed, usable path
