@@ -12,9 +12,12 @@ use Monta\CheckoutApiWrapper\Objects\ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Service\Address as AddressHelper;
 use Monta\CheckoutApiWrapper\Service\Guzzle;
+use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
 class MontapackingShipping
 {
+    use CachedOptions;
+
     /** @var string - URI of CheckoutService for deliveryoptions etc. */
     protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
 
@@ -178,11 +181,12 @@ class MontapackingShipping
     }
 
     /**
-     * @param bool $computeKm - Distance is received in meters, return as kilometers?
+     * @param bool $computeKm - Distance is received in meters, return as kilometers
+     * @param bool $remember - Keep response in session for later use
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(bool $computeKm = false): array
+    public function getShippingOptions(bool $computeKm = false, bool $remember = false): array
     {
         $timeframes = [];
         $pickups = [];
@@ -230,13 +234,19 @@ class MontapackingShipping
             }
         }
 
-        return [
+        $results = [
             ShippingOption::SHIPPING_OPTIONS_KEY => $timeframes,
             PickupPoint::PICKUP_OPTIONS_KEY => $pickups,
             ShippingOption::SHIPPING_STANDARD_KEY => $standardShipper,
             'CustomerLocation' => $this->address,
             PickupPoint::PICKUP_STORE_KEY => $storeLocation,
         ];
+
+        // Keep in session for later checking
+        if ($remember) {
+            $this->saveResults($results);
+        }
+        return $results;
     }
 
     /** Check if connection and credentials are correct
@@ -257,7 +267,7 @@ class MontapackingShipping
                 $success = true;
             }
         } catch (GuzzleException $e) {
-            // Catch and ignore
+            // Catch and ignore, success remains false
         }
         return $success;
     }
