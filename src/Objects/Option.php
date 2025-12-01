@@ -7,8 +7,8 @@ use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
 /**
- * I have hijacked this class to represent either delivery and pickup options.
- * Originally meant for ShipperOptions but not really functional that way.
+ * Class represents either delivery and pickup option, once selected.
+ * Originally meant for a ShipperOption but not really functional that way.
  */
 class Option extends Objectable
 {
@@ -20,7 +20,7 @@ class Option extends Objectable
 
     /**
      * @param string $code
-     * @param string $description
+     * @param string $description - display name
      * @param float|null $price
      * @param string|null $priceFormatted
      * @param array $shipperOptions - e.g. "NoNeighbor" etc.
@@ -62,10 +62,12 @@ class Option extends Objectable
 
     /**
      * @param string $code
+     * @return $this
      */
-    public function setCode(string $code): void
+    public function setCode(string $code): self
     {
         $this->code = $code;
+        return $this;
     }
 
     /**
@@ -98,10 +100,12 @@ class Option extends Objectable
 
     /**
      * @param $price
+     * @return $this
      */
-    public function setPrice($price): void
+    public function setPrice($price): self
     {
         $this->price = $price;
+        return $this;
     }
 
     /**

@@ -3,13 +3,12 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
-use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
 /**
  * This is a Delivery Option, typically under a Timeframe.
  */
-class ShippingOption extends Objectable
+class ShippingOption extends Option
 {
     public const string SHIPPING_OPTIONS_KEY = 'DeliveryOptions';
 
@@ -38,15 +37,15 @@ class ShippingOption extends Objectable
      */
     public function __construct(
         public string $shipper,
-        public string $code,
+        string $code,
         public string $displayNameShort,
         public string $displayName,
         public ?string $from = null,
         public ?string $to = null,
         public string $deliveryType = "",
-        public string $shippingType = "",
-        public float $price = 0,
-        public string $priceFormatted = "",
+        public string $shippingType = "",// TODO what is this? now a function on Option
+        float $price = 0,
+        string $priceFormatted = "",
         public int $discountPercentage = 0,
         public bool $isPreferred = false,
         public bool $isSustainable = false,
@@ -57,6 +56,8 @@ class ShippingOption extends Objectable
         public string $imageUrl = "",
     )
     {
+        parent::__construct($code, $displayName, $price, $priceFormatted);
+
         // Properties are set in constructor, this setter has custom functionality
         $this->setDeliveryOptions($deliveryOptions);
 
@@ -142,24 +143,6 @@ class ShippingOption extends Objectable
     /**
      * @return string
      */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     * @return ShippingOption
-     */
-    public function setCode(string $code): ShippingOption
-    {
-        $this->code = $code;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getDisplayName(): string
     {
         return $this->displayName;
@@ -194,38 +177,12 @@ class ShippingOption extends Objectable
     }
 
     /**
-     * @return string
-     */
-    public function getShippingType(): string
-    {
-        return $this->shippingType;
-    }
-
-    /**
      * @param string $shippingType
      * @return ShippingOption
      */
     public function setShippingType(string $shippingType): ShippingOption
     {
         $this->shippingType = $shippingType;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     * @return ShippingOption
-     */
-    public function setPrice(float $price): ShippingOption
-    {
-        $this->price = $price;
         return $this;
     }
 
@@ -297,22 +254,6 @@ class ShippingOption extends Objectable
     public function setDisplayNameShort(string $displayNameShort): void
     {
         $this->displayNameShort = $displayNameShort;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriceFormatted(): string
-    {
-        return $this->priceFormatted;
-    }
-
-    /**
-     * @param string $priceFormatted
-     */
-    public function setPriceFormatted(string $priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
     }
 
     /**

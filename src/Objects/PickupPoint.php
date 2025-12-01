@@ -3,15 +3,14 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
-use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
 /**
  * Class PickupPoint
  *
  */
-class PickupPoint extends Objectable
+class PickupPoint extends Option
 {
-
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
 
     public const string PICKUP_STORE_KEY = 'StoreLocation';
@@ -47,9 +46,9 @@ class PickupPoint extends Objectable
     public function __construct(
         public string $displayName,
         public string $shipperCode,
-        public string $code,
+        string $code,
         public float $distanceMeters,
-        // TODO replace all these values with simply an Address object
+        // TODO maybe replace all these values with simply an Address object
         public string $company,
         public string $street,
         public ?string $houseNumber,
@@ -63,8 +62,8 @@ class PickupPoint extends Objectable
         public float $longitude,
         public float $latitude,
         public ?string $imageUrl,
-        public float $price,
-        public string $priceFormatted,
+        float $price,
+        string $priceFormatted,
         public array $openingTimes,
         public string $shipperOptionsWithValue,
         protected string $shipperGroupName = "",
@@ -72,6 +71,8 @@ class PickupPoint extends Objectable
         public ?string $formattedAddress = null,
         public array $position = [])
     {
+        parent::__construct($code, $displayName, $price, $priceFormatted);
+
         // Format address for display on frontend
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
 
@@ -120,55 +121,8 @@ class PickupPoint extends Objectable
         $this->shipperCode = $shipperCode;
     }
 
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     */
-    public function setPrice(float $price): void
-    {
-        $this->price = $price;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriceFormatted(): string
-    {
-        return $this->priceFormatted;
-    }
-
-    /**
-     * @param string $priceFormatted
-     */
-    public function setPriceFormatted(string $priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
-    /**
+    /** Name is confusing, value is usually already in kilometers
+     *
      * @return float
      */
     public function getDistanceMeters(): float
