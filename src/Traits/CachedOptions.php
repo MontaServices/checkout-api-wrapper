@@ -5,6 +5,9 @@
  */
 namespace Monta\CheckoutApiWrapper\Traits;
 
+use Monta\CheckoutApiWrapper\Objects\Option;
+use Monta\CheckoutApiWrapper\Objects\ShippingOption;
+use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Service\Session;
 
 trait CachedOptions
@@ -17,7 +20,7 @@ trait CachedOptions
      * @param string|null $item
      * @return array
      */
-    public function getCachedOptions(string $item = null): array
+    protected function getCachedOptions(string $item = null): array
     {
         $results = Session::get(self::CACHE_PREFIX);
         if ($results) {
@@ -29,6 +32,42 @@ trait CachedOptions
             }
         }
         return [];
+    }
+
+    /** Find the matching cached Option
+     *
+     * @param Option $selected
+     * @return void
+     * @throws \Exception
+     */
+
+    /** Find selected option in cache by code
+     * @param Option $selected
+     * @return Option|null
+     */
+    public function retrieveOption(Option $selected): Option|null
+    {
+        $cachedOptions = $this->getCachedOptions();
+        // If cached options exist and if option has Code to match on
+        if ($cachedOptions && $this->getCode()) {
+            switch ($selected->getShippingType()) {
+                case self::DELIVERY_TYPE:
+                    foreach ($cachedOptions[ShippingOption::SHIPPING_OPTIONS_KEY] as $timeframe) {
+                        /** @var TimeFrame $timeframe */
+                        foreach ($timeframe->options as $option) {
+                            /** @var ShippingOption $option */
+                            if ($option->getCode() == $this->getCode()) {
+                                return $option;
+                            }
+                        }
+                    }
+                    break;
+                case self::PICKUP_TYPE:
+                    // TODO implement pickup type
+                    break;
+            }
+        }
+        return null;
     }
 
     /** Save shippingoptions result from API to session cache

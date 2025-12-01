@@ -4,6 +4,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
 /**
  * I have hijacked this class to represent either delivery and pickup options.
@@ -11,6 +12,8 @@ use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
  */
 class Option extends Objectable
 {
+    use CachedOptions;
+
     protected const string DELIVERY_TYPE = 'delivery';
 
     protected const string PICKUP_TYPE = 'pickup';
@@ -123,6 +126,30 @@ class Option extends Objectable
         return $this;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function validate(): bool
+    {
+        $valid = false;
+        // Retrieve the cached option as the selected Option
+        if ($cachedOption = $this->retrieveOption($this)) {
+            // Check if total price is equal to cached price
+            // Never compare floats directly in PHP, always use epsilon precision difference
+            // TODO cachedOption obviously does include selected shipperOptions, so price is incorrect. Compare manually
+            if (abs($this->getPrice(true) - $cachedOption->getPrice(true)) < PHP_FLOAT_EPSILON) {
+                $valid = true;
+            }
+
+            if (!$valid) {
+                throw new \Exception('Invalid Option, please try again');
+            }
+        }
+
+        return $valid;
+    }
+
     /** Convert selected Option to JSON in proper structure.
      * Output format determined by old Montapacking module output for backwards compatibility
      *
@@ -185,6 +212,7 @@ class Option extends Objectable
     }
 
     /** Determine shipping type
+     *
      * @return string
      */
     protected function getShippingType(): string
