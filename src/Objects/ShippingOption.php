@@ -256,6 +256,20 @@ class ShippingOption extends Option
         $this->displayNameShort = $displayNameShort;
     }
 
+    /** Get a shipperoption from this ShippingOption by code
+     *
+     * @param string $code - Shipper option code
+     * @return Option|null
+     */
+    public function getShipperOptionByCode(string $code): ?Option
+    {
+        // Filter array on callback, match on code
+        $filtered = array_filter($this->getDeliveryOptions(), fn($option) => $option->getCode() == $code);
+
+        // Return the first (only) element, or null if none found
+        return reset($filtered) ?? null;
+    }
+
     /**
      * @return array
      */

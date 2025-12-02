@@ -56,7 +56,16 @@ trait CachedOptions
                         /** @var TimeFrame $cachedTimeframe */
                         foreach ($cachedTimeframe->options as $cachedOption) {
                             if ($cachedOption->getCode() == $this->getCode()) {
-                                /** @var ShippingOption $cachedOption*/
+                                /** @var ShippingOption $cachedOption - This is the option we are looking for */
+
+                                /** Copy shipper options manually */
+                                $cachedOptionsShipperOptions = [];
+                                foreach ($this->getShipperOptions() as $shipperOption) {
+                                    // Find cached shipper option by selected 'code', add that to array
+                                    $cachedOptionsShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption['code']);
+                                }
+                                $cachedOption->setShipperOptions($cachedOptionsShipperOptions);
+
                                 return $cachedOption;
                             }
                         }
