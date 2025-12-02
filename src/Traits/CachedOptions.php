@@ -6,6 +6,7 @@
 namespace Monta\CheckoutApiWrapper\Traits;
 
 use Monta\CheckoutApiWrapper\Objects\Option;
+use Monta\CheckoutApiWrapper\Objects\PickupPoint;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Service\Session;
@@ -72,7 +73,12 @@ trait CachedOptions
                     }
                     break;
                 case self::PICKUP_TYPE:
-                    // TODO implement pickup type
+                    foreach ($cachedOptions[PickupPoint::PICKUP_OPTIONS_KEY] as $cachedPickupPoint) {
+                        /** @var PickupPoint $cachedPickupPoint */
+                        if ($cachedPickupPoint->getShipperCode() == $this->getCode()) {
+                            return $cachedPickupPoint;
+                        }
+                    }
                     break;
             }
         }

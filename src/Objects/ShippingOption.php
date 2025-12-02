@@ -264,7 +264,7 @@ class ShippingOption extends Option
     public function getShipperOptionByCode(string $code): ?Option
     {
         // Filter array on callback, match on code
-        $filtered = array_filter($this->getDeliveryOptions(), fn($option) => $option->getCode() == $code);
+        $filtered = array_filter(array: $this->getDeliveryOptions(), callback: fn($option) => $option->getCode() == $code);
 
         // Return the first (only) element, or null if none found
         return reset($filtered) ?? null;

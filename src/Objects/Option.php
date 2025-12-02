@@ -149,7 +149,7 @@ class Option extends Objectable
             if (abs($this->getPrice(true) - $cachedOption->getPrice(true)) < PHP_FLOAT_EPSILON) {
                 $valid = true;
             } else {
-                $errorMsg = 'Selected option `' . $this->getCode() . '` has incorrect price ('.$this->getPrice(true).') compared to validation cache. ('.$cachedOption->getPrice(true).')';
+                $errorMsg = 'Selected option `' . $this->getCode() . '` has incorrect price (' . $this->getPrice(true) . ') compared to validation cache. (' . $cachedOption->getPrice(true) . ')';
             }
         } else {
             $errorMsg = 'Cannot validate option `' . $this->getCode() . '` against cache!';
