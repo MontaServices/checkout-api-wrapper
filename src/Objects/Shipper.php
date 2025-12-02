@@ -14,7 +14,7 @@ class Shipper extends Objectable
      */
     public function __construct(
         public string $name,
-        public string $code
+        public string $code,
     )
     {
     }

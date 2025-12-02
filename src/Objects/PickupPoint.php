@@ -69,7 +69,8 @@ class PickupPoint extends Option
         protected string $shipperGroupName = "",
         public ?string $imageName = null,
         public ?string $formattedAddress = null,
-        public array $position = [])
+        public array $position = [],
+    )
     {
         parent::__construct($code, $displayName, $price, $priceFormatted);
 
