@@ -75,7 +75,7 @@ trait CachedOptions
                 case self::PICKUP_TYPE:
                     foreach ($cachedOptions[PickupPoint::PICKUP_OPTIONS_KEY] as $cachedPickupPoint) {
                         /** @var PickupPoint $cachedPickupPoint */
-                        if ($cachedPickupPoint->getShipperCode() == $this->getCode()) {
+                        if ($cachedPickupPoint->getCode() == $this->getCode()) {
                             return $cachedPickupPoint;
                         }
                     }
