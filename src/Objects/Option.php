@@ -134,25 +134,32 @@ class Option extends Objectable
     }
 
     /**
-     * @return bool
+     * @param bool $throwOnFail - Throw exception if validation fails, otherwise just return boolean
+     * @return bool - Validation success
      * @throws \Exception
      */
-    public function validate(): bool
+    public function validate(bool $throwOnFail = true): bool
     {
         $valid = false;
+        $errorMsg = 'Invalid Option, please try again';
         // Retrieve the cached option as the selected Option
         if ($cachedOption = $this->retrieveOption($this)) {
             // Check if total price is equal to cached price
             // Never compare floats directly in PHP, always use epsilon precision difference
             if (abs($this->getPrice(true) - $cachedOption->getPrice(true)) < PHP_FLOAT_EPSILON) {
                 $valid = true;
+            } else {
+                $errorMsg = 'Selected option `' . $this->getCode() . '` has incorrect price ('.$this->getPrice(true).') compared to validation cache. ('.$cachedOption->getPrice(true).')';
             }
-
-            if (!$valid) {
-                throw new \Exception('Invalid Option, please try again');
-            }
+        } else {
+            $errorMsg = 'Cannot validate option `' . $this->getCode() . '` against cache!';
         }
 
+        if (!$valid && $throwOnFail) {
+            throw new \Exception($errorMsg);
+        }
+
+        // Return validation result
         return $valid;
     }
 
