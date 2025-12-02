@@ -52,12 +52,12 @@ trait CachedOptions
         if ($cachedOptions && $this->getCode()) {
             switch ($selected->getShippingType()) {
                 case self::DELIVERY_TYPE:
-                    foreach ($cachedOptions[ShippingOption::SHIPPING_OPTIONS_KEY] as $timeframe) {
-                        /** @var TimeFrame $timeframe */
-                        foreach ($timeframe->options as $option) {
-                            /** @var ShippingOption $option */
-                            if ($option->getCode() == $this->getCode()) {
-                                return $option;
+                    foreach ($cachedOptions[ShippingOption::SHIPPING_OPTIONS_KEY] as $cachedTimeframe) {
+                        /** @var TimeFrame $cachedTimeframe */
+                        foreach ($cachedTimeframe->options as $cachedOption) {
+                            if ($cachedOption->getCode() == $this->getCode()) {
+                                /** @var ShippingOption $cachedOption*/
+                                return $cachedOption;
                             }
                         }
                     }

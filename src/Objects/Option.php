@@ -124,8 +124,11 @@ class Option extends Objectable
      */
     public function setShipperOptions(array $shipperOptions): self
     {
-        // Index by 'code' to remove duplicates, then reset keys
-        $this->shipperOptions = array_values(array_column($shipperOptions, null, 'code'));
+        // index array on 'code' column to remove duplicates
+        $shipperOptions = array_column($shipperOptions, null, 'code');
+
+        // assign property, reset keys to be numeric
+        $this->shipperOptions = array_values($shipperOptions);
 
         return $this;
     }
@@ -141,7 +144,6 @@ class Option extends Objectable
         if ($cachedOption = $this->retrieveOption($this)) {
             // Check if total price is equal to cached price
             // Never compare floats directly in PHP, always use epsilon precision difference
-            // TODO cachedOption obviously does include selected shipperOptions, so price is incorrect. Compare manually
             if (abs($this->getPrice(true) - $cachedOption->getPrice(true)) < PHP_FLOAT_EPSILON) {
                 $valid = true;
             }
