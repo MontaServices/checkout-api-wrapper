@@ -17,7 +17,7 @@ abstract class Objectable
      * @param array $additionalData
      * @return $this
      */
-    public function setAdditionalData(array $additionalData): static
+    protected function setAdditionalData(array $additionalData): static
     {
         $this->additionalData = $additionalData;
         return $this;
@@ -49,7 +49,8 @@ abstract class Objectable
         return sprintf(self::SHIPPER_IMAGE_URL, $value ?? "monta");
     }
 
-    /**
+    /** TODO is this not just getVars()?
+     *
      * @return array
      */
     public function toArray(): array
@@ -95,9 +96,10 @@ abstract class Objectable
     /** Construct object from array
      *
      * @param array $data
+     * @param string|null $className
      * @return static|null
      */
-    public static function construct(array $data): ?static
+    public static function construct(array $data, string $className = null): ?static
     {
         // Get array with only the keys that are a property (to splat into constructor)
         $props = array_intersect_key(
@@ -106,11 +108,15 @@ abstract class Objectable
             static::getVars()
         );
 
+        // Use the passed className or use the class that was called
+        if (!$className) {
+            $className = static::class;
+        }
+
         return !empty($props) ?
             // construct class
-            (new static(...$props))
+            (new $className(...$props))
                 // keep the source data
                 ->setAdditionalData($data) : null;
     }
-
 }

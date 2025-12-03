@@ -23,7 +23,6 @@ class Option extends Objectable
      * @param string $description - display name
      * @param float|null $price
      * @param string|null $priceFormatted
-     * @param array $shipperOptions - e.g. "NoNeighbor" etc.
      */
     public function __construct(
         public string $code,
@@ -32,6 +31,26 @@ class Option extends Objectable
         public ?string $priceFormatted = null,
     )
     {
+    }
+
+    /** Custom constructor logic in here
+     *
+     * @param array $data
+     * @param string|null $className
+     * @return ShippingOption|PickupPoint|null - Passing className means something else is returned
+     */
+    public static function construct(array $data, string $className = null): ?static
+    {
+        // Map type to classname
+        switch (self::determineType($data)) {
+            case self::DELIVERY_TYPE:
+                $className = ShippingOption::class;
+                break;
+            case self::PICKUP_TYPE:
+                $className = PickupPoint::class;
+                break;
+        }
+        return parent::construct($data, $className);
     }
 
     /**
@@ -148,6 +167,7 @@ class Option extends Objectable
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
         ];
+        // TODO maybe move all these specifics to subclasses?
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
@@ -199,12 +219,23 @@ class Option extends Objectable
      */
     protected function getShippingType(): string
     {
-        $type = self::DELIVERY_TYPE;
+        return self::determineType($this->getAdditionalData());
+    }
 
-        // Pickup point has no delivery type but has a postal code
-        if (!$this->getAdditionalData('deliveryType') && $this->getAdditionalData('postalCode')) {
-            $type = self::PICKUP_TYPE;
+    /** Determine option type based on data
+     * Since frontend just passes JSON data without classname, that information is lost
+     *
+     * @param array $data
+     * @return string
+     */
+    protected static function determineType(array $data): string
+    {
+        // Delivery option has this field
+        if (!empty($data['deliveryType'])) {
+            return self::DELIVERY_TYPE;
+        } else if (!empty($data['postalCode'])) {
+            // Pickup point has no delivery type but has a postal code
+            return self::PICKUP_TYPE;
         }
-        return $type;
     }
 }
