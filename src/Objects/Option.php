@@ -66,6 +66,14 @@ class Option extends Objectable
     }
 
     /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    /**
      * @param string|null $imageUrl
      */
     public function setImageUrl(?string $imageUrl): void
@@ -132,7 +140,7 @@ class Option extends Objectable
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
                 // Options is just an array of codes, total_price includes their price
-                $details['options'] = $this->getShipperOptions(onlyColumn: 'code');
+                $details['options'] = $this->getSelectedShipperOptions(onlyColumn: 'code');
                 $additionalInfo['name'] = $this->getAdditionalData('displayName');
                 $additionalInfo['date'] = date("Y-m-d H:i:s"); // TODO get desired delivery datetime
                 $additionalInfo['time'] = date("H:i - H:i"); // TODO desired delivery time slot (from and to fields)

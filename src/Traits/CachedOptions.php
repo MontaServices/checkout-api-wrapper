@@ -61,12 +61,11 @@ trait CachedOptions
 
                                 /** Copy shipper options manually */
                                 $cachedOptionsShipperOptions = [];
-                                foreach ($this->getShipperOptions() as $shipperOption) {
+                                foreach ($this->getSelectedShipperOptions() as $shipperOption) {
                                     // Find cached shipper option by selected 'code', add that to array
-                                    $cachedOptionsShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption->getCode());
+                                    $cachedOptionsShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption['code']);
                                 }
                                 $cachedOption->setShipperOptions($cachedOptionsShipperOptions);
-
                                 return $cachedOption;
                             }
                         }

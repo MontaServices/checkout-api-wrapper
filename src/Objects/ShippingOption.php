@@ -248,6 +248,7 @@ class ShippingOption extends Option
     }
 
     /** Get a ShipperOption from this ShippingOption by code
+     * Typically used to retrieve from cached Option
      *
      * @param string $code
      * @return ShipperOption|null
@@ -261,17 +262,29 @@ class ShippingOption extends Option
         return reset($filtered) ?? null;
     }
 
-    /**
-     * @param string|null $onlyColumn
-     * @return ShipperOption[]|array - Entire array of ShipperOptions or just one column
+    /** The entire list of possible shipper options for this Option
+     *
+     * @return ShipperOption[]
      */
-    public function getShipperOptions(string $onlyColumn = null): array
+    public function getShipperOptions(): array
     {
+        return $this->deliveryOptions;
+    }
+
+    /** The selected Shipper Options
+     *
+     * @param string|null $onlyColumn
+     * @return array - assoc arrays of selected options (or flat array with one column)
+     */
+    public function getSelectedShipperOptions(string $onlyColumn = null): array
+    {
+        // frontend passes the selected ShipperOptions in this property
+        $shipperOptions = $this->getAdditionalData('selectedShipperOptions') ?? [];
         return $onlyColumn ?
             // when passed, return only one column
-            array_column($this->deliveryOptions, $onlyColumn)
+            array_column($shipperOptions, $onlyColumn)
             // otherwise return whole array
-            : $this->deliveryOptions;
+            : $shipperOptions;
     }
 
     /** Convert stdClass from API to array of Option objects
@@ -311,14 +324,14 @@ class ShippingOption extends Option
     }
 
     /**
-     * @param bool $includeShipperOptions - Include price of all options
+     * @param bool $includeShipperOptions - Include price of selected options
      * @return float
      */
     public function getPrice(bool $includeShipperOptions = false): float
     {
         // base shipping price
         return $this->price
-            // if requested, add sum of all options
-            + ($includeShipperOptions ? array_sum($this->getShipperOptions('price')) : 0);
+            // if requested, add sum of all selected shipperOptions
+            + ($includeShipperOptions ? array_sum($this->getSelectedShipperOptions('price')) : 0);
     }
 }
