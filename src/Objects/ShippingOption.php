@@ -29,6 +29,7 @@ class ShippingOption extends Option
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
+     * TODO rename to shipperOptions
      * @param ShippingOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
@@ -270,24 +271,30 @@ class ShippingOption extends Option
         return reset($filtered) ?? null;
     }
 
-    /**
-     * @return array
+    /** TODO rename to getShipperOptions
+     * @param string|null $onlyColumn
+     * @return ShippingOption[]
      */
-    public function getDeliveryOptions(): array
+    public function getDeliveryOptions(string $onlyColumn = null): array
     {
-        return $this->deliveryOptions;
+        return $onlyColumn ?
+            // when passed, return only one column
+            array_column($this->deliveryOptions, $onlyColumn)
+            // otherwise return whole array
+            : $this->deliveryOptions;
     }
 
     /** Convert stdClass from API to array of Option objects
-     *
-     * @param array $deliveryOptions
+     * TODO rename to setShipperOptions
+     * @param array $shipperOptions
      * @return ShippingOption
      */
-    public function setDeliveryOptions(array $deliveryOptions): ShippingOption
+    public function setDeliveryOptions(array $shipperOptions): ShippingOption
     {
-        $list = [];
-        foreach ($deliveryOptions as $option) {
-            // Convert stdClass into class
+        // index array on 'code' column to remove any duplicates
+        $shipperOptions = array_column($shipperOptions, null, 'code');
+        foreach ($shipperOptions as $option) {
+            // Convert into Option
             $list[] = Option::construct((array)$option);
         }
 
@@ -310,5 +317,17 @@ class ShippingOption extends Option
     public function setShipperCodes(array $shipperCodes): void
     {
         $this->shipperCodes = $shipperCodes;
+    }
+
+    /**
+     * @param bool $includeShipperOptions - Include price of all options
+     * @return float
+     */
+    public function getPrice(bool $includeShipperOptions = false): float
+    {
+        // base shipping price
+        return $this->price
+            // if requested, add sum of all options
+            + ($includeShipperOptions ? array_sum($this->getDeliveryOptions('price')) : 0);
     }
 }

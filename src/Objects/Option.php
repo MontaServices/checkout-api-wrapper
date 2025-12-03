@@ -30,10 +30,8 @@ class Option extends Objectable
         public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
-        protected array $shipperOptions = [],
     )
     {
-        $this->setShipperOptions($shipperOptions);
     }
 
     /**
@@ -87,15 +85,11 @@ class Option extends Objectable
     }
 
     /**
-     * @param bool $includeShipperOptions - Include price of all options
      * @return float
      */
-    public function getPrice(bool $includeShipperOptions = false): float
+    public function getPrice(): float
     {
-        // base shipping price
-        return $this->price
-            // if requested, add sum of all options
-            + ($includeShipperOptions ? array_sum($this->getShipperOptions('price')) : 0);
+        return $this->price;
     }
 
     /**
@@ -109,32 +103,7 @@ class Option extends Objectable
     }
 
     /**
-     * @param string|null $onlyColumn - Pluck a specific column from the shipperOptions array
-     * @return object[]|string[]
-     */
-    public function getShipperOptions(string $onlyColumn = null): array
-    {
-        return $onlyColumn ? array_column($this->shipperOptions, $onlyColumn) : $this->shipperOptions;
-    }
-
-    /** Custom setter for custom functionality
-     *
-     * @param array $shipperOptions
-     * @return $this
-     */
-    public function setShipperOptions(array $shipperOptions): self
-    {
-        // index array on 'code' column to remove duplicates
-        $shipperOptions = array_column($shipperOptions, null, 'code');
-
-        // assign property, reset keys to be numeric
-        $this->shipperOptions = array_values($shipperOptions);
-
-        return $this;
-    }
-
-    /**
-     * @param bool $throwOnFail - Throw exception if validation fails, otherwise just return boolean
+     * @param bool $throwOnFail - Throw exception if validation fails, otherwise return false
      * @return bool - Validation success
      * @throws \Exception
      */
@@ -163,7 +132,7 @@ class Option extends Objectable
         return $valid;
     }
 
-    /** Convert selected Option to JSON in proper structure.
+    /** Convert selected Option to JSON in proper structure. Works on both Delivery or PickupOption.
      * Output format determined by old Montapacking module output for backwards compatibility
      *
      * @return string - JSON string with all it's data ready for DB writing or API output
@@ -178,12 +147,12 @@ class Option extends Objectable
         ];
         $details = [
             'short_code' => $this->getAdditionalData('shipper'),
-            // Options is just an array of codes, total_price includes their price
-            'options' => $this->getShipperOptions(onlyColumn: 'code'),
         ];
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
+                // Options is just an array of codes, total_price includes their price
+                $details['options'] = $this->getDeliveryOptions(onlyColumn: 'code');
                 $additionalInfo['name'] = $this->getAdditionalData('displayName');
                 $additionalInfo['date'] = date("Y-m-d H:i:s"); // TODO get desired delivery datetime
                 $additionalInfo['time'] = date("H:i - H:i"); // TODO desired delivery time slot (from and to fields)
