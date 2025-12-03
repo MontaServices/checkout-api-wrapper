@@ -15,6 +15,7 @@ class ShippingOption extends Option
     public const string SHIPPING_STANDARD_KEY = 'StandardShipper';
 
     /** Constructor with promoted properties
+     * Beware, these properties must match the exact output of the API
      *
      * @param string $shipper
      * @param string $code
@@ -29,7 +30,7 @@ class ShippingOption extends Option
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
-     * TODO rename to shipperOptions
+     * TODO rename to shipperOptions, but the API result uses `deliveryOptions`
      * @param ShipperOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
@@ -60,7 +61,7 @@ class ShippingOption extends Option
         parent::__construct($code, $price, $priceFormatted);
 
         // Properties are set in constructor, this setter has custom functionality
-        $this->setDeliveryOptions($deliveryOptions);
+        $this->setShipperOptions($deliveryOptions);
 
         if ($shipperCodes) {
             // ShipperCodes is usually an array of one code, pick the first one
@@ -265,17 +266,17 @@ class ShippingOption extends Option
     public function getShipperOptionByCode(string $code): ?ShipperOption
     {
         // Filter array on callback, match on code
-        $filtered = array_filter(array: $this->getDeliveryOptions(), callback: fn($option) => $option->getCode() == $code);
+        $filtered = array_filter(array: $this->getShipperOptions(), callback: fn($option) => $option->getCode() == $code);
 
         // Return the first (only) element, or null if none found
         return reset($filtered) ?? null;
     }
 
-    /** TODO rename to getShipperOptions
+    /**
      * @param string|null $onlyColumn
      * @return ShipperOption[]|array - Entire array of ShipperOptions or just one column
      */
-    public function getDeliveryOptions(string $onlyColumn = null): array
+    public function getShipperOptions(string $onlyColumn = null): array
     {
         return $onlyColumn ?
             // when passed, return only one column
@@ -285,11 +286,11 @@ class ShippingOption extends Option
     }
 
     /** Convert stdClass from API to array of Option objects
-     * TODO rename to setShipperOptions
+     *
      * @param array $shipperOptions
      * @return ShippingOption
      */
-    public function setDeliveryOptions(array $shipperOptions): ShippingOption
+    public function setShipperOptions(array $shipperOptions): ShippingOption
     {
         // index array on 'code' column to remove any duplicates
         $shipperOptions = array_column($shipperOptions, null, 'code');
@@ -329,6 +330,6 @@ class ShippingOption extends Option
         // base shipping price
         return $this->price
             // if requested, add sum of all options
-            + ($includeShipperOptions ? array_sum($this->getDeliveryOptions('price')) : 0);
+            + ($includeShipperOptions ? array_sum($this->getShipperOptions('price')) : 0);
     }
 }

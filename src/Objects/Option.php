@@ -146,7 +146,7 @@ class Option extends Objectable
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
                 // Options is just an array of codes, total_price includes their price
-                $details['options'] = $this->getDeliveryOptions(onlyColumn: 'code');
+                $details['options'] = $this->getShipperOptions(onlyColumn: 'code');
                 $additionalInfo['name'] = $this->getAdditionalData('displayName');
                 $additionalInfo['date'] = date("Y-m-d H:i:s"); // TODO get desired delivery datetime
                 $additionalInfo['time'] = date("H:i - H:i"); // TODO desired delivery time slot (from and to fields)
