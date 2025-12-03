@@ -30,7 +30,7 @@ class ShippingOption extends Option
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
-     * TODO rename to shipperOptions, but the API result uses `deliveryOptions`
+     * TODO rename $deliveryOptions to shipperOptions, but the API result uses `deliveryOptions`
      * @param ShipperOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
@@ -41,7 +41,7 @@ class ShippingOption extends Option
         public string $shipper,
         string $code,
         public string $displayNameShort,
-        public string $displayName,
+        string $displayName,
         public ?string $from = null,
         public ?string $to = null,
         public string $deliveryType = "",
@@ -54,11 +54,18 @@ class ShippingOption extends Option
         public array $deliveryOptions = [],
         public string $optionCodes = "",
         public array $shipperCodes = [],
-        protected string $shipperGroupName = "",
-        public string $imageUrl = "",
+        string $shipperGroupName = "",
+        string $imageUrl = "",
     )
     {
-        parent::__construct($code, $price, $priceFormatted);
+        parent::__construct(
+            code: $code,
+            displayName: $displayName,
+            price: $price,
+            priceFormatted: $priceFormatted,
+            imageUrl: $imageUrl,
+            shipperGroupName: $shipperGroupName,
+        );
 
         // Properties are set in constructor, this setter has custom functionality
         $this->setShipperOptions($deliveryOptions);
@@ -139,24 +146,6 @@ class ShippingOption extends Option
     public function setShipper(string $shipper): ShippingOption
     {
         $this->shipper = $shipper;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDisplayName(): string
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * @param string $displayName
-     * @return ShippingOption
-     */
-    public function setDisplayName(string $displayName): ShippingOption
-    {
-        $this->displayName = $displayName;
         return $this;
     }
 

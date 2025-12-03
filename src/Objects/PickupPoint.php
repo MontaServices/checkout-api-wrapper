@@ -44,7 +44,7 @@ class PickupPoint extends Option
      * @param string[] $position - Format according to Google Maps API
      */
     public function __construct(
-        public string $displayName,
+        string $displayName,
         public string $shipperCode,
         string $code,
         public float $distanceMeters,
@@ -61,18 +61,25 @@ class PickupPoint extends Option
         public ?string $phone,
         public float $longitude,
         public float $latitude,
-        public ?string $imageUrl,
+        ?string $imageUrl,
         float $price,
         string $priceFormatted,
         public array $openingTimes,
         public string $shipperOptionsWithValue,
-        protected string $shipperGroupName = "",
+        string $shipperGroupName = "",
         public ?string $imageName = null,
         public ?string $formattedAddress = null,
         public array $position = [],
     )
     {
-        parent::__construct($code, $price, $priceFormatted);
+        parent::__construct(
+            code: $code,
+            displayName: $displayName,
+            price: $price,
+            priceFormatted: $priceFormatted,
+            imageUrl: $imageUrl,
+            shipperGroupName: $shipperGroupName,
+        );
 
         // Format address for display on frontend
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
@@ -88,22 +95,6 @@ class PickupPoint extends Option
             // TODO use $this->shipperGroupName as soon as that's added to REST API output, instead of this temp "DHL" placeholder
             $this->setImageUrl($this->getImageUrl("DHL"));
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getDisplayName(): string
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * @param string $displayName
-     */
-    public function setDisplayName(string $displayName): void
-    {
-        $this->displayName = $displayName;
     }
 
     /**
@@ -329,14 +320,6 @@ class PickupPoint extends Option
     public function setLatitude(float $latitude): void
     {
         $this->latitude = $latitude;
-    }
-
-    /**
-     * @param string|null $imageUrl
-     */
-    public function setImageUrl(?string $imageUrl): void
-    {
-        $this->imageUrl = $imageUrl;
     }
 
     /**

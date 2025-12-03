@@ -8,7 +8,6 @@ use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
 /**
  * Class represents either delivery and pickup option, once selected.
- * Originally meant for a ShipperOption but not really functional that way.
  */
 class Option extends Objectable
 {
@@ -18,15 +17,22 @@ class Option extends Objectable
 
     protected const string PICKUP_TYPE = 'pickup';
 
-    /**
+    /** Shared properties between both classes
+     *
      * @param string $code
+     * @param string $displayName
      * @param float|null $price
      * @param string|null $priceFormatted
+     * @param string|null $imageUrl
+     * @param string $shipperGroupName
      */
     public function __construct(
         public string $code,
+        public string $displayName,
         public ?float $price = null,
         public ?string $priceFormatted = null,
+        public ?string $imageUrl = "",
+        protected string $shipperGroupName = "",
     )
     {
     }
@@ -54,45 +60,25 @@ class Option extends Objectable
     /**
      * @return string
      */
-    public function getPriceFormatted(): string
+    public function getDisplayName(): string
     {
-        return $this->priceFormatted;
+        return $this->displayName;
     }
 
     /**
-     * @param $priceFormatted
+     * @param string|null $imageUrl
      */
-    public function setPriceFormatted($priceFormatted): void
+    public function setImageUrl(?string $imageUrl): void
     {
-        $this->priceFormatted = $priceFormatted;
+        $this->imageUrl = $imageUrl;
     }
 
     /**
-     * @param string $code
-     * @return $this
+     * @return string
      */
-    public function setCode(string $code): self
+    public function getShipperGroupName(): string
     {
-        $this->code = $code;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param $price
-     * @return $this
-     */
-    public function setPrice($price): self
-    {
-        $this->price = $price;
-        return $this;
+        return $this->shipperGroupName;
     }
 
     /**
