@@ -72,7 +72,7 @@ class PickupPoint extends Option
         public array $position = [],
     )
     {
-        parent::__construct($code, $displayName, $price, $priceFormatted);
+        parent::__construct($code, $price, $priceFormatted);
 
         // Format address for display on frontend
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;

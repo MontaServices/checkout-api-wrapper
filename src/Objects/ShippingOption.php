@@ -30,7 +30,7 @@ class ShippingOption extends Option
      * @param bool $isPreferred
      * @param bool $isSustainable
      * TODO rename to shipperOptions
-     * @param ShippingOption[] $deliveryOptions - converted into objects in setter
+     * @param ShipperOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
      * @param string $shipperGroupName
@@ -57,7 +57,7 @@ class ShippingOption extends Option
         public string $imageUrl = "",
     )
     {
-        parent::__construct($code, $displayName, $price, $priceFormatted);
+        parent::__construct($code, $price, $priceFormatted);
 
         // Properties are set in constructor, this setter has custom functionality
         $this->setDeliveryOptions($deliveryOptions);
@@ -257,12 +257,12 @@ class ShippingOption extends Option
         $this->displayNameShort = $displayNameShort;
     }
 
-    /** Get a shipperoption from this ShippingOption by code
+    /** Get a ShipperOption from this ShippingOption by code
      *
-     * @param string $code - Shipper option code
-     * @return Option|null
+     * @param string $code
+     * @return ShipperOption|null
      */
-    public function getShipperOptionByCode(string $code): ?Option
+    public function getShipperOptionByCode(string $code): ?ShipperOption
     {
         // Filter array on callback, match on code
         $filtered = array_filter(array: $this->getDeliveryOptions(), callback: fn($option) => $option->getCode() == $code);
@@ -273,7 +273,7 @@ class ShippingOption extends Option
 
     /** TODO rename to getShipperOptions
      * @param string|null $onlyColumn
-     * @return ShippingOption[]
+     * @return ShipperOption[]|array - Entire array of ShipperOptions or just one column
      */
     public function getDeliveryOptions(string $onlyColumn = null): array
     {
@@ -293,9 +293,10 @@ class ShippingOption extends Option
     {
         // index array on 'code' column to remove any duplicates
         $shipperOptions = array_column($shipperOptions, null, 'code');
+        $list = [];
         foreach ($shipperOptions as $option) {
             // Convert into Option
-            $list[] = Option::construct((array)$option);
+            $list[] = ShipperOption::construct((array)$option);
         }
 
         $this->deliveryOptions = $list;

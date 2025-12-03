@@ -19,6 +19,8 @@ abstract class Objectable
      */
     protected function setAdditionalData(array $additionalData): static
     {
+        // Remove any nested data
+        unset($additionalData['additionalData']);
         $this->additionalData = $additionalData;
         return $this;
     }
@@ -35,6 +37,15 @@ abstract class Objectable
             // Otherwise return the entire array
             return $this->additionalData;
         }
+    }
+
+    /** Many child classes have a code property
+     *
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
     }
 
     /** Get Monta CDN image URL based on shipper group name
@@ -101,17 +112,17 @@ abstract class Objectable
      */
     public static function construct(array $data, string $className = null): ?static
     {
-        // Get array with only the keys that are a property (to splat into constructor)
-        $props = array_intersect_key(
-            $data,
-            // call `static` instead of `self` to call the child class
-            static::getVars()
-        );
-
         // Use the passed className or use the class that was called
         if (!$className) {
             $className = static::class;
         }
+
+        // Get array with only the keys that are a property (to splat into constructor)
+        $props = array_intersect_key(
+            $data,
+            // get all properties from specific child class
+            $className::getVars()
+        );
 
         return !empty($props) ?
             // construct class

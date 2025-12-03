@@ -20,13 +20,11 @@ class Option extends Objectable
 
     /**
      * @param string $code
-     * @param string $description - display name
      * @param float|null $price
      * @param string|null $priceFormatted
      */
     public function __construct(
         public string $code,
-        public string $description = "",
         public ?float $price = null,
         public ?string $priceFormatted = null,
     )
@@ -70,14 +68,6 @@ class Option extends Objectable
     }
 
     /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
      * @param string $code
      * @return $this
      */
@@ -85,22 +75,6 @@ class Option extends Objectable
     {
         $this->code = $code;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
     }
 
     /**
