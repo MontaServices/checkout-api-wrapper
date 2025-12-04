@@ -21,8 +21,9 @@ class ShippingOption extends Option
      * @param string $code
      * @param string $displayNameShort
      * @param string $displayName
-     * @param string|null $from
-     * @param string|null $to
+     * @param string|null $date - Desired delivery date
+     * @param string|null $from - desired delivery time start
+     * @param string|null $to - desired delivery time end
      * @param string $deliveryType
      * @param string $shippingType
      * @param float $price
@@ -42,6 +43,7 @@ class ShippingOption extends Option
         string $code,
         public string $displayNameShort,
         string $displayName,
+        public ?string $date = null,
         public ?string $from = null,
         public ?string $to = null,
         public string $deliveryType = "",
@@ -75,6 +77,14 @@ class ShippingOption extends Option
             // TODO use $this->shipperGroupName as soon as that's added to REST API output
             $this->imageUrl = $this->getImageUrl(reset($this->shipperCodes));
         }
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getDesiredDeliveryDate(): ?string
+    {
+        return $this->date;
     }
 
     /**

@@ -123,7 +123,7 @@ class Option extends Objectable
     /** Convert selected Option to JSON in proper structure. Works on both Delivery or PickupOption.
      * Output format determined by old Montapacking module output for backwards compatibility
      *
-     * @return string - JSON string with all it's data ready for DB writing or API output
+     * @return string - JSON string with all its data ready for DB writing or API output
      */
     public function toJson(): string
     {
@@ -143,8 +143,8 @@ class Option extends Objectable
                 // Options is just an array of codes, total_price includes their price
                 $details['options'] = $this->getSelectedShipperOptions(onlyColumn: 'code');
                 $additionalInfo['name'] = $this->getOriginalData('displayName');
-                $additionalInfo['date'] = date("Y-m-d H:i:s"); // TODO get desired delivery datetime
-                $additionalInfo['time'] = date("H:i - H:i"); // TODO desired delivery time slot (from and to fields)
+                $additionalInfo['date'] = $this->getDesiredDeliveryDate();
+                $additionalInfo['time'] = $this->getFrom() . " - " . $this->getTo();
                 break;
             /** Pickup specific output */
             case self::PICKUP_TYPE:

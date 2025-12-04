@@ -111,7 +111,8 @@ class TimeFrame extends Objectable
         $this->month = $month;
     }
 
-    /**
+    /** Set ShippingOptions to Timeframe
+     *
      * @param array $options
      * @return $this
      */
@@ -120,6 +121,11 @@ class TimeFrame extends Objectable
         $list = null;
 
         foreach ($options as $onr => $option) {
+            /** @var \stdClass $option */
+
+            // Copy date from TimeFrame to ShippingOption (required later as desired delivery date)
+            $option->date = $this->getDate();
+
             // Convert each stdClass into ShippingOption object
             $list[$onr] = ShippingOption::construct((array)$option);
         }
