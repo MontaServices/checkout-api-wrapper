@@ -107,6 +107,7 @@ class PickupPoint extends Option
 
     /**
      * @param string $shipperCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setShipperCode(string $shipperCode): void
     {
@@ -124,6 +125,7 @@ class PickupPoint extends Option
 
     /**
      * @param float $distanceMeters
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setDistanceMeters(float $distanceMeters): void
     {
@@ -140,6 +142,7 @@ class PickupPoint extends Option
 
     /**
      * @param string $company
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCompany(string $company): void
     {
@@ -156,6 +159,7 @@ class PickupPoint extends Option
 
     /**
      * @param string $street
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setStreet(string $street): void
     {
@@ -172,6 +176,7 @@ class PickupPoint extends Option
 
     /**
      * @param string|null $houseNumber
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setHouseNumber(?string $houseNumber): void
     {
@@ -188,6 +193,7 @@ class PickupPoint extends Option
 
     /**
      * @param string $postalCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setPostalCode(string $postalCode): void
     {
@@ -196,6 +202,7 @@ class PickupPoint extends Option
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getDistrict(): string
     {
@@ -204,6 +211,7 @@ class PickupPoint extends Option
 
     /**
      * @param string|null $district
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setDistrict(?string $district): void
     {
@@ -220,6 +228,7 @@ class PickupPoint extends Option
 
     /**
      * @param string $city
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCity(string $city): void
     {
@@ -228,6 +237,7 @@ class PickupPoint extends Option
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getState(): string
     {
@@ -236,6 +246,7 @@ class PickupPoint extends Option
 
     /**
      * @param string|null $state
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setState(?string $state): void
     {
@@ -252,6 +263,7 @@ class PickupPoint extends Option
 
     /**
      * @param string $countryCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCountryCode(string $countryCode): void
     {
@@ -260,6 +272,7 @@ class PickupPoint extends Option
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getAddressRemark(): string
     {
@@ -268,6 +281,7 @@ class PickupPoint extends Option
 
     /**
      * @param string|null $addressRemark
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setAddressRemark(?string $addressRemark): void
     {
@@ -276,6 +290,7 @@ class PickupPoint extends Option
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getPhone(): string
     {
@@ -284,6 +299,7 @@ class PickupPoint extends Option
 
     /**
      * @param string|null $phone
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setPhone(?string $phone): void
     {
@@ -292,6 +308,7 @@ class PickupPoint extends Option
 
     /**
      * @return float
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getLongitude(): float
     {
@@ -300,6 +317,7 @@ class PickupPoint extends Option
 
     /**
      * @param float $longitude
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setLongitude(float $longitude): void
     {
@@ -308,6 +326,7 @@ class PickupPoint extends Option
 
     /**
      * @return float
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getLatitude(): float
     {
@@ -316,6 +335,7 @@ class PickupPoint extends Option
 
     /**
      * @param float $latitude
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setLatitude(float $latitude): void
     {
@@ -324,6 +344,7 @@ class PickupPoint extends Option
 
     /**
      * @return array
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getOpeningTimes(): array
     {
@@ -332,6 +353,7 @@ class PickupPoint extends Option
 
     /**
      * @param array $openingTimes
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setOpeningTimes(array $openingTimes): void
     {

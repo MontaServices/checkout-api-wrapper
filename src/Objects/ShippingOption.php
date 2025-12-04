@@ -78,24 +78,6 @@ class ShippingOption extends Option
     }
 
     /**
-     * @return string
-     * @deprecated - Not referenced anywhere
-     */
-    public function getOptionCodes(): string
-    {
-        return $this->optionCodes;
-    }
-
-    /**
-     * @param string $optionCodes
-     * @deprecated - Not referenced anywhere
-     */
-    public function setOptionCodes(string $optionCodes): void
-    {
-        $this->optionCodes = $optionCodes;
-    }
-
-    /**
      * @return string|null
      */
     public function getFrom(): ?string
@@ -104,147 +86,11 @@ class ShippingOption extends Option
     }
 
     /**
-     * @param string|null $from
-     * @return $this
-     */
-    public function setFrom(?string $from): ShippingOption
-    {
-        $this->from = $from;
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getTo(): ?string
     {
         return $this->to;
-    }
-
-    /**
-     * @param string|null $to
-     * @return ShippingOption
-     */
-    public function setTo(?string $to): ShippingOption
-    {
-        $this->to = $to;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getShipper(): string
-    {
-        return $this->shipper;
-    }
-
-    /**
-     * @param string $shipper
-     * @return ShippingOption
-     */
-    public function setShipper(string $shipper): ShippingOption
-    {
-        $this->shipper = $shipper;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDeliveryType(): string
-    {
-        return $this->deliveryType;
-    }
-
-    /**
-     * @param string $deliveryType
-     * @return ShippingOption
-     */
-    public function setDeliveryType(string $deliveryType): ShippingOption
-    {
-        $this->deliveryType = $deliveryType;
-        return $this;
-    }
-
-    /**
-     * @param string $shippingType
-     * @return ShippingOption
-     */
-    public function setShippingType(string $shippingType): ShippingOption
-    {
-        $this->shippingType = $shippingType;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDiscountPercentage(): int
-    {
-        return $this->discountPercentage;
-    }
-
-    /**
-     * @param int $discountPercentage
-     * @return ShippingOption
-     */
-    public function setDiscountPercentage(int $discountPercentage): ShippingOption
-    {
-        $this->discountPercentage = $discountPercentage;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsPreferred(): bool
-    {
-        return $this->isPreferred;
-    }
-
-    /**
-     * @param bool $isPreferred
-     * @return ShippingOption
-     */
-    public function setIsPreferred(bool $isPreferred): ShippingOption
-    {
-        $this->isPreferred = $isPreferred;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsSustainable(): bool
-    {
-        return $this->isSustainable;
-    }
-
-    /**
-     * @param bool $isSustainable
-     * @return ShippingOption
-     */
-    public function setIsSustainable(bool $isSustainable): ShippingOption
-    {
-        $this->isSustainable = $isSustainable;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDisplayNameShort(): string
-    {
-        return $this->displayNameShort;
-    }
-
-    /**
-     * @param string $displayNameShort
-     */
-    public function setDisplayNameShort(string $displayNameShort): void
-    {
-        $this->displayNameShort = $displayNameShort;
     }
 
     /** Get a ShipperOption from this ShippingOption by code
@@ -305,22 +151,6 @@ class ShippingOption extends Option
         $this->deliveryOptions = $list;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getShipperCodes(): array
-    {
-        return $this->shipperCodes;
-    }
-
-    /**
-     * @param array $shipperCodes
-     */
-    public function setShipperCodes(array $shipperCodes): void
-    {
-        $this->shipperCodes = $shipperCodes;
     }
 
     /**
