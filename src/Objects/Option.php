@@ -140,6 +140,7 @@ class Option extends Objectable
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
+                /** @var ShippingOption $this */
                 // Options is just an array of codes, total_price includes their price
                 $details['options'] = $this->getSelectedShipperOptions(onlyColumn: 'code');
                 $additionalInfo['name'] = $this->getOriginalData('displayName');
@@ -148,25 +149,19 @@ class Option extends Objectable
                 break;
             /** Pickup specific output */
             case self::PICKUP_TYPE:
-                // Construct object back from array
-                // This is possible because $originalData started as a PickupPoint, encoded to JSON for frontend.
-                // Then returned from frontend to Quote, where it was saved as JSON string.
-                // Then decoded back to array in Monta\CheckoutApiWrapper\Objects\Objectable::constructFromJson()
-                // Which could return anything but at this point we know it was a Pickup option.
-                $pickup = PickupPoint::construct($this->getOriginalData());
-                $details['short_code'] = $pickup->getShipperCode();
-                // Pickup point has address in originaldata
+                /** @var PickupPoint $this */
+                $details['short_code'] = $this->getShipperCode();
                 // Old module converted each of these fields in the frontend
                 $additionalInfo += [
-                    'city' => $pickup->getCity(),
-                    'code_pickup' => $pickup->get_shipper_options_with_value(),
-                    'company' => $pickup->getCompany(),
-                    'country' => $pickup->getCountryCode(),
-                    'housenumber' => $pickup->getHouseNumber(),
-                    'postal' => $pickup->getPostalCode(),
-                    'shipper' => $pickup->getShipperCode(),
-                    'street' => $pickup->getStreet(),
-                    'description' => $pickup->getDescription(),
+                    'city' => $this->getCity(),
+                    'code_pickup' => $this->get_shipper_options_with_value(),
+                    'company' => $this->getCompany(),
+                    'country' => $this->getCountryCode(),
+                    'housenumber' => $this->getHouseNumber(),
+                    'postal' => $this->getPostalCode(),
+                    'shipper' => $this->getShipperCode(),
+                    'street' => $this->getStreet(),
+                    'description' => $this->getDescription(),
                 ];
         }
 
