@@ -279,7 +279,7 @@ class ShippingOption extends Option
     public function getSelectedShipperOptions(string $onlyColumn = null): array
     {
         // frontend passes the selected ShipperOptions in this property
-        $shipperOptions = $this->getAdditionalData('selectedShipperOptions') ?? [];
+        $shipperOptions = $this->getOriginalData('selectedShipperOptions') ?? [];
         return $onlyColumn ?
             // when passed, return only one column
             array_column($shipperOptions, $onlyColumn)

@@ -10,45 +10,45 @@ abstract class Objectable
     /** @var string - Shipper images are located here, grouped on ShipperGroupName (placeholder) */
     protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
 
-    /** @var array - Source data */
-    protected array $additionalData = [];
-
-    /**
-     * @param array $additionalData
-     * @return $this
-     */
-    protected function setAdditionalData(array $additionalData): static
-    {
-        // Remove any nested data
-        unset($additionalData['additionalData']);
-        $this->additionalData = $additionalData;
-        return $this;
-    }
-
-    /** Update data array
-     *
-     * @param array $additionalData
-     * @return $this
-     */
-    public function updateAdditionalData(array $additionalData): static
-    {
-        // update array, overwrite existing keys
-        $this->additionalData = array_merge($this->additionalData, $additionalData);
-        return $this;
-    }
+    /** @var array - Original data from API, packed and unpacked to JSON by frontend */
+    protected array $originalData = [];
 
     /**
      * @param string|null $key
      * @return mixed
      */
-    protected function getAdditionalData(string $key = null): mixed
+    protected function getOriginalData(string $key = null): mixed
     {
         if ($key) {
-            return $this->additionalData[$key] ?? null;
+            return $this->originalData[$key] ?? null;
         } else {
             // Otherwise return the entire array
-            return $this->additionalData;
+            return $this->originalData;
         }
+    }
+
+    /**
+     * @param array $originalData
+     * @return $this
+     */
+    protected function setOriginalData(array $originalData): static
+    {
+        // Remove any nested data
+        unset($originalData['originalData']);
+        $this->originalData = $originalData;
+        return $this;
+    }
+
+    /** Update data
+     *
+     * @param array $originalData
+     * @return $this
+     */
+    public function updateOriginalData(array $originalData): static
+    {
+        // update array, overwrite existing keys
+        $this->originalData = array_merge($this->originalData, $originalData);
+        return $this;
     }
 
     /** Many child classes have a code property
@@ -108,9 +108,9 @@ abstract class Objectable
 
     /**
      * @param string $json - JSON-encoded array of properties
-     * @return static|null
+     * @return static|null|ShippingOption|PickupPoint
      */
-    public static function constructFromJson(string $json): ?static
+    public static function constructFromJson(string $json): static|null|ShippingOption|PickupPoint
     {
         // Convert JSON into array
         return static::construct(json_decode($json, true));
@@ -140,6 +140,6 @@ abstract class Objectable
             // construct class
             (new $className(...$props))
                 // keep the source data
-                ->setAdditionalData($data) : null;
+                ->setOriginalData($data) : null;
     }
 }

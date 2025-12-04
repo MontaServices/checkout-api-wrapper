@@ -18,7 +18,7 @@ class MontapackingShipping
 {
     use CachedOptions;
 
-    /** @var string - URI of CheckoutService for shipping timeframes */
+    /** @var string - URI of CheckoutService for shipping options */
     protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
 
     /** @var string - URI of API for testing info TODO use gateway URI once CheckoutService adds /info endpoint */

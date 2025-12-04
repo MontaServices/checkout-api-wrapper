@@ -60,7 +60,7 @@ trait CachedOptions
                                     $cachedOptionSelectedShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption['code']);
                                 }
                                 // Update selected Shipper options on the cached Option to match price calculation
-                                $cachedOption->updateAdditionalData(['selectedShipperOptions' => $cachedOptionSelectedShipperOptions]);
+                                $cachedOption->updateOriginalData(['selectedShipperOptions' => $cachedOptionSelectedShipperOptions]);
                                 return $cachedOption;
                             }
                         }

@@ -134,7 +134,7 @@ class Option extends Objectable
             'total_price' => $this->getPrice(true), // including options
         ];
         $details = [
-            'short_code' => $this->getAdditionalData('shipper'),
+            'short_code' => $this->getOriginalData('shipper'),
         ];
         // TODO maybe move all these specifics to subclasses?
         switch ($type) {
@@ -142,20 +142,20 @@ class Option extends Objectable
             case self::DELIVERY_TYPE:
                 // Options is just an array of codes, total_price includes their price
                 $details['options'] = $this->getSelectedShipperOptions(onlyColumn: 'code');
-                $additionalInfo['name'] = $this->getAdditionalData('displayName');
+                $additionalInfo['name'] = $this->getOriginalData('displayName');
                 $additionalInfo['date'] = date("Y-m-d H:i:s"); // TODO get desired delivery datetime
                 $additionalInfo['time'] = date("H:i - H:i"); // TODO desired delivery time slot (from and to fields)
                 break;
             /** Pickup specific output */
             case self::PICKUP_TYPE:
                 // Construct object back from array
-                // This is possible because $additionalData started as a PickupPoint, encoded to JSON for frontend.
+                // This is possible because $originalData started as a PickupPoint, encoded to JSON for frontend.
                 // Then returned from frontend to Quote, where it was saved as JSON string.
                 // Then decoded back to array in Monta\CheckoutApiWrapper\Objects\Objectable::constructFromJson()
                 // Which could return anything but at this point we know it was a Pickup option.
-                $pickup = PickupPoint::construct($this->getAdditionalData());
+                $pickup = PickupPoint::construct($this->getOriginalData());
                 $details['short_code'] = $pickup->getShipperCode();
-                // Pickup point has address in additional data
+                // Pickup point has address in originaldata
                 // Old module converted each of these fields in the frontend
                 $additionalInfo += [
                     'city' => $pickup->getCity(),
@@ -188,7 +188,7 @@ class Option extends Objectable
      */
     protected function getShippingType(): string
     {
-        return self::determineType($this->getAdditionalData());
+        return self::determineType($this->getOriginalData());
     }
 
     /** Determine option type based on data
