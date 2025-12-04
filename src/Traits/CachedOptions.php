@@ -35,18 +35,12 @@ trait CachedOptions
         return [];
     }
 
-    /** Find the matching cached Option
+    /** Find the matching cached option by code
      *
      * @param Option $selected
-     * @return void
-     * @throws \Exception
+     * @return Option|ShippingOption|PickupPoint|null
      */
-
-    /** Find selected option in cache by code
-     * @param Option $selected
-     * @return Option|null
-     */
-    public function retrieveOption(Option $selected): Option|null
+    protected function retrieveOption(Option $selected): Option|ShippingOption|PickupPoint|null
     {
         $cachedOptions = $this->getCachedOptions();
         // If cached options exist and if option has Code to match on
@@ -60,12 +54,13 @@ trait CachedOptions
                                 /** @var ShippingOption $cachedOption - This is the option we are looking for */
 
                                 /** Copy shipper options manually */
-                                $cachedOptionsShipperOptions = [];
+                                $cachedOptionSelectedShipperOptions = [];
                                 foreach ($this->getSelectedShipperOptions() as $shipperOption) {
                                     // Find cached shipper option by selected 'code', add that to array
-                                    $cachedOptionsShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption['code']);
+                                    $cachedOptionSelectedShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption['code']);
                                 }
-                                $cachedOption->setShipperOptions($cachedOptionsShipperOptions);
+                                // Update selected Shipper options on the cached Option to match price calculation
+                                $cachedOption->updateAdditionalData(['selectedShipperOptions' => $cachedOptionSelectedShipperOptions]);
                                 return $cachedOption;
                             }
                         }

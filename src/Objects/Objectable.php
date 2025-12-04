@@ -25,6 +25,18 @@ abstract class Objectable
         return $this;
     }
 
+    /** Update data array
+     *
+     * @param array $additionalData
+     * @return $this
+     */
+    public function updateAdditionalData(array $additionalData): static
+    {
+        // update array, overwrite existing keys
+        $this->additionalData = array_merge($this->additionalData, $additionalData);
+        return $this;
+    }
+
     /**
      * @param string|null $key
      * @return mixed

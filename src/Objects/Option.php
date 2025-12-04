@@ -100,7 +100,8 @@ class Option extends Objectable
         $errorMsg = 'Invalid Option, please try again';
         // Retrieve the cached option as the selected Option
         if ($cachedOption = $this->retrieveOption($this)) {
-            // Check if total price is equal to cached price
+            // Cached Option now has the same `selectedShipperOptions` as the selected Option
+            // Check if Option total price is equal to cached price
             // Never compare floats directly in PHP, always use epsilon precision difference
             if (abs($this->getPrice(true) - $cachedOption->getPrice(true)) < PHP_FLOAT_EPSILON) {
                 $valid = true;
