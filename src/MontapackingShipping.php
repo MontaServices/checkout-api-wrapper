@@ -182,11 +182,11 @@ class MontapackingShipping
 
     /**
      * @param bool $computeKm - Distance is received in meters, return as kilometers
-     * @param bool $remember - Keep response in session for later use
+     * @param bool $cacheResults - Keep response in cache for later use
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(bool $computeKm = false, bool $remember = false): array
+    public function getShippingOptions(bool $computeKm = false, bool $cacheResults = false): array
     {
         $timeframes = [];
         $pickups = [];
@@ -242,8 +242,8 @@ class MontapackingShipping
             PickupPoint::PICKUP_STORE_KEY => $storeLocation,
         ];
 
-        // Keep in session for later checking
-        if ($remember) {
+        // Keep in cache for later checking
+        if ($cacheResults) {
             $this->saveResults($results);
         }
         return $results;
