@@ -267,7 +267,8 @@ class MontapackingShipping
                 $success = true;
             }
         } catch (GuzzleException $e) {
-            // Catch and ignore, success remains false
+            // Catch and ignore, success is false
+            $success = false;
         }
         return $success;
     }
