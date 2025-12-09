@@ -8,7 +8,7 @@ namespace Monta\CheckoutApiWrapper\Service;
 class Session
 {
     /** @var string - Cache prefix to distinguish values in session */
-    protected const SESSION_PREFIX = 'monta_session_data_';
+    protected const string SESSION_PREFIX = 'monta_session_data_';
 
     /**
      * @param string $path

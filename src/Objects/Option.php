@@ -4,129 +4,126 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
 /**
- * I have hijacked this class to represent either delivery and pickup options.
- * Originally meant for ShipperOptions but not really functional that way.
+ * Class represents either delivery and pickup option, once selected.
  */
 class Option extends Objectable
 {
+    use CachedOptions;
+
     protected const string DELIVERY_TYPE = 'delivery';
 
     protected const string PICKUP_TYPE = 'pickup';
 
-    /**
+    /** Shared properties between both classes
+     *
      * @param string $code
-     * @param string $description
+     * @param string $displayName
      * @param float|null $price
      * @param string|null $priceFormatted
-     * @param array $shipperOptions - e.g. "NoNeighbor" etc.
+     * @param string|null $imageUrl
+     * @param string $shipperGroupName
      */
     public function __construct(
         public string $code,
-        public string $description = "",
+        public string $displayName,
         public ?float $price = null,
         public ?string $priceFormatted = null,
-        protected array $shipperOptions = [],
+        public ?string $imageUrl = "",
+        protected string $shipperGroupName = "",
     )
     {
-        $this->setShipperOptions($shipperOptions);
+    }
+
+    /** Custom constructor logic in here
+     *
+     * @param array $data
+     * @param string|null $className
+     * @return ShippingOption|PickupPoint|null - Passing className means something else is returned
+     */
+    public static function construct(array $data, string $className = null): ?static
+    {
+        // Map type to classname
+        switch (self::determineType($data)) {
+            case self::DELIVERY_TYPE:
+                $className = ShippingOption::class;
+                break;
+            case self::PICKUP_TYPE:
+                $className = PickupPoint::class;
+                break;
+        }
+        return parent::construct($data, $className);
     }
 
     /**
      * @return string
      */
-    public function getPriceFormatted(): string
+    public function getDisplayName(): string
     {
-        return $this->priceFormatted;
+        return $this->displayName;
     }
 
     /**
-     * @param $priceFormatted
-     */
-    public function setPriceFormatted($priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @param bool $includeShipperOptions - Include price of all options
      * @return float
      */
-    public function getPrice(bool $includeShipperOptions = false): float
+    public function getPrice(): float
     {
-        // base shipping price
-        return $this->price
-            // if requested, add sum of all options
-            + ($includeShipperOptions ? array_sum($this->getShipperOptions('price')) : 0);
+        return $this->price;
     }
 
     /**
-     * @param $price
+     * @param string|null $imageUrl
      */
-    public function setPrice($price): void
+    public function setImageUrl(?string $imageUrl): void
     {
-        $this->price = $price;
+        $this->imageUrl = $imageUrl;
     }
 
     /**
-     * @param string|null $onlyColumn - Pluck a specific column from the shipperOptions array
-     * @return object[]|string[]
+     * @return string
      */
-    public function getShipperOptions(string $onlyColumn = null): array
+    public function getShipperGroupName(): string
     {
-        return $onlyColumn ? array_column($this->shipperOptions, $onlyColumn) : $this->shipperOptions;
+        return $this->shipperGroupName;
     }
 
-    /** Custom setter for custom functionality
-     *
-     * @param array $shipperOptions
-     * @return $this
+    /**
+     * @param bool $throwOnFail - Throw exception if validation fails, otherwise return false
+     * @return bool - Validation success
+     * @throws \Exception
      */
-    public function setShipperOptions(array $shipperOptions): self
+    public function validate(bool $throwOnFail = true): bool
     {
-        // Index by 'code' to remove duplicates, then reset keys
-        $this->shipperOptions = array_values(array_column($shipperOptions, null, 'code'));
+        $valid = false;
+        $errorMsg = 'Invalid Option, please try again';
+        // Retrieve the cached option as the selected Option
+        if ($cachedOption = $this->retrieveOption($this)) {
+            // Cached Option now has the same `selectedShipperOptions` as the selected Option
+            // Check if Option total price is equal to cached price
+            // Never compare floats directly in PHP, always use epsilon precision difference
+            if (abs($this->getPrice(true) - $cachedOption->getPrice(true)) < PHP_FLOAT_EPSILON) {
+                $valid = true;
+            } else {
+                $errorMsg = 'Selected option `' . $this->getCode() . '` has incorrect price (' . $this->getPrice(true) . ') compared to validation cache. (' . $cachedOption->getPrice(true) . ')';
+            }
+        } else {
+            $errorMsg = 'Cannot validate option `' . $this->getCode() . '` against cache!';
+        }
 
-        return $this;
+        if (!$valid && $throwOnFail) {
+            throw new \Exception($errorMsg);
+        }
+
+        // Return validation result
+        return $valid;
     }
 
-    /** Convert selected Option to JSON in proper structure.
+    /** Convert selected Option to JSON in proper structure. Works on both Delivery or PickupOption.
      * Output format determined by old Montapacking module output for backwards compatibility
      *
-     * @return string - JSON string with all it's data ready for DB writing or API output
+     * @return string - JSON string with all its data ready for DB writing or API output
      */
     public function toJson(): string
     {
@@ -137,38 +134,34 @@ class Option extends Objectable
             'total_price' => $this->getPrice(true), // including options
         ];
         $details = [
-            'short_code' => $this->getAdditionalData('shipper'),
-            // Options is just an array of codes, total_price includes their price
-            'options' => $this->getShipperOptions(onlyColumn: 'code'),
+            'short_code' => $this->getOriginalData('shipper'),
         ];
+        // TODO maybe move all these specifics to subclasses?
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
-                $additionalInfo['name'] = $this->getAdditionalData('displayName');
-                $additionalInfo['date'] = date("Y-m-d H:i:s"); // TODO get desired delivery datetime
-                $additionalInfo['time'] = date("H:i - H:i"); // TODO desired delivery time slot (from and to fields)
+                /** @var ShippingOption $this */
+                // Options is just an array of codes, total_price includes their price
+                $details['options'] = $this->getSelectedShipperOptions(onlyColumn: 'code');
+                $additionalInfo['name'] = $this->getOriginalData('displayName');
+                $additionalInfo['date'] = $this->getDesiredDeliveryDate();
+                $additionalInfo['time'] = $this->getFrom() . " - " . $this->getTo();
                 break;
             /** Pickup specific output */
             case self::PICKUP_TYPE:
-                // Construct object back from array
-                // This is possible because $additionalData started as a PickupPoint, encoded to JSON for frontend.
-                // Then returned from frontend to Quote, where it was saved as JSON string.
-                // Then decoded back to array in Monta\CheckoutApiWrapper\Objects\Objectable::constructFromJson()
-                // Which could return anything but at this point we know it was a Pickup option.
-                $pickup = PickupPoint::construct($this->getAdditionalData());
-                $details['short_code'] = $pickup->getShipperCode();
-                // Pickup point has address in additional data
+                /** @var PickupPoint $this */
+                $details['short_code'] = $this->getShipperCode();
                 // Old module converted each of these fields in the frontend
                 $additionalInfo += [
-                    'city' => $pickup->getCity(),
-                    'code_pickup' => $pickup->get_shipper_options_with_value(),
-                    'company' => $pickup->getCompany(),
-                    'country' => $pickup->getCountryCode(),
-                    'housenumber' => $pickup->getHouseNumber(),
-                    'postal' => $pickup->getPostalCode(),
-                    'shipper' => $pickup->getShipperCode(),
-                    'street' => $pickup->getStreet(),
-                    'description' => $pickup->getDescription(),
+                    'city' => $this->getCity(),
+                    'code_pickup' => $this->get_shipper_options_with_value(),
+                    'company' => $this->getCompany(),
+                    'country' => $this->getCountryCode(),
+                    'housenumber' => $this->getHouseNumber(),
+                    'postal' => $this->getPostalCode(),
+                    'shipper' => $this->getShipperCode(),
+                    'street' => $this->getStreet(),
+                    'description' => $this->getDescription(),
                 ];
         }
 
@@ -185,16 +178,28 @@ class Option extends Objectable
     }
 
     /** Determine shipping type
+     *
      * @return string
      */
     protected function getShippingType(): string
     {
-        $type = self::DELIVERY_TYPE;
+        return self::determineType($this->getOriginalData());
+    }
 
-        // Pickup point has no delivery type but has a postal code
-        if (!$this->getAdditionalData('deliveryType') && $this->getAdditionalData('postalCode')) {
-            $type = self::PICKUP_TYPE;
+    /** Determine option type based on data
+     * Since frontend just passes JSON data without classname, that information is lost
+     *
+     * @param array $data
+     * @return string
+     */
+    protected static function determineType(array $data): string
+    {
+        // Delivery option has this field
+        if (!empty($data['deliveryType'])) {
+            return self::DELIVERY_TYPE;
+        } else if (!empty($data['postalCode'])) {
+            // Pickup point has no delivery type but has a postal code
+            return self::PICKUP_TYPE;
         }
-        return $type;
     }
 }

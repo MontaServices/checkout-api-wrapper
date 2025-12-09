@@ -12,10 +12,13 @@ use Monta\CheckoutApiWrapper\Objects\ShippingOption;
 use Monta\CheckoutApiWrapper\Objects\TimeFrame;
 use Monta\CheckoutApiWrapper\Service\Address as AddressHelper;
 use Monta\CheckoutApiWrapper\Service\Guzzle;
+use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
 class MontapackingShipping
 {
-    /** @var string - URI of CheckoutService for deliveryoptions etc. */
+    use CachedOptions;
+
+    /** @var string - URI of CheckoutService for shipping options */
     protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
 
     /** @var string - URI of API for testing info TODO use gateway URI once CheckoutService adds /info endpoint */
@@ -178,11 +181,12 @@ class MontapackingShipping
     }
 
     /**
-     * @param bool $computeKm - Distance is received in meters, return as kilometers?
+     * @param bool $computeKm - Distance is received in meters, return as kilometers
+     * @param bool $cacheResults - Keep response in cache for later use
      * @return array
      * @throws GuzzleException
      */
-    public function getShippingOptions(bool $computeKm = false): array
+    public function getShippingOptions(bool $computeKm = false, bool $cacheResults = false): array
     {
         $timeframes = [];
         $pickups = [];
@@ -230,13 +234,19 @@ class MontapackingShipping
             }
         }
 
-        return [
-            'DeliveryOptions' => $timeframes,
+        $results = [
+            ShippingOption::SHIPPING_OPTIONS_KEY => $timeframes,
             PickupPoint::PICKUP_OPTIONS_KEY => $pickups,
-            'StandardShipper' => $standardShipper,
+            ShippingOption::SHIPPING_STANDARD_KEY => $standardShipper,
             'CustomerLocation' => $this->address,
-            'StoreLocation' => $storeLocation,
+            PickupPoint::PICKUP_STORE_KEY => $storeLocation,
         ];
+
+        // Keep in cache for later checking
+        if ($cacheResults) {
+            $this->saveResults($results);
+        }
+        return $results;
     }
 
     /** Check if connection and credentials are correct
@@ -257,7 +267,8 @@ class MontapackingShipping
                 $success = true;
             }
         } catch (GuzzleException $e) {
-            // Catch and ignore
+            // Catch and ignore, success is false
+            $success = false;
         }
         return $success;
     }

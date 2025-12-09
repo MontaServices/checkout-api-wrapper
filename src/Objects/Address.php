@@ -10,11 +10,11 @@ use Monta\CheckoutApiWrapper\Service\Session;
 
 class Address extends Objectable
 {
-    /** @var float $longitude - Public to use on frontend */
-    public float $longitude = 0.0;
+    /** @var float|null $longitude - Public to use on frontend */
+    public ?float $longitude = 0.0;
 
-    /** @var float $latitude */
-    public float $latitude = 0.0;
+    /** @var float|null $latitude */
+    public ?float $latitude = 0.0;
 
     /**
      * @param string $street

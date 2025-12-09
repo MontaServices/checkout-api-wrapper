@@ -3,16 +3,17 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
-use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
 /**
  * Class PickupPoint
  *
  */
-class PickupPoint extends Objectable
+class PickupPoint extends Option
 {
-
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
+
+    public const string PICKUP_STORE_KEY = 'StoreLocation';
 
     /** Properties must be public so they are added to JSON object
      *
@@ -43,11 +44,11 @@ class PickupPoint extends Objectable
      * @param string[] $position - Format according to Google Maps API
      */
     public function __construct(
-        public string $displayName,
+        string $displayName,
         public string $shipperCode,
-        public string $code,
+        string $code,
         public float $distanceMeters,
-        // TODO replace all these values with simply an Address object
+        // TODO maybe replace all these values with simply an Address object
         public string $company,
         public string $street,
         public ?string $houseNumber,
@@ -60,16 +61,26 @@ class PickupPoint extends Objectable
         public ?string $phone,
         public float $longitude,
         public float $latitude,
-        public ?string $imageUrl,
-        public float $price,
-        public string $priceFormatted,
+        ?string $imageUrl,
+        float $price,
+        string $priceFormatted,
         public array $openingTimes,
         public string $shipperOptionsWithValue,
-        protected string $shipperGroupName = "",
+        string $shipperGroupName = "",
         public ?string $imageName = null,
         public ?string $formattedAddress = null,
-        public array $position = [])
+        public array $position = [],
+    )
     {
+        parent::__construct(
+            code: $code,
+            displayName: $displayName,
+            price: $price,
+            priceFormatted: $priceFormatted,
+            imageUrl: $imageUrl,
+            shipperGroupName: $shipperGroupName,
+        );
+
         // Format address for display on frontend
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
 
@@ -89,22 +100,6 @@ class PickupPoint extends Objectable
     /**
      * @return string
      */
-    public function getDisplayName(): string
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * @param string $displayName
-     */
-    public function setDisplayName(string $displayName): void
-    {
-        $this->displayName = $displayName;
-    }
-
-    /**
-     * @return string
-     */
     public function getShipperCode(): string
     {
         return $this->shipperCode;
@@ -112,61 +107,15 @@ class PickupPoint extends Objectable
 
     /**
      * @param string $shipperCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setShipperCode(string $shipperCode): void
     {
         $this->shipperCode = $shipperCode;
     }
 
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     */
-    public function setPrice(float $price): void
-    {
-        $this->price = $price;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriceFormatted(): string
-    {
-        return $this->priceFormatted;
-    }
-
-    /**
-     * @param string $priceFormatted
-     */
-    public function setPriceFormatted(string $priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
-    /**
+    /** Name is confusing, value is usually already in kilometers
+     *
      * @return float
      */
     public function getDistanceMeters(): float
@@ -176,6 +125,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param float $distanceMeters
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setDistanceMeters(float $distanceMeters): void
     {
@@ -192,6 +142,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string $company
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCompany(string $company): void
     {
@@ -208,6 +159,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string $street
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setStreet(string $street): void
     {
@@ -224,6 +176,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string|null $houseNumber
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setHouseNumber(?string $houseNumber): void
     {
@@ -240,6 +193,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string $postalCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setPostalCode(string $postalCode): void
     {
@@ -248,6 +202,7 @@ class PickupPoint extends Objectable
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getDistrict(): string
     {
@@ -256,6 +211,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string|null $district
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setDistrict(?string $district): void
     {
@@ -272,6 +228,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string $city
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCity(string $city): void
     {
@@ -280,6 +237,7 @@ class PickupPoint extends Objectable
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getState(): string
     {
@@ -288,6 +246,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string|null $state
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setState(?string $state): void
     {
@@ -304,6 +263,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string $countryCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCountryCode(string $countryCode): void
     {
@@ -312,6 +272,7 @@ class PickupPoint extends Objectable
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getAddressRemark(): string
     {
@@ -320,6 +281,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string|null $addressRemark
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setAddressRemark(?string $addressRemark): void
     {
@@ -328,6 +290,7 @@ class PickupPoint extends Objectable
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getPhone(): string
     {
@@ -336,6 +299,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param string|null $phone
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setPhone(?string $phone): void
     {
@@ -344,6 +308,7 @@ class PickupPoint extends Objectable
 
     /**
      * @return float
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getLongitude(): float
     {
@@ -352,6 +317,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param float $longitude
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setLongitude(float $longitude): void
     {
@@ -360,6 +326,7 @@ class PickupPoint extends Objectable
 
     /**
      * @return float
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getLatitude(): float
     {
@@ -368,6 +335,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param float $latitude
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setLatitude(float $latitude): void
     {
@@ -375,15 +343,8 @@ class PickupPoint extends Objectable
     }
 
     /**
-     * @param string|null $imageUrl
-     */
-    public function setImageUrl(?string $imageUrl): void
-    {
-        $this->imageUrl = $imageUrl;
-    }
-
-    /**
      * @return array
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getOpeningTimes(): array
     {
@@ -392,6 +353,7 @@ class PickupPoint extends Objectable
 
     /**
      * @param array $openingTimes
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setOpeningTimes(array $openingTimes): void
     {

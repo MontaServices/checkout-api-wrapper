@@ -10,31 +10,54 @@ abstract class Objectable
     /** @var string - Shipper images are located here, grouped on ShipperGroupName (placeholder) */
     protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
 
-    /** @var array - Source data */
-    protected array $additionalData = [];
-
-    /**
-     * @param array $additionalData
-     * @return $this
-     */
-    public function setAdditionalData(array $additionalData): static
-    {
-        $this->additionalData = $additionalData;
-        return $this;
-    }
+    /** @var array - Original data from API, packed and unpacked to JSON by frontend */
+    protected array $originalData = [];
 
     /**
      * @param string|null $key
      * @return mixed
      */
-    protected function getAdditionalData(string $key = null): mixed
+    protected function getOriginalData(string $key = null): mixed
     {
         if ($key) {
-            return $this->additionalData[$key] ?? null;
+            return $this->originalData[$key] ?? null;
         } else {
             // Otherwise return the entire array
-            return $this->additionalData;
+            return $this->originalData;
         }
+    }
+
+    /**
+     * @param array $originalData
+     * @return $this
+     */
+    protected function setOriginalData(array $originalData): static
+    {
+        // Remove any nested data
+        unset($originalData['originalData']);
+        $this->originalData = $originalData;
+        return $this;
+    }
+
+    /** Update data
+     *
+     * @param array $originalData
+     * @return $this
+     */
+    public function updateOriginalData(array $originalData): static
+    {
+        // update array, overwrite existing keys
+        $this->originalData = array_merge($this->originalData, $originalData);
+        return $this;
+    }
+
+    /** Many child classes have a code property
+     *
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
     }
 
     /** Get Monta CDN image URL based on shipper group name
@@ -49,7 +72,8 @@ abstract class Objectable
         return sprintf(self::SHIPPER_IMAGE_URL, $value ?? "monta");
     }
 
-    /**
+    /** TODO is this not just getVars()?
+     *
      * @return array
      */
     public function toArray(): array
@@ -84,9 +108,9 @@ abstract class Objectable
 
     /**
      * @param string $json - JSON-encoded array of properties
-     * @return static|null
+     * @return static|null|ShippingOption|PickupPoint
      */
-    public static function constructFromJson(string $json): ?static
+    public static function constructFromJson(string $json): static|null|ShippingOption|PickupPoint
     {
         // Convert JSON into array
         return static::construct(json_decode($json, true));
@@ -95,22 +119,27 @@ abstract class Objectable
     /** Construct object from array
      *
      * @param array $data
+     * @param string|null $className
      * @return static|null
      */
-    public static function construct(array $data): ?static
+    public static function construct(array $data, string $className = null): ?static
     {
+        // Use the passed className or use the class that was called
+        if (!$className) {
+            $className = static::class;
+        }
+
         // Get array with only the keys that are a property (to splat into constructor)
         $props = array_intersect_key(
             $data,
-            // call `static` instead of `self` to call the child class
-            static::getVars()
+            // get all properties from specific child class
+            $className::getVars()
         );
 
         return !empty($props) ?
             // construct class
-            (new static(...$props))
+            (new $className(...$props))
                 // keep the source data
-                ->setAdditionalData($data) : null;
+                ->setOriginalData($data) : null;
     }
-
 }
