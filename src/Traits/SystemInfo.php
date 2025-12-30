@@ -29,7 +29,7 @@ trait SystemInfo
     /** @var array - Initialize with some global defaults */
     protected array $systemInfo = [
         self::PHP_VERSION => PHP_VERSION,
-        self::OPERATING_SYSTEM => PHP_OS
+        self::OPERATING_SYSTEM => PHP_OS,
     ];
 
     /**

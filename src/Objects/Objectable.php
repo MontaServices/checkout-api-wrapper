@@ -3,6 +3,7 @@
  * @author Jacco.Amersfoort <jacco.amersfoort@monta.nl>
  * @created 11/18/2025 12:36
  */
+
 namespace Monta\CheckoutApiWrapper\Objects;
 
 abstract class Objectable
@@ -133,7 +134,7 @@ abstract class Objectable
         $props = array_intersect_key(
             $data,
             // get all properties from specific child class
-            $className::getVars()
+            $className::getVars(),
         );
 
         return !empty($props) ?

@@ -6,6 +6,7 @@
 namespace Monta\CheckoutApiWrapper\Service;
 
 use Monta\CheckoutApiWrapper\Objects\Address as WrapperAddress;
+
 use function Symfony\Component\String\u;
 
 class Address
@@ -135,7 +136,11 @@ class Address
      * @param string $countryCode - Different countries have different address formats.
      * @return string
      */
-    protected static function getAddressParts(string $fullStreet, string $returnType, string $countryCode = 'nl'): string
+    protected static function getAddressParts(
+        string $fullStreet,
+        string $returnType,
+        string $countryCode = 'nl',
+    ): string
     {
         // Variables
         $houseNumber = null;
@@ -146,7 +151,7 @@ class Address
         // use specific regex for country if available, otherwise use generic regex
             self::COUNTRIES_ADDRESS_REGEX[$countryCode] ?? self::PREG_MATCH_ADDRESS,
             $fullStreet,
-            $matches
+            $matches,
         );
 
         $street = $matches['street'] ?? null;

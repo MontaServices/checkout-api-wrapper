@@ -55,7 +55,8 @@ class MontapackingShipping
      */
     public function __construct(
         protected readonly Settings $settings,
-        string $language)
+        string $language,
+    )
     {
         $this->settings->setWebshopLanguage($language);
     }
@@ -96,7 +97,7 @@ class MontapackingShipping
         $this->address = AddressHelper::convertAddress(
             address: $address,
             // Pass along api key if available
-            googleApiKey: $this->getSettings()->getGoogleKey()
+            googleApiKey: $this->getSettings()->getGoogleKey(),
         );
     }
 
@@ -117,7 +118,7 @@ class MontapackingShipping
         $postalCode,
         $city,
         $state,
-        $countryCode
+        $countryCode,
     ): void
     {
         $args = func_get_args();
@@ -173,7 +174,7 @@ class MontapackingShipping
         int $widthMm = 0,
         int $heightMm = 0,
         int $weightGrammes = 0,
-        float $price = 0
+        float $price = 0,
     ): void
     {
         // Pass along arguments as named arguments
@@ -285,12 +286,15 @@ class MontapackingShipping
         string $method,
         string $url = self::MONTA_REST_CHECKOUT_URI,
         array $parameters = [],
-        string $httpMethod = "POST"): mixed
+        string $httpMethod = "POST",
+    ): mixed
     {
 //        $url = "https://host.docker.internal:52668/selfhosted/";
 
         $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getSettings()->getUser() . ":" . $this->getSettings()->getPassword())
+            'Authorization' => 'Basic ' . base64_encode(
+                    $this->getSettings()->getUser() . ":" . $this->getSettings()->getPassword(),
+                ),
         ];
 
         $method = strtolower($method);
@@ -339,17 +343,19 @@ class MontapackingShipping
     {
         return new TimeFrame(
             dateOnlyFormatted: "Unknown",
-            options: [new ShippingOption(
-                shipper: 'Standard Shipper',
-                code: 'montapacking_standard',
-                displayNameShort: 'Standard Shipper',
-                displayName: 'Standard Shipper',
-                deliveryType: 'Unknown',
-                shippingType: "DeliveryTimeframeType",
-                price: $this->getSettings()->getDefaultCosts(),
-                priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
-                shipperCodes: ["MultipleShipper_ShippingDayUnknown"]
-            )],
+            options: [
+                new ShippingOption(
+                    shipper: 'Standard Shipper',
+                    code: 'montapacking_standard',
+                    displayNameShort: 'Standard Shipper',
+                    displayName: 'Standard Shipper',
+                    deliveryType: 'Unknown',
+                    shippingType: "DeliveryTimeframeType",
+                    price: $this->getSettings()->getDefaultCosts(),
+                    priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+                    shipperCodes: ["MultipleShipper_ShippingDayUnknown"],
+                ),
+            ],
         );
     }
 

@@ -15,6 +15,7 @@ class AddressConverter extends TestCase
     protected const string TEST_INPUTS = 'inputs';
 
     /** These fields are less important for testing but are required.
+     *
      * @var string[] - Default values for the test address
      */
     protected const array TEST_ADDRESS_DEFAULTS = [
@@ -55,8 +56,8 @@ class AddressConverter extends TestCase
                     'street' => [
                         'Hoefkade',
                         '1156',
-                        'A'
-                    ]
+                        'A',
+                    ],
                 ],
 //                [
 //                    // TODO 4 addresslines not currently supported
@@ -70,7 +71,7 @@ class AddressConverter extends TestCase
                 [
                     'street' => [
                         'Hoefkade 1156A',
-                    ]
+                    ],
                 ],
                 [
                     // Autofill sometimes puts these in both fields
@@ -81,8 +82,8 @@ class AddressConverter extends TestCase
                 [
                     // Some systems pass only one string
                     'street' => "Hoefkade 1156A",
-                ]
-            ]
+                ],
+            ],
         ],
         [
             'street' => "Papland",
@@ -96,23 +97,24 @@ class AddressConverter extends TestCase
                     'street' => "Papland 1",
                     'houseNumber' => "1",
                 ],
-            ]
+            ],
         ],
         [
             'street' => null,
             self::TEST_INPUTS => [
                 [],
                 [ // TC302
-                    'street' => []
+                    'street' => [],
                 ],
                 [
-                    'street' => ['', '', '']
+                    'street' => ['', '', ''],
                 ],
                 ['houseNrExt' => null],
                 ['fullStreet' => ''],
-            ]
+            ],
         ],
     ];
+
     protected Address $helper;
 
     protected function setUp(): void

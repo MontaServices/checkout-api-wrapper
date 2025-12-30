@@ -197,7 +197,7 @@ class Option extends Objectable
         // Delivery option has this field
         if (!empty($data['deliveryType'])) {
             return self::DELIVERY_TYPE;
-        } else if (!empty($data['postalCode'])) {
+        } elseif (!empty($data['postalCode'])) {
             // Pickup point has no delivery type but has a postal code
             return self::PICKUP_TYPE;
         }

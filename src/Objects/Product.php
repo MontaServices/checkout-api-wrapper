@@ -115,7 +115,7 @@ class Product extends Objectable
             'HeightMm' => $this->heightMm,
             'WeightGrammes' => $this->weightGrammes,
             'Quantity' => $this->quantity,
-            'Price' => $this->price
+            'Price' => $this->price,
         ];
     }
 }
