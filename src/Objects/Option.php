@@ -43,7 +43,7 @@ class Option extends Objectable
      * @param string|null $className
      * @return ShippingOption|PickupPoint|null - Passing className means something else is returned
      */
-    public static function construct(array $data, string $className = null): ?static
+    public static function construct(array $data, ?string $className = null): ?static
     {
         // Map type to classname
         switch (self::determineType($data)) {

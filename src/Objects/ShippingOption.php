@@ -135,7 +135,7 @@ class ShippingOption extends Option
      * @param string|null $onlyColumn
      * @return array - assoc arrays of selected options (or flat array with one column)
      */
-    public function getSelectedShipperOptions(string $onlyColumn = null): array
+    public function getSelectedShipperOptions(?string $onlyColumn = null): array
     {
         // frontend passes the selected ShipperOptions in this property
         $shipperOptions = $this->getOriginalData('selectedShipperOptions') ?? [];

@@ -88,7 +88,7 @@ class Address extends Objectable
         }
 
         // Whether retrieved from cache or from API, assign both variables here
-        list($this->latitude, $this->longitude) = $coords;
+        [$this->latitude, $this->longitude] = $coords;
     }
 
     /**

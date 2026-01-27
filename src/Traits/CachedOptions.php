@@ -21,7 +21,7 @@ trait CachedOptions
      * @param string|null $item
      * @return array
      */
-    protected function getCachedOptions(string $item = null): array
+    protected function getCachedOptions(?string $item = null): array
     {
         $results = Session::get(self::CACHE_PREFIX);
         if ($results) {
