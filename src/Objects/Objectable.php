@@ -44,6 +44,7 @@ abstract class Objectable
      *
      * @param array $originalData
      * @return $this
+     * @deprecated - No longer used anywhere and is illogical. Real properties can be updated
      */
     public function updateOriginalData(array $originalData): static
     {

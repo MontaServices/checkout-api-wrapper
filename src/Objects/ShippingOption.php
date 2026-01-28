@@ -37,6 +37,7 @@ class ShippingOption extends Option
      * @param string[] $shipperCodes
      * @param string $shipperGroupName
      * @param string $imageUrl - Constructed based on other properties
+     * @param array $selectedShipperOptions
      */
     public function __construct(
         public string $shipper,
@@ -58,6 +59,7 @@ class ShippingOption extends Option
         public array $shipperCodes = [],
         string $shipperGroupName = "",
         string $imageUrl = "",
+        public array $selectedShipperOptions = [],
     )
     {
         parent::__construct(
@@ -138,12 +140,22 @@ class ShippingOption extends Option
     public function getSelectedShipperOptions(?string $onlyColumn = null): array
     {
         // frontend passes the selected ShipperOptions in this property
-        $shipperOptions = $this->getOriginalData('selectedShipperOptions') ?? [];
+        $shipperOptions = $this->selectedShipperOptions;
         return $onlyColumn ?
             // when passed, return only one column
             array_column($shipperOptions, $onlyColumn)
             // otherwise return whole array
             : $shipperOptions;
+    }
+
+    /** When this Option is selected, update its Shipper options
+     *
+     * @param array $shipperOptions
+     * @return void
+     */
+    public function setSelectedShipperOptions(array $shipperOptions): void
+    {
+        $this->selectedShipperOptions = $shipperOptions;
     }
 
     /** Convert stdClass from API to array of Option objects
