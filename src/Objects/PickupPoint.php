@@ -80,6 +80,7 @@ class PickupPoint extends Option
             imageUrl: $imageUrl,
             shipperGroupName: $shipperGroupName,
         );
+        $this->setOpeningTimes($openingTimes);
 
         // Format address for display on frontend
         $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
@@ -343,21 +344,24 @@ class PickupPoint extends Option
     }
 
     /**
-     * @return array
-     * @deprecated - No usage anywhere, functionally done by promoted property
+     * @return OpeningTime[]
      */
     public function getOpeningTimes(): array
     {
         return $this->openingTimes;
     }
 
-    /**
-     * @param array $openingTimes
-     * @deprecated - No usage anywhere, functionally done by promoted property
+    /** Convert property
+     *
+     * @param array $openingTimes - array of stdClasses (from API) or array of arrays (from JSON)
      */
     public function setOpeningTimes(array $openingTimes): void
     {
-        $this->openingTimes = $openingTimes;
+        $slots = [];
+        foreach ($openingTimes as $openingTime) {
+            $slots[] = OpeningTime::construct((array)$openingTime);
+        }
+        $this->openingTimes = $slots;
     }
 
     /**
@@ -371,6 +375,7 @@ class PickupPoint extends Option
     }
 
     /** TODO rename to a proper camelCase name
+     *
      * @return string
      */
     public function get_shipper_options_with_value(): string

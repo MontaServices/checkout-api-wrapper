@@ -16,7 +16,7 @@ class TimeFrame extends Objectable
      * @param string|null $month
      * @param string|null $dateFormatted
      * @param string|null $dateOnlyFormatted
-     * @param ShippingOption[] $options - converted into object in setter
+     * @param ShippingOption[]|null $options - converted into object in setter
      */
     public function __construct(
         public ?string $date = null,
@@ -28,7 +28,9 @@ class TimeFrame extends Objectable
     )
     {
         // Properties are set in constructor, this setter has custom functionality
-        $this->setOptions($options);
+        if ($options) {
+            $this->setOptions($options);
+        }
     }
 
     /**
@@ -113,7 +115,7 @@ class TimeFrame extends Objectable
 
     /** Set ShippingOptions to Timeframe
      *
-     * @param array $options
+     * @param \stdClass[]|array[] $options - Array of stdClasses (from API) or array of arrays (from JSON)
      * @return $this
      */
     public function setOptions(array $options): TimeFrame
@@ -121,15 +123,15 @@ class TimeFrame extends Objectable
         $list = null;
 
         foreach ($options as $onr => $option) {
-            /** @var \stdClass $option */
-
+            // Cast to array
+            $option = (array)$option;
             // Copy date from TimeFrame to ShippingOption (required later as desired delivery date)
-            $option->date = $this->getDate();
+            $option['date'] = $this->getDate();
 
             // Convert each stdClass into ShippingOption object
-            $list[$onr] = ShippingOption::construct((array)$option);
+            $list[$onr] = ShippingOption::construct($option);
         }
-
+        // Overwrite property which was set as promoted property by constructor
         $this->options = $list;
         return $this;
     }

@@ -39,7 +39,7 @@ class Guzzle
         switch ($httpMethod) {
             case "POST":
                 $response = $client->post($route, [
-                    'json' => $parameters
+                    'json' => $parameters,
                 ]);
                 break;
             case "GET":

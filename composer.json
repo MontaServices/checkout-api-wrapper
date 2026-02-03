@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": "^8.3.0",
+        "php": "^8.3|^8.4",
         "guzzlehttp/guzzle": "^7.10",
         "symfony/string": "^6.4"
     },

@@ -3,6 +3,7 @@
  * @author Jacco.Amersfoort <jacco.amersfoort@monta.nl>
  * @created 11/18/2025 12:36
  */
+
 namespace Monta\CheckoutApiWrapper\Objects;
 
 abstract class Objectable
@@ -17,7 +18,7 @@ abstract class Objectable
      * @param string|null $key
      * @return mixed
      */
-    protected function getOriginalData(string $key = null): mixed
+    protected function getOriginalData(?string $key = null): mixed
     {
         if ($key) {
             return $this->originalData[$key] ?? null;
@@ -43,6 +44,7 @@ abstract class Objectable
      *
      * @param array $originalData
      * @return $this
+     * @deprecated - No longer used anywhere and is illogical. Real properties can be updated
      */
     public function updateOriginalData(array $originalData): static
     {
@@ -65,7 +67,7 @@ abstract class Objectable
      * @param string|null $value
      * @return string
      */
-    protected function getImageUrl(string $value = null): string
+    protected function getImageUrl(?string $value = null): string
     {
         // Use passed value, otherwise fallback to Monta image
         // TODO this will not catch missing images when $value is a nonexistent image
@@ -122,7 +124,7 @@ abstract class Objectable
      * @param string|null $className
      * @return static|null
      */
-    public static function construct(array $data, string $className = null): ?static
+    public static function construct(array $data, ?string $className = null): ?static
     {
         // Use the passed className or use the class that was called
         if (!$className) {
@@ -133,7 +135,7 @@ abstract class Objectable
         $props = array_intersect_key(
             $data,
             // get all properties from specific child class
-            $className::getVars()
+            $className::getVars(),
         );
 
         return !empty($props) ?

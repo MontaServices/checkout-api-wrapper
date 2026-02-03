@@ -48,7 +48,7 @@ class Shipper extends Objectable
     {
         return [
             'code' => $this->code,
-            'name' => $this->name
+            'name' => $this->name,
         ];
     }
 }

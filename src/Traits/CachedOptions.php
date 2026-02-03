@@ -21,7 +21,7 @@ trait CachedOptions
      * @param string|null $item
      * @return array
      */
-    protected function getCachedOptions(string $item = null): array
+    protected function getCachedOptions(?string $item = null): array
     {
         $results = Session::get(self::CACHE_PREFIX);
         if ($results) {
@@ -60,7 +60,7 @@ trait CachedOptions
                                     $cachedOptionSelectedShipperOptions[] = $cachedOption->getShipperOptionByCode($shipperOption['code']);
                                 }
                                 // Update selected Shipper options on the cached Option to match price calculation
-                                $cachedOption->updateOriginalData(['selectedShipperOptions' => $cachedOptionSelectedShipperOptions]);
+                                $cachedOption->setSelectedShipperOptions($cachedOptionSelectedShipperOptions);
                                 return $cachedOption;
                             }
                         }

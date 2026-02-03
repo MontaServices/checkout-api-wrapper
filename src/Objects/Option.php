@@ -43,7 +43,7 @@ class Option extends Objectable
      * @param string|null $className
      * @return ShippingOption|PickupPoint|null - Passing className means something else is returned
      */
-    public static function construct(array $data, string $className = null): ?static
+    public static function construct(array $data, ?string $className = null): ?static
     {
         // Map type to classname
         switch (self::determineType($data)) {
@@ -186,6 +186,15 @@ class Option extends Objectable
         return self::determineType($this->getOriginalData());
     }
 
+    /** public method for checking if Option is pickup
+     *
+     * @return bool
+     */
+    public function isPickup(): bool
+    {
+        return ($this->getShippingType() == self::PICKUP_TYPE);
+    }
+
     /** Determine option type based on data
      * Since frontend just passes JSON data without classname, that information is lost
      *
@@ -197,7 +206,7 @@ class Option extends Objectable
         // Delivery option has this field
         if (!empty($data['deliveryType'])) {
             return self::DELIVERY_TYPE;
-        } else if (!empty($data['postalCode'])) {
+        } elseif (!empty($data['postalCode'])) {
             // Pickup point has no delivery type but has a postal code
             return self::PICKUP_TYPE;
         }

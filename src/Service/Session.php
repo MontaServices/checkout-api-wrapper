@@ -47,7 +47,7 @@ class Session
             // convert special characters
             . htmlentities(
             // make lowercase (no functional difference between case in address values
-                strtolower($path)
+                strtolower($path),
             );
     }
 
