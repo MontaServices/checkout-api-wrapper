@@ -350,9 +350,9 @@ class MontapackingShipping
                     displayNameShort: 'Standard Shipper',
                     displayName: 'Standard Shipper',
                     deliveryType: 'Unknown',
-                    shippingType: "DeliveryTimeframeType",
+                    shippingType: "DeliveryTimeframeType", // TODO what does this do?
                     price: $this->getSettings()->getDefaultCosts(),
-                    priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+                    priceFormatted: $this->getSettings()->getCurrency() . " " . $this->getSettings()->getDefaultCosts(),
                     shipperCodes: ["MultipleShipper_ShippingDayUnknown"],
                     imageUrl: 'monta',
                 ),
