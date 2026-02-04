@@ -74,7 +74,8 @@ class ShippingOption extends Option
         // Properties are set in constructor, this setter has custom functionality
         $this->setShipperOptions($deliveryOptions);
 
-        if ($shipperCodes) {
+        // When ImageUrl was not passed, construct it
+        if ($shipperCodes && !$imageUrl) {
             // ShipperCodes is usually an array of one code, pick the first one
             // TODO use $this->shipperGroupName as soon as that's added to REST API output
             $this->imageUrl = $this->getImageUrl(reset($this->shipperCodes));

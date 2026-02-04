@@ -354,6 +354,7 @@ class MontapackingShipping
                     price: $this->getSettings()->getDefaultCosts(),
                     priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
                     shipperCodes: ["MultipleShipper_ShippingDayUnknown"],
+                    imageUrl: 'monta',
                 ),
             ],
         );
