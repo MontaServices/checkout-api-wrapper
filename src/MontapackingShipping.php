@@ -318,6 +318,8 @@ class MontapackingShipping
             }
         }
 
+        // TODO should this be in the generic `call` method? this is specific `getShippingOptions` logic
+        // this way does mean the result will be cached and `Option->validate` will pass
         if ($response == null || $response->getStatusCode() != 200) {
             $result->timeframes = [self::getFallbackTimeframe()];
 

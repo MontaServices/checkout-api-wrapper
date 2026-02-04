@@ -11,12 +11,12 @@ class TimeFrame extends Objectable
 
     /** Constructor with promoted properties
      *
-     * @param string|null $date
-     * @param string|null $day
-     * @param string|null $month
-     * @param string|null $dateFormatted
-     * @param string|null $dateOnlyFormatted
-     * @param ShippingOption[]|null $options - converted into object in setter
+     * @param string|null $date - System date (1970-01-01)
+     * @param string|null $day - "dinsdag"
+     * @param string|null $month - "januari"
+     * @param string|null $dateFormatted - Full date and day formatted locally: "dinsdag 1 januari 1970"
+     * @param string|null $dateOnlyFormatted - Short date formatted locally: "01-01-1970"
+     * @param ShippingOption[]|null $options - Converted in setter
      */
     public function __construct(
         public ?string $date = null,
