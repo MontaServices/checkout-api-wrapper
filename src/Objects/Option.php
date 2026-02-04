@@ -24,7 +24,7 @@ class Option extends Objectable
      * @param float|null $price
      * @param string|null $priceFormatted
      * @param string|null $imageUrl
-     * @param string $shipperGroupName
+     * @param string|null $shipperGroupName
      */
     public function __construct(
         public string $code,
@@ -32,7 +32,7 @@ class Option extends Objectable
         public ?float $price = null,
         public ?string $priceFormatted = null,
         public ?string $imageUrl = "",
-        protected string $shipperGroupName = "",
+        protected ?string $shipperGroupName = null,
     )
     {
     }
@@ -82,9 +82,9 @@ class Option extends Objectable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getShipperGroupName(): string
+    public function getShipperGroupName(): ?string
     {
         return $this->shipperGroupName;
     }

@@ -35,7 +35,7 @@ class ShippingOption extends Option
      * @param ShipperOption[] $deliveryOptions - converted into objects in setter
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
-     * @param string $shipperGroupName
+     * @param string|null $shipperGroupName
      * @param string $imageUrl - Constructed based on other properties
      * @param array $selectedShipperOptions
      */
@@ -57,7 +57,7 @@ class ShippingOption extends Option
         public array $deliveryOptions = [],
         public string $optionCodes = "",
         public array $shipperCodes = [],
-        string $shipperGroupName = "",
+        ?string $shipperGroupName = null,
         string $imageUrl = "",
         public array $selectedShipperOptions = [],
     )
@@ -77,8 +77,7 @@ class ShippingOption extends Option
         // When ImageUrl was not passed, construct it
         if ($shipperCodes && !$imageUrl) {
             // ShipperCodes is usually an array of one code, pick the first one
-            // TODO use $this->shipperGroupName as soon as that's added to REST API output
-            $this->imageUrl = $this->getImageUrl(reset($this->shipperCodes));
+            $this->imageUrl = $this->getImageUrl($this->shipperGroupName ?? reset($this->shipperCodes));
         }
     }
 

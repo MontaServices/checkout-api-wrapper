@@ -8,7 +8,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 abstract class Objectable
 {
-    /** @var string - Shipper images are located here, grouped on ShipperGroupName (placeholder) */
+    /** @var string - Shipper images are located here, grouped on ShipperGroupName */
     protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
 
     /** @var array - Original data from API, packed and unpacked to JSON by frontend */
