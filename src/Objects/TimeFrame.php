@@ -34,9 +34,9 @@ class TimeFrame extends Objectable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDate(): string
+    public function getDate(): ?string
     {
         return $this->date;
     }
@@ -50,9 +50,9 @@ class TimeFrame extends Objectable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDay(): string
+    public function getDay(): ?string
     {
         return $this->day;
     }
@@ -66,9 +66,9 @@ class TimeFrame extends Objectable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDateFormatted(): string
+    public function getDateFormatted(): ?string
     {
         return $this->dateFormatted;
     }
@@ -98,9 +98,9 @@ class TimeFrame extends Objectable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMonth(): string
+    public function getMonth(): ?string
     {
         return $this->month;
     }
