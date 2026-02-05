@@ -318,9 +318,19 @@ class MontapackingShipping
             }
         }
 
+        // Check if the CheckoutService passed its own incomplete Fallback (e.g. invalid Channel name)
+        $firstOptionCode = null;
+        if ($timeframes = json_decode($response->getBody())->timeframes ?? []) {
+            $firstTimeframe = reset($timeframes);
+            if ($shippingOptions = $firstTimeframe->ShippingOptions ?? []) {
+                $firstOption = reset($shippingOptions);
+                $firstOptionCode = $firstOption['code'] ?? null;
+            }
+        }
+
         // TODO should this be in the generic `call` method? this is specific `getShippingOptions` logic
         // this way does mean the result will be cached and `Option->validate` will pass
-        if ($response == null || $response->getStatusCode() != 200) {
+        if ($response == null || $response->getStatusCode() != 200 || $firstOptionCode == 'montapacking_standard') {
             $result->timeframes = [self::getFallbackTimeframe()];
 
             return $result;
