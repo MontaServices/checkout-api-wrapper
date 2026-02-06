@@ -345,7 +345,7 @@ class MontapackingShipping
     private function getFallbackTimeframe(): TimeFrame
     {
         return new TimeFrame(
-            dateOnlyFormatted: "Unknown",
+            dateOnlyFormatted: TimeFrame::FALLBACK_DATEONLY_CODE,
             options: [
                 new ShippingOption(
                     shipper: 'Standard Shipper',

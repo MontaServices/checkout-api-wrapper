@@ -8,6 +8,7 @@ use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
 
 class TimeFrame extends Objectable
 {
+    public const string FALLBACK_DATEONLY_CODE = 'Unknown';
 
     /** Constructor with promoted properties
      *
@@ -111,6 +112,14 @@ class TimeFrame extends Objectable
     public function setMonth(?string $month): void
     {
         $this->month = $month;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFallbackShipper(): bool
+    {
+        return $this->getDateOnlyFormatted() == self::FALLBACK_DATEONLY_CODE;
     }
 
     /** Set ShippingOptions to Timeframe
