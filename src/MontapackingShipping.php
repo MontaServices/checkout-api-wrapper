@@ -276,7 +276,7 @@ class MontapackingShipping
 
     /**
      * @param string $method
-     * @param string $url
+     * @param string $url - URI for the CheckoutService gateway
      * @param array $parameters
      * @param string $httpMethod
      * @return mixed
@@ -289,7 +289,8 @@ class MontapackingShipping
         string $httpMethod = "POST",
     ): mixed
     {
-//        $url = "https://host.docker.internal:52668/selfhosted/";
+        // Activate for connecting to locally running CheckoutService (WSL/DDEV)
+//        $url = "https://host.docker.internal:53707/selfhosted/";
 
         $headers = [
             'Authorization' => 'Basic ' . base64_encode(
