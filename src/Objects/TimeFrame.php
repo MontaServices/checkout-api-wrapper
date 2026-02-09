@@ -119,7 +119,17 @@ class TimeFrame extends Objectable
      */
     public function isFallbackShipper(): bool
     {
-        return $this->getDateOnlyFormatted() == self::FALLBACK_DATEONLY_CODE;
+        return self::isFallbackShipperCode($this->toArray());
+    }
+
+    /**
+     * @param array $timeframedata
+     * @return bool
+     */
+    public static function isFallbackShipperCode(array $timeframedata): bool
+    {
+        // This field always has this value on the fallback
+        return ($timeframedata['dateOnlyFormatted'] == self::FALLBACK_DATEONLY_CODE);
     }
 
     /** Set ShippingOptions to Timeframe
