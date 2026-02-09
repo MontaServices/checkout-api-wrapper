@@ -136,7 +136,6 @@ class Option extends Objectable
         $details = [
             'short_code' => $this->getOriginalData('shipper'),
         ];
-        // TODO maybe move all these specifics to subclasses?
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
