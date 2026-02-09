@@ -33,7 +33,7 @@ class PickupPoint extends Option
      * @param string|null $phone
      * @param float $longitude
      * @param float $latitude
-     * @param string|null $imageUrl
+     * @param string|bool|null $imageUrl
      * @param float $price
      * @param string $priceFormatted
      * @param array $openingTimes
@@ -61,7 +61,7 @@ class PickupPoint extends Option
         public ?string $phone,
         public float $longitude,
         public float $latitude,
-        ?string $imageUrl,
+        string|bool|null $imageUrl,
         float $price,
         string $priceFormatted,
         public array $openingTimes,
@@ -91,8 +91,8 @@ class PickupPoint extends Option
             'longitude' => $this->longitude,
         ];
 
-        // When image URL was not passed, construct it from here
-        if (!$imageUrl) {
+        // When image URL was not passed and not explicitly false, construct it from here
+        if ($imageUrl !== false && !$imageUrl) {
             // TODO use $this->shipperGroupName as soon as that's added to REST API output, instead of this temp "DHL" placeholder
             $this->setImageUrl("DHL");
         }

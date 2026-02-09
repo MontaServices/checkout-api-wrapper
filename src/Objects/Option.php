@@ -23,7 +23,7 @@ class Option extends Objectable
      * @param string $displayName
      * @param float|null $price
      * @param string|null $priceFormatted
-     * @param string|null $imageUrl
+     * @param string|bool|null $imageUrl - FALSE to explicitly hide image
      * @param string|null $shipperGroupName
      */
     public function __construct(
@@ -31,7 +31,7 @@ class Option extends Objectable
         public string $displayName,
         public ?float $price = null,
         public ?string $priceFormatted = null,
-        public ?string $imageUrl = "",
+        public string|bool|null $imageUrl = "",
         protected ?string $shipperGroupName = null,
     )
     {
@@ -73,16 +73,16 @@ class Option extends Objectable
         return $this->price;
     }
 
-    /** Get Monta CDN image URL based on shipper group name
-     *
-     * @return string
+    /**
+     * @return string|bool|null
      */
-    public function getImageUrl(): string
+    public function getImageUrl(): string|bool|null
     {
         return $this->imageUrl;
     }
 
-    /**
+    /** Set Monta CDN image URL based on other property
+     *
      * @param string $imageUrl
      * @return void
      */

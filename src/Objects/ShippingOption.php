@@ -36,7 +36,7 @@ class ShippingOption extends Option
      * @param string $optionCodes @deprecated, not referenced anywhere
      * @param string[] $shipperCodes
      * @param string|null $shipperGroupName
-     * @param string $imageUrl - Constructed based on other properties
+     * @param string|bool $imageUrl - Constructed based on other properties
      * @param array $selectedShipperOptions
      */
     public function __construct(
@@ -58,7 +58,7 @@ class ShippingOption extends Option
         public string $optionCodes = "",
         public array $shipperCodes = [],
         ?string $shipperGroupName = null,
-        string $imageUrl = "",
+        string|bool $imageUrl = "",
         public array $selectedShipperOptions = [],
     )
     {
@@ -74,8 +74,8 @@ class ShippingOption extends Option
         // Properties are set in constructor, this setter has custom functionality
         $this->setShipperOptions($deliveryOptions);
 
-        // When ImageUrl was not passed, construct it
-        if ($shipperCodes && !$imageUrl) {
+        // When ImageUrl was not passed (and not explicitly denied), construct it
+        if ($shipperCodes && $imageUrl !== false && !$imageUrl) {
             // ShipperCodes is usually an array of one code, pick the first one
             $this->setImageUrl($this->shipperGroupName ?? reset($this->shipperCodes));
         }

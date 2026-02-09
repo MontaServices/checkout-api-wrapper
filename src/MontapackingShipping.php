@@ -357,8 +357,8 @@ class MontapackingShipping
                     price: $this->getSettings()->getDefaultCosts(),
                     priceFormatted: $this->getSettings()->getCurrency() . " " . $this->getSettings()->getDefaultCosts(),
                     shipperCodes: ["MultipleShipper_ShippingDayUnknown"],
-                    // Determine image with this property
-                    shipperGroupName: 'monta',
+                    // Explicitly hide image for fallback
+                    imageUrl: false,
                 ),
             ],
         );
