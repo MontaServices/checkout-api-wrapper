@@ -203,12 +203,10 @@ class Option extends Objectable
      */
     protected static function determineType(array $data): string
     {
-        // Delivery option has this field
-        if (!empty($data['deliveryType'])) {
-            return self::DELIVERY_TYPE;
-        } elseif (!empty($data['postalCode'])) {
-            // Pickup point has no delivery type but has a postal code
+        // Pickup point has no delivery type but has a postal code
+        if (empty($data['deliveryType']) && !empty($data['postalCode'])) {
             return self::PICKUP_TYPE;
         }
+        return self::DELIVERY_TYPE;
     }
 }
