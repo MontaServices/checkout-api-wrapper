@@ -77,7 +77,7 @@ class ShippingOption extends Option
         // When ImageUrl was not passed, construct it
         if ($shipperCodes && !$imageUrl) {
             // ShipperCodes is usually an array of one code, pick the first one
-            $this->imageUrl = $this->getImageUrl($this->shipperGroupName ?? reset($this->shipperCodes));
+            $this->setImageUrl($this->shipperGroupName ?? reset($this->shipperCodes));
         }
     }
 

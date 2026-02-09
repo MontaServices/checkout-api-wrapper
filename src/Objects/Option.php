@@ -73,12 +73,24 @@ class Option extends Objectable
         return $this->price;
     }
 
-    /**
-     * @param string|null $imageUrl
+    /** Get Monta CDN image URL based on shipper group name
+     *
+     * @return string
      */
-    public function setImageUrl(?string $imageUrl): void
+    public function getImageUrl(): string
     {
-        $this->imageUrl = $imageUrl;
+        return $this->imageUrl;
+    }
+
+    /**
+     * @param string $imageUrl
+     * @return void
+     */
+    public function setImageUrl(string $imageUrl): void
+    {
+        if ($imageUrl) {
+            $this->imageUrl = sprintf(self::SHIPPER_IMAGE_URL, $imageUrl);
+        }
     }
 
     /**

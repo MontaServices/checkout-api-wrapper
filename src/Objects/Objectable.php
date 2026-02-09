@@ -62,18 +62,6 @@ abstract class Objectable
         return $this->code;
     }
 
-    /** Get Monta CDN image URL based on shipper group name
-     *
-     * @param string|null $value
-     * @return string
-     */
-    public function getImageUrl(?string $value = null): string
-    {
-        // Use passed value, otherwise fallback to Monta image
-        // TODO this will not catch missing images when $value is a nonexistent image
-        return sprintf(self::SHIPPER_IMAGE_URL, $value ?? "monta");
-    }
-
     /** TODO is this not just getVars()?
      *
      * @return array
