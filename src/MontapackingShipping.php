@@ -276,7 +276,7 @@ class MontapackingShipping
 
     /**
      * @param string $method
-     * @param string $url
+     * @param string $url - URI for the CheckoutService gateway
      * @param array $parameters
      * @param string $httpMethod
      * @return mixed
@@ -289,7 +289,8 @@ class MontapackingShipping
         string $httpMethod = "POST",
     ): mixed
     {
-//        $url = "https://host.docker.internal:52668/selfhosted/";
+        // Activate for connecting to locally running CheckoutService (WSL/DDEV)
+//        $url = "https://host.docker.internal:53707/selfhosted/";
 
         $headers = [
             'Authorization' => 'Basic ' . base64_encode(
@@ -318,6 +319,8 @@ class MontapackingShipping
             }
         }
 
+        // TODO should this be in the generic `call` method? this is specific `getShippingOptions` logic
+        // this way does mean the result will be cached and `Option->validate` will pass
         if ($response == null || $response->getStatusCode() != 200) {
             $result->timeframes = [self::getFallbackTimeframe()];
 
@@ -342,7 +345,7 @@ class MontapackingShipping
     private function getFallbackTimeframe(): TimeFrame
     {
         return new TimeFrame(
-            dateOnlyFormatted: "Unknown",
+            dateOnlyFormatted: TimeFrame::FALLBACK_DATEONLY_CODE,
             options: [
                 new ShippingOption(
                     shipper: 'Standard Shipper',
@@ -352,8 +355,10 @@ class MontapackingShipping
                     deliveryType: 'Unknown',
                     shippingType: "DeliveryTimeframeType",
                     price: $this->getSettings()->getDefaultCosts(),
-                    priceFormatted: $this->getSettings()->getCurrency() . $this->getSettings()->getDefaultCosts(),
+                    priceFormatted: $this->getSettings()->getCurrency() . " " . $this->getSettings()->getDefaultCosts(),
                     shipperCodes: ["MultipleShipper_ShippingDayUnknown"],
+                    // Explicitly hide image for fallback
+                    imageUrl: false,
                 ),
             ],
         );

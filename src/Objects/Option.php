@@ -23,16 +23,16 @@ class Option extends Objectable
      * @param string $displayName
      * @param float|null $price
      * @param string|null $priceFormatted
-     * @param string|null $imageUrl
-     * @param string $shipperGroupName
+     * @param string|bool|null $imageUrl - FALSE to explicitly hide image
+     * @param string|null $shipperGroupName
      */
     public function __construct(
         public string $code,
         public string $displayName,
         public ?float $price = null,
         public ?string $priceFormatted = null,
-        public ?string $imageUrl = "",
-        protected string $shipperGroupName = "",
+        public string|bool|null $imageUrl = "",
+        protected ?string $shipperGroupName = null,
     )
     {
     }
@@ -74,17 +74,29 @@ class Option extends Objectable
     }
 
     /**
-     * @param string|null $imageUrl
+     * @return string|bool|null
      */
-    public function setImageUrl(?string $imageUrl): void
+    public function getImageUrl(): string|bool|null
     {
-        $this->imageUrl = $imageUrl;
+        return $this->imageUrl;
+    }
+
+    /** Set Monta CDN image URL based on other property
+     *
+     * @param string $imageUrl
+     * @return void
+     */
+    public function setImageUrl(string $imageUrl): void
+    {
+        if ($imageUrl) {
+            $this->imageUrl = sprintf(self::SHIPPER_IMAGE_URL, $imageUrl);
+        }
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getShipperGroupName(): string
+    public function getShipperGroupName(): ?string
     {
         return $this->shipperGroupName;
     }
@@ -136,7 +148,6 @@ class Option extends Objectable
         $details = [
             'short_code' => $this->getOriginalData('shipper'),
         ];
-        // TODO maybe move all these specifics to subclasses?
         switch ($type) {
             /** Delivery specific fields */
             case self::DELIVERY_TYPE:
@@ -203,12 +214,10 @@ class Option extends Objectable
      */
     protected static function determineType(array $data): string
     {
-        // Delivery option has this field
-        if (!empty($data['deliveryType'])) {
-            return self::DELIVERY_TYPE;
-        } elseif (!empty($data['postalCode'])) {
-            // Pickup point has no delivery type but has a postal code
+        // Pickup point has no delivery type but has a postal code
+        if (empty($data['deliveryType']) && !empty($data['postalCode'])) {
             return self::PICKUP_TYPE;
         }
+        return self::DELIVERY_TYPE;
     }
 }
