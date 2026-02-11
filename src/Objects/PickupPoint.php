@@ -374,21 +374,13 @@ class PickupPoint extends Option
             . ' | ' . $this->getDistanceMeters() . 'km';
     }
 
-    /** TODO rename to a proper camelCase name
+    /**
+     * Field contains o.a. the Postnumber for DHLDE packstations
      *
      * @return string
      */
-    public function get_shipper_options_with_value(): string
+    protected function getShipperOptionsWithValue(): string
     {
         return $this->shipperOptionsWithValue;
-    }
-
-    /**
-     * @param string $shipperOptionsWithValue
-     * @deprecated - No usage in wrapper or Magento module
-     */
-    public function set_shipper_options_with_value(string $shipperOptionsWithValue): void
-    {
-        $this->shipperOptionsWithValue = $shipperOptionsWithValue;
     }
 }
