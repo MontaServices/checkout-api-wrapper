@@ -383,4 +383,24 @@ class PickupPoint extends Option
     {
         return $this->shipperOptionsWithValue;
     }
+
+    /**
+     * @param string $addValue - New shipperoption to add to CSV string
+     * @return void
+     */
+    public function addShipperOptionsWithValue(string $addValue): void
+    {
+        // Get property from CSV string as array
+        $codes = array_filter(
+            array_map('trim', explode(',', $this->shipperOptionsWithValue ?? '')),
+        );
+
+        // TODO every change now adds a new code to line. Refactor to always just write "Postnumber_XX,{postnumber}"
+        if (!in_array($addValue, $codes, true)) {
+            $codes[] = $addValue;
+        }
+
+        // Implode back into CSV string
+        $this->shipperOptionsWithValue = implode(',', $codes);
+    }
 }
