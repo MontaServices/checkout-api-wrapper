@@ -8,12 +8,12 @@ namespace Monta\CheckoutApiWrapper\Traits;
 trait Packstations
 {
     /** Whether this PUDO is a Packstation
-     * TODO implement
+     *
      * @return bool
      */
     public function isPackstation(): bool
     {
-        return true;
+        return str_contains($this->shipperOptionsWithValue, "PackingStationCode_");
     }
 
     /**
