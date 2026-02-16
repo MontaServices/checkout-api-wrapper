@@ -206,6 +206,12 @@ class MontapackingShipping
             /** @var object $result - Call REST API, get arrays of stdClass objects */
             $result = $this->call(method: 'shippingrates', parameters: $this->getJsonRequest());
 
+            // When API had a failure, use fallback
+            if (!$result || $this->lastResponseCode != 200) {
+                $result = (object)[];
+                $result->timeframes = [self::getFallbackTimeframe()];
+            }
+
             if (isset($result->timeframes)) {
                 foreach ($result->timeframes as $stdTimeframe) {
                     // Convert stdClass into TimeFrame class
@@ -322,15 +328,8 @@ class MontapackingShipping
             }
         }
 
-        // TODO should this be in the generic `call` method? this is specific `getShippingOptions` logic
-        // this way does mean the result will be cached and `Option->validate` will pass
-        if ($response == null || $response->getStatusCode() != 200) {
-            $result->timeframes = [self::getFallbackTimeframe()];
-
-            return $result;
-        }
-
-        return json_decode($response->getBody());
+        // If response was not empty, decode and return
+        return $response ? json_decode($response->getBody()) : [];
     }
 
     /** Get HTTP Response code of most recent
