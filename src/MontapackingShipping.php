@@ -405,7 +405,8 @@ class MontapackingShipping
             'excludeShippingDiscount' => $this->getSettings()->getExcludeShippingDiscount(),
             'showZeroCostsAsFree' => $this->getSettings()->getShowZeroCostsAsFree(),
             'currencySymbol' => $this->getSettings()->getCurrency(),
-            'hideDHLPackstations ' => $this->getSettings()->getHideDHLPackstations(),
+            // TODO parameter is deprecated, does nothing. Remove when removed from CheckoutService
+            'hideDHLPackstations' => false,
             Settings::SYSTEM_INFO_NAME => $this->getSettings()->getSystemInfo(),
         ];
 
