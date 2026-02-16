@@ -31,13 +31,23 @@ trait Packstations
     }
 
     /**
-     * @param string $addValue - New value to add to CSV string
+     * @param string $shipperOptionsWithValue
      * @return void
      */
-    public function addShipperOptionsWithValue(string $addValue): void
+    public function setShipperOptionsWithValue(string $shipperOptionsWithValue): void
+    {
+        $this->shipperOptionsWithValue = $shipperOptionsWithValue;
+    }
+
+    /** Update Customer Postnumber in CSV
+     *
+     * @param string $customerPostnumber - New value to add to CSV string
+     * @return void
+     */
+    public function setPostnumber(string $customerPostnumber): void
     {
         // Postnumber always contains this prefix
-        $newValue = self::CUSTOMER_POSTNUMBER_PREFIX . $addValue;
+        $newValue = self::CUSTOMER_POSTNUMBER_PREFIX . $customerPostnumber;
 
         // explode and trim CSV into array
         $codes = array_filter(
@@ -59,6 +69,6 @@ trait Packstations
         }
 
         // Implode back into CSV string
-        $this->shipperOptionsWithValue = implode(',', $codes);
+        $this->setShipperOptionsWithValue(implode(separator: ",", array: $codes));
     }
 }
