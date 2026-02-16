@@ -7,13 +7,17 @@ namespace Monta\CheckoutApiWrapper\Traits;
 
 trait Packstations
 {
+    public const string CUSTOMER_POSTNUMBER_PREFIX = "DHLPCPostNummer_";
+
+    public const string POINT_PACKSTATION_PREFIX = "PackingStationCode_";
+
     /** Whether this PUDO is a Packstation
      *
      * @return bool
      */
     public function isPackstation(): bool
     {
-        return str_contains($this->shipperOptionsWithValue, "PackingStationCode_");
+        return str_contains($this->getShipperOptionsWithValue(), self::POINT_PACKSTATION_PREFIX);
     }
 
     /**
@@ -27,19 +31,31 @@ trait Packstations
     }
 
     /**
-     * @param string $addValue - New shipperoption to add to CSV string
+     * @param string $addValue - New value to add to CSV string
      * @return void
      */
     public function addShipperOptionsWithValue(string $addValue): void
     {
-        // Get property from CSV string as array
-        $codes = array_filter(
-            array_map('trim', explode(',', $this->shipperOptionsWithValue ?? '')),
-        );
+        // Postnumber always contains this prefix
+        $newValue = self::CUSTOMER_POSTNUMBER_PREFIX . $addValue;
 
-        // TODO every change now adds a new code to line. Refactor to always just write "Postnumber_XX,{postnumber}"
-        if (!in_array($addValue, $codes, true)) {
-            $codes[] = $addValue;
+        // explode and trim CSV into array
+        $codes = array_filter(
+            array_map('trim', explode(',', $this->shipperOptionsWithValue ?? '')));
+
+        $found = false;
+
+        foreach ($codes as $key => $code) {
+            if (str_starts_with($code, self::CUSTOMER_POSTNUMBER_PREFIX)) {
+                // replace the old postnumber
+                $codes[$key] = $newValue;
+                $found = true;
+                break; // only one expected, end loop
+            }
+        }
+
+        if (!$found) {
+            $codes[] = $newValue;
         }
 
         // Implode back into CSV string
