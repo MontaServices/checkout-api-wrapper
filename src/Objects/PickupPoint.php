@@ -4,6 +4,7 @@ namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\Option as Option;
+use Monta\CheckoutApiWrapper\Traits\Packstations;
 
 /**
  * Class PickupPoint
@@ -11,6 +12,8 @@ use Monta\CheckoutApiWrapper\Objects\Option as Option;
  */
 class PickupPoint extends Option
 {
+    use Packstations;
+
     public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
 
     public const string PICKUP_STORE_KEY = 'StoreLocation';
@@ -374,21 +377,4 @@ class PickupPoint extends Option
             . ' | ' . $this->getDistanceMeters() . 'km';
     }
 
-    /** TODO rename to a proper camelCase name
-     *
-     * @return string
-     */
-    public function get_shipper_options_with_value(): string
-    {
-        return $this->shipperOptionsWithValue;
-    }
-
-    /**
-     * @param string $shipperOptionsWithValue
-     * @deprecated - No usage in wrapper or Magento module
-     */
-    public function set_shipper_options_with_value(string $shipperOptionsWithValue): void
-    {
-        $this->shipperOptionsWithValue = $shipperOptionsWithValue;
-    }
 }

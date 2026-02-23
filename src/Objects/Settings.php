@@ -21,7 +21,6 @@ class Settings
      * @param string $currency
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
-     * @param bool $hideDHLPackstations
      * @deprecated - Use the factory method instead
      */
     public function __construct(
@@ -38,7 +37,6 @@ class Settings
         protected string $currency = '€',
         protected bool $excludeShippingDiscount = false,
         protected bool $showZeroCostsAsFree = false,
-        protected bool $hideDHLPackstations = false,
     )
     {
     }
@@ -212,15 +210,5 @@ class Settings
     public function setShowZeroCostsAsFree(bool $showZeroCostsAsFree): void
     {
         $this->showZeroCostsAsFree = $showZeroCostsAsFree;
-    }
-
-    public function getHideDHLPackstations(): bool
-    {
-        return $this->hideDHLPackstations;
-    }
-
-    public function setHideDHLPackstations(bool $hideDHLPackstations): void
-    {
-        $this->hideDHLPackstations = $hideDHLPackstations;
     }
 }

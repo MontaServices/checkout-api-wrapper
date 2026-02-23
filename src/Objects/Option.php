@@ -165,7 +165,7 @@ class Option extends Objectable
                 // Old module converted each of these fields in the frontend
                 $additionalInfo += [
                     'city' => $this->getCity(),
-                    'code_pickup' => $this->get_shipper_options_with_value(),
+                    'code_pickup' => $this->getShipperOptionsWithValue(),
                     'company' => $this->getCompany(),
                     'country' => $this->getCountryCode(),
                     'housenumber' => $this->getHouseNumber(),

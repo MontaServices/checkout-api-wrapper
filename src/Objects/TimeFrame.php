@@ -67,11 +67,20 @@ class TimeFrame extends Objectable
     }
 
     /**
+     * @param bool $strip - Strip formatted into clean short format: "1 januari"
      * @return string|null
      */
-    public function getDateFormatted(): ?string
+    public function getDateFormatted(bool $strip = false): ?string
     {
-        return $this->dateFormatted;
+        if ($strip) {
+            // remove weekday from formatted date (both are determined by API)
+            return trim(str_replace(search: $this->getDay() ?? "", replace: "",
+                // remove current year from formatted date, automatically works neatly around New Year's Eve!
+                subject: str_replace(search: date("Y"), replace: "", subject: $this->dateFormatted ?? "")));
+        } else {
+            // Oterwise just return whatever the API set
+            return $this->dateFormatted;
+        }
     }
 
     /**
