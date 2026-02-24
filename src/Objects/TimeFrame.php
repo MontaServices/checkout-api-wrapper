@@ -17,7 +17,7 @@ class TimeFrame extends Objectable
      * @param string|null $month - "januari"
      * @param string|null $dateFormatted - Full date and day formatted locally: "dinsdag 1 januari 1970"
      * @param string|null $dateOnlyFormatted - Short date formatted locally: "01-01-1970"
-     * @param ShippingOption[]|null $options - Converted in setter
+     * @param ShippingOption[]|null $options - Converted in setter but argument is received as stdClass[]
      */
     public function __construct(
         public ?string $date = null,
@@ -51,11 +51,11 @@ class TimeFrame extends Objectable
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getDay(): ?string
+    public function getDay(): string
     {
-        return $this->day;
+        return $this->day ?? "";
     }
 
     /**
@@ -74,8 +74,8 @@ class TimeFrame extends Objectable
     {
         if ($strip) {
             // remove weekday from formatted date (both are determined by API)
-            return trim(str_replace(search: $this->getDay() ?? "", replace: "",
-                // remove current year from formatted date, automatically works neatly around New Year's Eve!
+            return trim(str_replace(search: $this->getDay(), replace: "",
+                // remove current year from formatted date, automatically works through New Year's Eve!
                 subject: str_replace(search: date("Y"), replace: "", subject: $this->dateFormatted ?? "")));
         } else {
             // Oterwise just return whatever the API set
