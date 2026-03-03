@@ -278,7 +278,6 @@ class MontapackingShipping
             }
         } catch (GuzzleException $e) {
             // Catch and ignore, success is false
-            $success = false;
         }
         return $success;
     }
@@ -379,7 +378,7 @@ class MontapackingShipping
      * @return string
      * @deprecated - TODO Is this ever used??
      */
-    public function GetDebugPostBodyJson()
+    public function GetDebugPostBodyJson(): string
     {
         return json_encode($this->getJsonRequest());
     }

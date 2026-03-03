@@ -163,17 +163,11 @@ class Address
         $houseNumberExtension = $matches['number_suffix'] ?? null;
 
         // Return value depending on requested return type
-        switch ($returnType) {
-            case self::RETURN_TYPE_HOUSE_NUMBER:
-                $return = $houseNumber;
-                break;
-            case self::RETURN_TYPE_HOUSE_NUMBER_EXT:
-                $return = $houseNumberExtension;
-                break;
-            default:
-                $return = $street;
-                break;
-        }
+        $return = match ($returnType) {
+            self::RETURN_TYPE_HOUSE_NUMBER => $houseNumber,
+            self::RETURN_TYPE_HOUSE_NUMBER_EXT => $houseNumberExtension,
+            default => $street,
+        };
         // Always return string
         return (string)$return;
     }

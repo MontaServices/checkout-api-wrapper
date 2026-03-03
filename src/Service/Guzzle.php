@@ -19,6 +19,7 @@ class Guzzle
      * @param array $headers - Additional headers e.g. Bearer token
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public static function call(
         string $route,
