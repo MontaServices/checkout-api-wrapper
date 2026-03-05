@@ -21,6 +21,7 @@ class Settings
      * @param string $currency
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
+     * @param string $storeCollectLogo - Optionally pass StoreCollect override image path (full absolute path)
      * @deprecated - Use the factory method instead
      */
     public function __construct(
@@ -37,6 +38,7 @@ class Settings
         protected string $currency = '€',
         protected bool $excludeShippingDiscount = false,
         protected bool $showZeroCostsAsFree = false,
+        protected string $storeCollectLogo = '',
     )
     {
     }
@@ -210,5 +212,13 @@ class Settings
     public function setShowZeroCostsAsFree(bool $showZeroCostsAsFree): void
     {
         $this->showZeroCostsAsFree = $showZeroCostsAsFree;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollectLogo(): string
+    {
+        return $this->storeCollectLogo;
     }
 }

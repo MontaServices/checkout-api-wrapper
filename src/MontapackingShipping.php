@@ -235,11 +235,17 @@ class MontapackingShipping
                 }
             }
 
+            // CheckoutService might return StandardShipper when REST fails
             if (isset($result->standard_shipper)) {
                 $standardShipper = ShippingOption::construct((array)$result->standard_shipper);
             }
 
+            // StoreCollect becomes PickupPoint
             if (isset($result->store_location)) {
+                // When image was passed, override
+                if ($collectLogo = $this->getSettings()->getCollectLogo()) {
+                    $result->store_location->imageUrl = $collectLogo;
+                }
                 $storeLocation = PickupPoint::construct((array)$result->store_location);
             }
         }
