@@ -39,7 +39,7 @@ class PickupPoint extends Option
      * @param string|bool|null $imageUrl
      * @param float $price
      * @param string $priceFormatted
-     * @param array $openingTimes
+     * @param array|null $openingTimes
      * @param string $shipperOptionsWithValue
      * @param string|null $shipperGroupName
      * @param string|null $imageName
@@ -67,7 +67,7 @@ class PickupPoint extends Option
         string|bool|null $imageUrl,
         float $price,
         string $priceFormatted,
-        public array $openingTimes,
+        public ?array $openingTimes,
         public string $shipperOptionsWithValue,
         ?string $shipperGroupName = null,
         public ?string $imageName = null,
@@ -347,24 +347,26 @@ class PickupPoint extends Option
     }
 
     /**
-     * @return OpeningTime[]
+     * @return null|OpeningTime[]
      */
-    public function getOpeningTimes(): array
+    public function getOpeningTimes(): ?array
     {
         return $this->openingTimes;
     }
 
     /** Convert property
      *
-     * @param array $openingTimes - array of stdClasses (from API) or array of arrays (from JSON)
+     * @param array|null $openingTimes - array of stdClasses (from API) or array of arrays (from JSON)
      */
-    public function setOpeningTimes(array $openingTimes): void
+    public function setOpeningTimes(?array $openingTimes): void
     {
-        $slots = [];
-        foreach ($openingTimes as $openingTime) {
-            $slots[] = OpeningTime::construct((array)$openingTime);
+        if ($openingTimes) {
+            $slots = [];
+            foreach ($openingTimes as $openingTime) {
+                $slots[] = OpeningTime::construct((array)$openingTime);
+            }
+            $this->openingTimes = $slots;
         }
-        $this->openingTimes = $slots;
     }
 
     /**
