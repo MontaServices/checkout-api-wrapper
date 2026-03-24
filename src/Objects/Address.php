@@ -50,10 +50,15 @@ class Address extends Objectable
         $prepAddr = $this->getPrepareAddress();
         $sessionPath = $prepAddr . "-coordinates";
 
+        // Default coordinates to zero in case the API returns no results or an error occurs
+        $coords = [0.0, 0.0];
+
         // Get address from cache if already there
-        $coords = Session::get($sessionPath);
-        // If not, retrieve from API and write into cache
-        if (!$coords) {
+        $cached = Session::get($sessionPath);
+        if ($this->isValidCoordinateArray($cached)) {
+            $coords = $cached;
+        } else {
+            // If not in cache, retrieve from API and write into cache
             try {
                 $response = Guzzle::call(
                     route: "maps/api/geocode/json",
@@ -74,21 +79,31 @@ class Address extends Objectable
                 // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 if (isset($result->geometry)) {
                     $coords = [
-                        $result->geometry->location->lat,
-                        $result->geometry->location->lng,
+                        (float) $result->geometry->location->lat,
+                        (float) $result->geometry->location->lng,
                     ];
 
                     // Save this result in cache, avoid multiple duplicate API calls
                     Session::save($sessionPath, $coords);
                 }
             } catch (GuzzleException $ge) {
-            } catch (\Exception $e) {
-                // Catch and ignore Exceptions, coordinates remain zero
+            } catch (\Throwable $e) {
+                // Catch and ignore all errors, coordinates remain zero
             }
         }
 
         // Whether retrieved from cache or from API, assign both variables here
         [$this->latitude, $this->longitude] = $coords;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    private function isValidCoordinateArray(mixed $value): bool
+    {
+        return is_array($value) && count($value) === 2 && is_numeric($value[0]) && is_numeric($value[1]);
     }
 
     /**
