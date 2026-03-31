@@ -79,8 +79,8 @@ class Address extends Objectable
                 // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 if (isset($result->geometry)) {
                     $coords = [
-                        (float) $result->geometry->location->lat,
-                        (float) $result->geometry->location->lng,
+                        (float)$result->geometry->location->lat,
+                        (float)$result->geometry->location->lng,
                     ];
 
                     // Save this result in cache, avoid multiple duplicate API calls
@@ -98,7 +98,6 @@ class Address extends Objectable
 
     /**
      * @param mixed $value
-     *
      * @return bool
      */
     private function isValidCoordinateArray(mixed $value): bool
