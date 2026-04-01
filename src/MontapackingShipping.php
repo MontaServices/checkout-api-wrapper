@@ -155,16 +155,20 @@ class MontapackingShipping
 
             $result = $this->call('shippingrates');
 
-            if (isset($result->timeframes)) {
-                foreach ($result->timeframes as $timeframe) {
-                    $timeframes[] = new MontaCheckout_TimeFrame(
-                        $timeframe->date,
-                        $timeframe->day,
-                        $timeframe->month,
-                        $timeframe->dateFormatted,
-                        $timeframe->dateOnlyFormatted,
-                        $timeframe->ShippingOptions ?? $timeframe->options ?? []
-                    );
+            // If API gave a correct result
+            if ($result && $this->lastResponseCode == 200) {
+                if (isset($result->timeframes)) {
+                    foreach ($result->timeframes as $stdTimeframe) {
+                        // If Timeframe has no day, optionally skip this
+                        // TODO divide its ShippingOptions among the other Timeframes, with each their own dates
+                        if ($stdTimeframe->day || !$this->getSettings()->getHideEmptyTimeframe()) {
+                            // Convert stdClass into TimeFrame class
+                            $timeframe = TimeFrame::construct((array)$stdTimeframe);
+                            // Options in API result are not using the correct property name
+                            $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
+                            $timeframes[] = $timeframe;
+                        }
+                    }
                 }
             }
 

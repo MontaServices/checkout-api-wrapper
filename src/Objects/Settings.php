@@ -70,6 +70,16 @@ class Settings implements SystemInfoInterface
     private bool $hideDHLPackstations;
 
     /**
+     * @var string
+     */
+    private string $storeCollectLogo = '';
+
+    /**
+     * @var bool
+     */
+    private bool $hideEmptyTimeframe = false;
+
+    /**
      * @param string $origin
      * @param string $user
      * @param string $password
@@ -82,8 +92,11 @@ class Settings implements SystemInfoInterface
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
      * @param bool $hideDHLPackstations
+     * @param string $storeCollectLogo - Optionally pass StoreCollect override image path (full absolute path)
+     * @param bool $hideEmptyTimeframe
+     * @deprecated - Use the factory method instead
      */
-    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts,  ?string $webshopLanguage = 'nl-NL',string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false, bool $hideDHLPackstations = false)
+    public function __construct(string $origin, string $user, string $password, bool $pickupPointsEnabled, int $maxPickupPoints, string $googleKey, float $defaultCosts, ?string $webshopLanguage = 'nl-NL', string $currency = '€', bool $excludeShippingDiscount = false, bool $showZeroCostsAsFree = false, bool $hideDHLPackstations = false, string $storeCollectLogo = '', bool $hideEmptyTimeframe = false)
     {
         $this->setOrigin($origin);
         $this->setUser($user);
@@ -97,6 +110,8 @@ class Settings implements SystemInfoInterface
         $this->setExcludeShippingDiscount($excludeShippingDiscount);
         $this->setShowZeroCostsAsFree($showZeroCostsAsFree);
         $this->setHideDHLPackstations($hideDHLPackstations);
+        $this->storeCollectLogo = $storeCollectLogo;
+        $this->hideEmptyTimeframe = $hideEmptyTimeframe;
     }
 
     /**
@@ -277,5 +292,13 @@ class Settings implements SystemInfoInterface
     public function setHideDHLPackstations(bool $hideDHLPackstations): void
     {
         $this->hideDHLPackstations = $hideDHLPackstations;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHideEmptyTimeframe(): bool
+    {
+        return $this->hideEmptyTimeframe;
     }
 }
