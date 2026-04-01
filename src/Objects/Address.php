@@ -42,8 +42,24 @@ class Address extends Objectable
         $this->setGoogleApiKey($googleApiKey);
     }
 
+    /**
+     * @param string|null $googleApiKey
+     * @return $this
+     */
+    public function setGoogleApiKey(#[SensitiveParameter] ?string $googleApiKey): Address
+    {
+        if ($googleApiKey) {
+            $this->googleApiKey = trim($googleApiKey);
+
+            // After setting Google Key, coordinates can be calculated
+            $this->setLongLat();
+        }
+
+        return $this;
+    }
+
     /** Geocode address to validate and retrieve coordinates
-     *
+     * @return void
      */
     public function setLongLat(): void
     {
@@ -94,15 +110,6 @@ class Address extends Objectable
 
         // Whether retrieved from cache or from API, assign both variables here
         [$this->latitude, $this->longitude] = $coords;
-    }
-
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    private function isValidCoordinateArray(mixed $value): bool
-    {
-        return is_array($value) && count($value) === 2 && is_numeric($value[0]) && is_numeric($value[1]);
     }
 
     /**
@@ -205,23 +212,6 @@ class Address extends Objectable
     }
 
     /**
-     * @param string|null $googleApiKey
-     *
-     * @return $this
-     */
-    public function setGoogleApiKey(#[\SensitiveParameter] ?string $googleApiKey): Address
-    {
-        if ($googleApiKey) {
-            $this->googleApiKey = trim($googleApiKey);
-
-            // After setting Google Key, coordinates can be calculated
-            $this->setLongLat();
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function toArray(): array
@@ -238,4 +228,14 @@ class Address extends Objectable
             'Address.Longitude' => $this->longitude,
         ];
     }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isValidCoordinateArray(mixed $value): bool
+    {
+        return is_array($value) && count($value) === 2 && is_numeric($value[0]) && is_numeric($value[1]);
+    }
+
 }
