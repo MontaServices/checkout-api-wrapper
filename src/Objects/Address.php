@@ -42,18 +42,39 @@ class Address extends Objectable
         $this->setGoogleApiKey($googleApiKey);
     }
 
+    /**
+     * @param string|null $googleApiKey
+     * @return $this
+     */
+    public function setGoogleApiKey(#[SensitiveParameter] ?string $googleApiKey): Address
+    {
+        if ($googleApiKey) {
+            $this->googleApiKey = trim($googleApiKey);
+
+            // After setting Google Key, coordinates can be calculated
+            $this->setLongLat();
+        }
+
+        return $this;
+    }
+
     /** Geocode address to validate and retrieve coordinates
-     *
+     * @return void
      */
     public function setLongLat(): void
     {
         $prepAddr = $this->getPrepareAddress();
         $sessionPath = $prepAddr . "-coordinates";
 
+        // Default coordinates to zero in case the API returns no results or an error occurs
+        $coords = [0.0, 0.0];
+
         // Get address from cache if already there
-        $coords = Session::get($sessionPath);
-        // If not, retrieve from API and write into cache
-        if (!$coords) {
+        $cached = Session::get($sessionPath);
+        if ($this->isValidCoordinateArray($cached)) {
+            $coords = $cached;
+        } else {
+            // If not in cache, retrieve from API and write into cache
             try {
                 $response = Guzzle::call(
                     route: "maps/api/geocode/json",
@@ -74,16 +95,16 @@ class Address extends Objectable
                 // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 if (isset($result->geometry)) {
                     $coords = [
-                        $result->geometry->location->lat,
-                        $result->geometry->location->lng,
+                        (float)$result->geometry->location->lat,
+                        (float)$result->geometry->location->lng,
                     ];
 
                     // Save this result in cache, avoid multiple duplicate API calls
                     Session::save($sessionPath, $coords);
                 }
             } catch (GuzzleException $ge) {
-            } catch (\Exception $e) {
-                // Catch and ignore Exceptions, coordinates remain zero
+            } catch (\Throwable $e) {
+                // Catch and ignore all errors, coordinates remain zero
             }
         }
 
@@ -191,23 +212,6 @@ class Address extends Objectable
     }
 
     /**
-     * @param string|null $googleApiKey
-     *
-     * @return $this
-     */
-    public function setGoogleApiKey(#[\SensitiveParameter] ?string $googleApiKey): Address
-    {
-        if ($googleApiKey) {
-            $this->googleApiKey = trim($googleApiKey);
-
-            // After setting Google Key, coordinates can be calculated
-            $this->setLongLat();
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function toArray(): array
@@ -224,4 +228,14 @@ class Address extends Objectable
             'Address.Longitude' => $this->longitude,
         ];
     }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isValidCoordinateArray(mixed $value): bool
+    {
+        return is_array($value) && count($value) === 2 && is_numeric($value[0]) && is_numeric($value[1]);
+    }
+
 }
