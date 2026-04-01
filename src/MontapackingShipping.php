@@ -210,12 +210,15 @@ class MontapackingShipping
             if ($result && $this->lastResponseCode == 200) {
                 if (isset($result->timeframes)) {
                     foreach ($result->timeframes as $stdTimeframe) {
-                        // TODO if $timeframe->day is NULL, skip this Timeframe but divide it's ShippingOptions among the other Timeframes, with those separate own dates
-                        // Convert stdClass into TimeFrame class
-                        $timeframe = TimeFrame::construct((array)$stdTimeframe);
-                        // Options in API result are not using the correct property name
-                        $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
-                        $timeframes[] = $timeframe;
+                        // If Timeframe has no day, optionally skip this
+                        // TODO divide its ShippingOptions among the other Timeframes, with each their own dates
+                        if ($stdTimeframe->day || !$this->getSettings()->getHideEmptyTimeframe()) {
+                            // Convert stdClass into TimeFrame class
+                            $timeframe = TimeFrame::construct((array)$stdTimeframe);
+                            // Options in API result are not using the correct property name
+                            $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
+                            $timeframes[] = $timeframe;
+                        }
                     }
                 }
 
