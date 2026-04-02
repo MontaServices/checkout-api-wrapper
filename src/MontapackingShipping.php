@@ -225,7 +225,7 @@ class MontapackingShipping
                 if (isset($result->pickup_locations)) {
                     foreach ($result->pickup_locations as $stdPickup) {
                         // PickupPoints could be missing a Code, rare but property is required by code and logic
-                        if ($stdPickup->code) {
+                        if (!empty($stdPickup->code)) {
                             if ($computeKm) {
                                 // Recompute meters into kilometers (API passes meters)
                                 $stdPickup->distanceMeters = round(num: $stdPickup->distanceMeters / 1000, precision: 2);
