@@ -206,47 +206,51 @@ class MontapackingShipping
             /** @var object $result - Call REST API, get arrays of stdClass objects */
             $result = $this->call(method: 'shippingrates', parameters: $this->getJsonRequest());
 
-            // When API had a failure, use fallback
-            if (!$result || $this->lastResponseCode != 200) {
-                $result = (object)[];
-                $result->timeframes = [self::getFallbackTimeframe()];
-            }
-
-            if (isset($result->timeframes)) {
-                foreach ($result->timeframes as $stdTimeframe) {
-                    // Convert stdClass into TimeFrame class
-                    $timeframe = TimeFrame::construct((array)$stdTimeframe);
-                    // Options in result might be in different keys, try both
-                    $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
-                    $timeframes[] = $timeframe;
-                }
-            }
-
-            if (isset($result->pickup_locations)) {
-                foreach ($result->pickup_locations as $stdPickup) {
-                    // PickupPoints could be missing a Code, rare but property is required by code and logic
-                    if ($stdPickup->code) {
-                        if ($computeKm) {
-                            // Recompute meters into kilometers (API passes meters)
-                            $stdPickup->distanceMeters = round(num: $stdPickup->distanceMeters / 1000, precision: 2);
+            // If API gave a correct result
+            if ($result && $this->lastResponseCode == 200) {
+                if (isset($result->timeframes)) {
+                    foreach ($result->timeframes as $stdTimeframe) {
+                        // If Timeframe has no day, optionally skip this
+                        // TODO divide its ShippingOptions among the other Timeframes, with each their own dates
+                        if (!empty($stdTimeframe->day) || !$this->getSettings()->getHideEmptyTimeframes()) {
+                            // Convert stdClass into TimeFrame class
+                            $timeframe = TimeFrame::construct((array)$stdTimeframe);
+                            // Options in API result are not using the correct property name
+                            $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
+                            $timeframes[] = $timeframe;
                         }
-                        $pickups[] = PickupPoint::construct((array)$stdPickup);
                     }
                 }
-            }
 
-            // CheckoutService might return StandardShipper when REST fails
-            if (isset($result->standard_shipper)) {
-                $standardShipper = ShippingOption::construct((array)$result->standard_shipper);
-            }
-
-            // StoreCollect becomes PickupPoint
-            if (isset($result->store_location)) {
-                // When image was passed, override
-                if ($collectLogo = $this->getSettings()->getCollectLogo()) {
-                    $result->store_location->imageUrl = $collectLogo;
+                if (isset($result->pickup_locations)) {
+                    foreach ($result->pickup_locations as $stdPickup) {
+                        // PickupPoints could be missing a Code, rare but property is required by code and logic
+                        if (!empty($stdPickup->code)) {
+                            if ($computeKm) {
+                                // Recompute meters into kilometers (API passes meters)
+                                $stdPickup->distanceMeters = round(num: $stdPickup->distanceMeters / 1000, precision: 2);
+                            }
+                            $pickups[] = PickupPoint::construct((array)$stdPickup);
+                        }
+                    }
                 }
-                $storeLocation = PickupPoint::construct((array)$result->store_location);
+
+                // CheckoutService might return StandardShipper when REST fails
+                if (isset($result->standard_shipper)) {
+                    $standardShipper = ShippingOption::construct((array)$result->standard_shipper);
+                }
+
+                // StoreCollect becomes PickupPoint
+                if (isset($result->store_location)) {
+                    // When image was passed, override
+                    if ($collectLogo = $this->getSettings()->getCollectLogo()) {
+                        $result->store_location->imageUrl = $collectLogo;
+                    }
+                    $storeLocation = PickupPoint::construct((array)$result->store_location);
+                }
+            } else {
+                // API had a failure, use fallback
+                $timeframes = [self::getFallbackTimeframe()];
             }
         }
 

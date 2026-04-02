@@ -22,6 +22,7 @@ class Settings
      * @param bool $excludeShippingDiscount
      * @param bool $showZeroCostsAsFree
      * @param string $storeCollectLogo - Optionally pass StoreCollect override image path (full absolute path)
+     * @param bool $hideEmptyTimeframes - Hide any Timeframe without a day value (fallback for API incorrectly returning those)
      * @deprecated - Use the factory method instead
      */
     public function __construct(
@@ -39,6 +40,7 @@ class Settings
         protected bool $excludeShippingDiscount = false,
         protected bool $showZeroCostsAsFree = false,
         protected string $storeCollectLogo = '',
+        protected bool $hideEmptyTimeframes = false,
     )
     {
     }
@@ -220,5 +222,13 @@ class Settings
     public function getCollectLogo(): string
     {
         return $this->storeCollectLogo;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHideEmptyTimeframes(): bool
+    {
+        return $this->hideEmptyTimeframes;
     }
 }
