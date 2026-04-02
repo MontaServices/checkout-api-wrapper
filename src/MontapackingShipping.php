@@ -212,7 +212,7 @@ class MontapackingShipping
                     foreach ($result->timeframes as $stdTimeframe) {
                         // If Timeframe has no day, optionally skip this
                         // TODO divide its ShippingOptions among the other Timeframes, with each their own dates
-                        if ($stdTimeframe->day || !$this->getSettings()->getHideEmptyTimeframes()) {
+                        if (!empty($stdTimeframe->day) || !$this->getSettings()->getHideEmptyTimeframes()) {
                             // Convert stdClass into TimeFrame class
                             $timeframe = TimeFrame::construct((array)$stdTimeframe);
                             // Options in API result are not using the correct property name
