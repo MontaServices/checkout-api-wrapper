@@ -77,7 +77,9 @@ class ShippingOption extends Option
         // When ImageUrl was not passed (and not explicitly denied), construct it
         if ($shipperCodes && $imageUrl !== false && !$imageUrl) {
             // ShipperCodes is usually an array of one code, pick the first one
-            $this->setImageUrl($this->shipperGroupName ?? reset($this->shipperCodes));
+            if ($imageKey = self::resolveShipperImageKey($this->shipperGroupName, reset($this->shipperCodes) ?: null)) {
+                $this->setImageUrl($imageKey);
+            }
         }
     }
 

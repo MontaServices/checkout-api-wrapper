@@ -214,10 +214,14 @@ class MontapackingShipping
                         // TODO divide its ShippingOptions among the other Timeframes, with each their own dates
                         if (!empty($stdTimeframe->day) || !$this->getSettings()->getHideEmptyTimeframes()) {
                             // Convert stdClass into TimeFrame class
-                            $timeframe = TimeFrame::construct((array)$stdTimeframe);
+                            $timeframe = TimeFrame::construct((array)$stdTimeframe)?->setLocale(
+                                $this->getSettings()->getWebshopLanguage()
+                            );
                             // Options in API result are not using the correct property name
-                            $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
-                            $timeframes[] = $timeframe;
+                            if ($timeframe) {
+                                $timeframe->setOptions($stdTimeframe->ShippingOptions ?? $stdTimeframe->options ?? []);
+                                $timeframes[] = $timeframe;
+                            }
                         }
                     }
                 }
@@ -331,10 +335,6 @@ class MontapackingShipping
             $this->lastResponseCode = $response->getStatusCode();
         } catch (\Exception $exception) {
             $this->lastResponseCode = 404;
-            if ($response != null) {
-                // TODO how can CheckoutApiWrapper log when it has no DB and no filesystem?
-                $error_msg = $response->getReasonPhrase() . ' : ' . $response->getBody();
-            }
         }
 
         // If response was not empty, decode and return
@@ -355,7 +355,7 @@ class MontapackingShipping
      */
     private function getFallbackTimeframe(): TimeFrame
     {
-        return new TimeFrame(
+        return (new TimeFrame(
             dateOnlyFormatted: TimeFrame::FALLBACK_DATEONLY_CODE,
             options: [
                 new ShippingOption(
@@ -372,7 +372,7 @@ class MontapackingShipping
                     imageUrl: false,
                 ),
             ],
-        );
+        ))->setLocale($this->getSettings()->getWebshopLanguage());
     }
 
     /**

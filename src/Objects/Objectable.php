@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Jacco.Amersfoort <jacco.amersfoort@monta.nl>
  * @created 11/18/2025 12:36
  */
 
@@ -10,6 +9,146 @@ abstract class Objectable
 {
     /** @var string - Shipper images are located here, grouped on ShipperGroupName */
     protected const string SHIPPER_IMAGE_URL = "https://cdn.monta.nl/PublicFiles/Images/shippers/%s/icon.svg";
+
+    /** @var string[] - Fallback mapping while shipperGroupName is not returned by the API */
+    protected const SHIPPER_GROUP_BY_SHORT = [
+        'PostNLPakjesUntracked' => 'PostNL',
+        'PostNLPakjesUntrackedBoxable' => 'PostNL',
+        'PostNLPakjesTracked' => 'PostNL',
+        'PostNLPakjesTrackedBoxable' => 'PostNL',
+        'MyHairAfhaalpuntHilversum' => 'PostNL',
+        'PostNlPakjesTrackedEu' => 'PostNL',
+        'PostNlPakjesTrackedNo' => 'PostNL',
+        'PostNlPakjesTrackedIs' => 'PostNL',
+        'PostNlPakjesTrackedCh' => 'PostNL',
+        'PostNlPakjesTrackedWorld' => 'PostNL',
+        'PostNLfood' => 'PostNL',
+        'PostNlBuspakje' => 'PostNL',
+        'PostNLGroot' => 'PostNL',
+        'PostNlBuspostPartijen01' => 'PostNL',
+        'PostNlBuspostPartijen02' => 'PostNL',
+        'PostNlBuspostPartijen03' => 'PostNL',
+        'PostNlBuspostPartijen04' => 'PostNL',
+        'PostNlSameDay' => 'PostNL',
+        'PostNlBuspostBE' => 'PostNL',
+        'PostNlBuspostAangetekend' => 'PostNL',
+        'PAK' => 'PostNL',
+        'PostNlBuspostEU' => 'PostNL',
+        'EHM' => 'PostNL',
+        'EHD' => 'PostNL',
+        'EHT' => 'PostNL',
+        'PostNlBuspostNl24hPartijenPost' => 'PostNL',
+        'PostNlBuspostWorld' => 'PostNL',
+        'PostNlBuspostNl24h' => 'PostNL',
+        'PostNlBuspostNl72h' => 'PostNL',
+        'PostNL' => 'PostNL',
+        'PostNlBuspakje24h' => 'PostNL',
+        'B2cEuropeMailPlus' => 'B2C',
+        'B2cEuropeParcelPlus' => 'B2C',
+        'Landmark' => 'BPost',
+        'BpackPickupPoint' => 'BPost',
+        'Bpack24hPro' => 'BPost',
+        'BpostBuspostBe' => 'BPost',
+        'LandmarkPickupPoint' => 'BPost',
+        'SELGroot' => 'DHL',
+        'DHLParcelConnectGroot' => 'DHL',
+        'DHLDEWarenpost' => 'DHL',
+        'DHLEP' => 'DHL',
+        'DHLDEGroot' => 'DHL',
+        'DHLExpress' => 'DHL',
+        'DHLDEPickupPoint' => 'DHL',
+        'DHLParcelUKPickupPoint' => 'DHL',
+        'DHLParcelUK' => 'DHL',
+        'DHLParcelConnectUK' => 'DHL',
+        'DHLservicepunt' => 'DHL',
+        'SEL' => 'DHL',
+        'SELBuspakje' => 'DHL',
+        'DHL' => 'DHL',
+        'DHLParcelConnectPickupPoint' => 'DHL',
+        'DHLParcelConnect' => 'DHL',
+        'DHLservicepuntGroot' => 'DHL',
+        'DHLpallet' => 'DHL',
+        'DHLDE' => 'DHL',
+        'DPD' => 'DPD',
+        'DPDparcelstore' => 'DPD',
+        'DPDKlein' => 'DPD',
+        'DPDGroot' => 'DPD',
+        'DPDparcelstoreGroot' => 'DPD',
+        'DPDPL' => 'DPD',
+        'DPDGroup' => 'DPD',
+        'DPDGroupPickuppoint' => 'DPD',
+        'UPSAP' => 'UPS',
+        'UPSES' => 'UPS',
+        'UPS' => 'UPS',
+        'FedEx' => 'FedEx',
+        'FedExICP' => 'FedEx',
+        'RED' => 'RedjePakketje',
+        'ParcelNlHomeDelivery' => 'ParcelNL',
+        'ParcelNlParcelletter' => 'ParcelNL',
+        'ParcelNlFreight' => 'ParcelNL',
+        'OegemaPallet' => 'Oegema',
+        'AFH' => 'Afhalen',
+        'Trunkrs' => 'Trunkrs',
+        'TrunkrsGroot' => 'Trunkrs',
+        'Asendia' => 'Asendia',
+        'DeutschePost' => 'DeutschePost',
+        'DeutschePostBuspost' => 'DeutschePost',
+        'Dynalogic' => 'Dynalogic',
+        'Budbee' => 'Budbee',
+        'BudbeePickupPoint' => 'Budbee',
+        'Reviva' => 'Reviva',
+        'Packs' => 'Packs',
+        'DHLFYPickupPoint' => 'DHLForYou',
+        'DHLFYPakket' => 'DHLForYou',
+        'DHLFYBuspakje' => 'DHLForYou',
+        'DHLFYSameDay' => 'DHLForYou',
+        'DHLFYBuspakje500gram' => 'DHLForYou',
+        'GLSInternational' => 'GLS',
+        'GLSPickupPoint' => 'GLS',
+        'GLSGroot' => 'GLS',
+        'GLS' => 'GLS',
+        'Swift' => 'Swift',
+        'COT' => 'COT',
+        'INT' => 'INT',
+        'Cycloon' => 'Cycloon',
+        'Izipack' => 'Izipack',
+        'PLX' => 'PLX',
+        'TransmissionPallet' => 'Transmission',
+        'TransmissionHST' => 'Transmission',
+        'Transmission' => 'Transmission',
+        'TransmissionHSTPallet' => 'Transmission',
+        'ColisPrivePickupPoint' => 'ColisPrive',
+        'ColisPrive' => 'ColisPrive',
+        'Seabourne' => 'Seabourne',
+        'Colissimo' => 'Colissimo',
+        'ColissimoPickupPoint' => 'Colissimo',
+        'InPost' => 'InPost',
+        'InPostPickupPoint' => 'InPost',
+        'Hoef' => 'VanDeHoef',
+        'HoefPallet' => 'VanDeHoef',
+        'GEL' => 'GEL',
+        'GELPallet' => 'GEL',
+        'MondialRelay' => 'MondialRelay',
+        'MondialRelayPickupPoint' => 'MondialRelay',
+        'PostNord' => 'PostNord',
+        'Veldhuizen' => 'Veldhuizen',
+        'Mainfreight' => 'Mainfreight',
+        'RoyalMail' => 'RoyalMail',
+        'RoyalMailBuspost' => 'RoyalMail',
+        'Bol' => 'Bol',
+        'Amazon' => 'Amazon',
+        'Cancelled' => 'Cancelled',
+        'DAC' => 'Dachser',
+        'Hermes2Man' => 'Hermes2man',
+        'HeyWorld' => 'HeyWorld',
+        'DeliveryMatchPallet' => 'DeliveryMatch',
+        'DeliveryMatch' => 'DeliveryMatch',
+        'Evri' => 'Evri',
+        'EvriPickupPoint' => 'Evri',
+        'XXL Pakket' => 'XXL Pakket',
+        'Raben' => 'Raben',
+        'Rijssen' => 'KoeriersdienstRijssen',
+    ];
 
     /** @var array - Original data from API, packed and unpacked to JSON by frontend */
     protected array $originalData = [];
@@ -83,6 +222,32 @@ abstract class Objectable
     public function toJson(): string
     {
         return json_encode($this->toArray());
+    }
+
+    protected static function resolveShipperImageKey(?string $shipperGroupName, ?string $shipperShort): ?string
+    {
+        $shipperGroupName = self::normalizeShipperIdentifier($shipperGroupName);
+        if ($shipperGroupName) {
+            return $shipperGroupName;
+        }
+
+        $shipperShort = self::normalizeShipperIdentifier($shipperShort);
+        if (!$shipperShort) {
+            return null;
+        }
+
+        return self::SHIPPER_GROUP_BY_SHORT[$shipperShort] ?? $shipperShort;
+    }
+
+    protected static function normalizeShipperIdentifier(?string $identifier): ?string
+    {
+        if ($identifier === null) {
+            return null;
+        }
+
+        $identifier = trim($identifier);
+
+        return $identifier !== '' ? $identifier : null;
     }
 
     /** Public function for getting all properties (including protected) of this class

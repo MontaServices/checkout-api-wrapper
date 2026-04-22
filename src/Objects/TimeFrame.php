@@ -2,6 +2,9 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
+use DateTimeImmutable;
+use IntlDateFormatter;
+
 // alias for sibling must remain or not all autoloading will work
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Objects\ShippingOption as ShippingOption;
@@ -26,6 +29,7 @@ class TimeFrame extends Objectable
         public ?string $dateFormatted = null,
         public ?string $dateOnlyFormatted = null,
         public ?array $options = [],
+        public ?string $locale = null,
     )
     {
         // Properties are set in constructor, this setter has custom functionality
@@ -55,7 +59,9 @@ class TimeFrame extends Objectable
      */
     public function getDay(): string
     {
-        return $this->day ?? "";
+        return $this->formatDatePart('EEEE')
+            ?? $this->day
+            ?? "";
     }
 
     /**
@@ -72,6 +78,20 @@ class TimeFrame extends Objectable
      */
     public function getDateFormatted(bool $strip = false): ?string
     {
+        if ($date = $this->getDateObject()) {
+            $day = (int) $date->format('j');
+            $month = $this->formatDatePart('MMMM');
+
+            if ($strip) {
+                return $month ? sprintf('%d %s', $day, $month) : null;
+            }
+
+            $weekday = $this->getDay();
+            return $weekday && $month
+                ? sprintf('%s %d %s %d', $weekday, $day, $month, (int) $date->format('Y'))
+                : null;
+        }
+
         if ($strip) {
             // remove weekday from formatted date (both are determined by API)
             return trim(str_replace(search: $this->getDay(), replace: "",
@@ -112,7 +132,8 @@ class TimeFrame extends Objectable
      */
     public function getMonth(): ?string
     {
-        return $this->month;
+        return $this->formatDatePart('MMMM')
+            ?? $this->month;
     }
 
     /**
@@ -121,6 +142,17 @@ class TimeFrame extends Objectable
     public function setMonth(?string $month): void
     {
         $this->month = $month;
+    }
+
+    public function getLocale(): string
+    {
+        return str_replace('_', '-', $this->locale ?: 'nl-NL');
+    }
+
+    public function setLocale(?string $locale): static
+    {
+        $this->locale = $locale;
+        return $this;
     }
 
     /**
@@ -152,6 +184,38 @@ class TimeFrame extends Objectable
         // Overwrite property which was set as promoted property by constructor
         $this->options = $list;
         return $this;
+    }
+
+    protected function getDateObject(): ?DateTimeImmutable
+    {
+        if (!$this->date) {
+            return null;
+        }
+
+        try {
+            return new DateTimeImmutable($this->date);
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
+    protected function formatDatePart(string $pattern): ?string
+    {
+        if (!class_exists(IntlDateFormatter::class) || !$this->getDateObject()) {
+            return null;
+        }
+
+        $formatter = new IntlDateFormatter(
+            $this->getLocale(),
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::NONE,
+            date_default_timezone_get(),
+            null,
+            $pattern,
+        );
+
+        $formatted = $formatter->format($this->getDateObject());
+        return is_string($formatted) ? trim($formatted) : null;
     }
 
 }
