@@ -51,7 +51,7 @@ class ShippingOption extends Option
         public string $shippingType = "",// TODO what is this? now a function on Option
         float $price = 0,
         string $priceFormatted = "",
-        public int $discountPercentage = 0,
+        public float $discountPercentage = 0,
         public bool $isPreferred = false,
         public bool $isSustainable = false,
         public array $deliveryOptions = [],
