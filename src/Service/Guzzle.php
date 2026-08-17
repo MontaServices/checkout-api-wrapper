@@ -34,6 +34,9 @@ class Guzzle
             'base_uri' => $baseUri,
             'timeout' => 10.0,
             'headers' => $headers,
+            'curl' => [
+                CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2,
+            ],
         ];
         $client = new Client($clientData);
         switch ($httpMethod) {
