@@ -22,7 +22,7 @@ class MontapackingShipping
     protected const string MONTA_REST_CHECKOUT_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/';
 
     /** @var string - URI of API for testing info TODO use gateway URI once CheckoutService adds /info endpoint */
-    protected const string MONTA_REST_INFO_URI = 'https://api-v6.monta.nl/';
+    protected const string MONTA_REST_INFO_URI = 'https://api-gateway.monta.nl/selfhosted/checkout/info';
 
     /**
      * @var ?Order
