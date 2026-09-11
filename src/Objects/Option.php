@@ -3,6 +3,7 @@
 namespace Monta\CheckoutApiWrapper\Objects;
 
 // alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Exception\ValidationException;
 use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
 use Monta\CheckoutApiWrapper\Traits\CachedOptions;
 
@@ -104,7 +105,7 @@ class Option extends Objectable
     /**
      * @param bool $throwOnFail - Throw exception if validation fails, otherwise return false
      * @return bool - Validation success
-     * @throws \Exception
+     * @throws ValidationException
      */
     public function validate(bool $throwOnFail = true): bool
     {
@@ -125,7 +126,7 @@ class Option extends Objectable
         }
 
         if (!$valid && $throwOnFail) {
-            throw new \Exception($errorMsg);
+            throw new ValidationException($errorMsg);
         }
 
         // Return validation result
