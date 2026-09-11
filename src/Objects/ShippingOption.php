@@ -2,19 +2,28 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Objects\Option as MontaCheckout_Option;
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Option as Option;
 
-class ShippingOption
+/**
+ * This is a Delivery Option, typically under a Timeframe.
+ */
+class ShippingOption extends Option
 {
+    public const string SHIPPING_OPTIONS_KEY = 'DeliveryOptions';
+
+    public const string SHIPPING_STANDARD_KEY = 'StandardShipper';
+
     /** Constructor with promoted properties
-     * TODO change properties to protected, but might be necessary for serialization
+     * Beware, these properties must match the exact output of the API
      *
      * @param string $shipper
      * @param string $code
      * @param string $displayNameShort
      * @param string $displayName
-     * @param ?string $from
-     * @param ?string $to
+     * @param string|null $date - Desired delivery date
+     * @param string|null $from - desired delivery time start
+     * @param string|null $to - desired delivery time end
      * @param string $deliveryType
      * @param string $shippingType
      * @param float $price
@@ -22,63 +31,64 @@ class ShippingOption
      * @param int $discountPercentage
      * @param bool $isPreferred
      * @param bool $isSustainable
-     * @param array $deliveryOptions
-     * @param string $optionCodes - @deprecated, not referenced anywhere
-     * @param array $shipperCodes
+     * TODO rename $deliveryOptions to shipperOptions, but the API result uses `deliveryOptions`
+     * @param ShipperOption[] $deliveryOptions - converted into objects in setter
+     * @param string $optionCodes @deprecated, not referenced anywhere
+     * @param string[] $shipperCodes
+     * @param string|null $shipperGroupName
+     * @param string|bool $imageUrl - Constructed based on other properties
+     * @param array $selectedShipperOptions
      */
     public function __construct(
         public string $shipper,
-        public string $code,
+        string $code,
         public string $displayNameShort,
-        public string $displayName,
+        string $displayName,
+        public ?string $date = null,
         public ?string $from = null,
         public ?string $to = null,
         public string $deliveryType = "",
-        public string $shippingType = "",
-        public float $price = 0,
-        public string $priceFormatted = "",
-        public int $discountPercentage = 0,
+        public string $shippingType = "",// TODO what is this? now a function on Option
+        float $price = 0,
+        string $priceFormatted = "",
+        public float $discountPercentage = 0,
         public bool $isPreferred = false,
         public bool $isSustainable = false,
         public array $deliveryOptions = [],
         public string $optionCodes = "",
         public array $shipperCodes = [],
+        ?string $shipperGroupName = null,
+        string|bool $imageUrl = "",
+        public array $selectedShipperOptions = [],
     )
     {
-        $this->setShipper($shipper);
-        $this->setCode($code);
-        $this->setDisplayNameShort($displayNameShort);
-        $this->setDisplayName($displayName);
-        $this->setFrom($from);
-        $this->setTo($to);
-        $this->setDeliveryType($deliveryType);
-        $this->setShippingType($shippingType);
-        $this->setPrice($price);
-        $this->setPriceFormatted($priceFormatted);
-        $this->setDiscountPercentage($discountPercentage);
-        $this->setIsPreferred($isPreferred);
-        $this->setIsSustainable($isSustainable);
-        $this->setDeliveryOptions($deliveryOptions);
-        $this->setOptionCodes($optionCodes);
-        $this->setShipperCodes($shipperCodes);
+        parent::__construct(
+            code: $code,
+            displayName: $displayName,
+            price: $price,
+            priceFormatted: $priceFormatted,
+            imageUrl: $imageUrl,
+            shipperGroupName: $shipperGroupName,
+        );
+
+        // Properties are set in constructor, this setter has custom functionality
+        $this->setShipperOptions($deliveryOptions);
+
+        // When ImageUrl was not passed (and not explicitly denied), construct it
+        if ($shipperCodes && $imageUrl !== false && !$imageUrl) {
+            // ShipperCodes is usually an array of one code, pick the first one
+            if ($imageKey = self::resolveShipperImageKey($this->shipperGroupName, reset($this->shipperCodes) ?: null)) {
+                $this->setImageUrl($imageKey);
+            }
+        }
     }
 
     /**
-     * @return string
-     * @deprecated - Not referenced anywhere
+     * @return ?string
      */
-    public function getOptionCodes(): string
+    public function getDesiredDeliveryDate(): ?string
     {
-        return $this->optionCodes;
-    }
-
-    /**
-     * @param string $optionCodes
-     * @deprecated - Not referenced anywhere
-     */
-    public function setOptionCodes(string $optionCodes): void
-    {
-        $this->optionCodes = $optionCodes;
+        return $this->date;
     }
 
     /**
@@ -90,16 +100,6 @@ class ShippingOption
     }
 
     /**
-     * @param ?string $from
-     * @return ShippingOption
-     */
-    public function setFrom(?string $from): ShippingOption
-    {
-        $this->from = $from;
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getTo(): ?string
@@ -107,227 +107,72 @@ class ShippingOption
         return $this->to;
     }
 
-    /**
-     * @param ?string $to
-     * @return ShippingOption
-     */
-    public function setTo(?string $to): ShippingOption
-    {
-        $this->to = $to;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getShipper(): string
-    {
-        return $this->shipper;
-    }
-
-    /**
-     * @param string $shipper
-     * @return ShippingOption
-     */
-    public function setShipper(string $shipper): ShippingOption
-    {
-        $this->shipper = $shipper;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
+    /** Get a ShipperOption from this ShippingOption by code
+     * Typically used to retrieve from cached Option
+     *
      * @param string $code
-     * @return ShippingOption
+     * @return ShipperOption|null
      */
-    public function setCode(string $code): ShippingOption
+    public function getShipperOptionByCode(string $code): ?ShipperOption
     {
-        $this->code = $code;
-        return $this;
+        // Filter array on callback, match on code
+        $filtered = array_filter(
+            array: $this->getShipperOptions(),
+            callback: fn($option) => $option->getCode() == $code,
+        );
+
+        // Return the first (only) element, or null if none found
+        return reset($filtered) ?? null;
     }
 
-    /**
-     * @return string
+    /** The entire list of possible shipper options for this Option
+     *
+     * @return ShipperOption[]
      */
-    public function getDisplayName(): string
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * @param string $displayName
-     * @return ShippingOption
-     */
-    public function setDisplayName(string $displayName): ShippingOption
-    {
-        $this->displayName = $displayName;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDeliveryType(): string
-    {
-        return $this->deliveryType;
-    }
-
-    /**
-     * @param string $deliveryType
-     * @return ShippingOption
-     */
-    public function setDeliveryType(string $deliveryType): ShippingOption
-    {
-        $this->deliveryType = $deliveryType;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingType(): string
-    {
-        return $this->shippingType;
-    }
-
-    /**
-     * @param string $shippingType
-     * @return ShippingOption
-     */
-    public function setShippingType(string $shippingType): ShippingOption
-    {
-        $this->shippingType = $shippingType;
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     * @return ShippingOption
-     */
-    public function setPrice(float $price): ShippingOption
-    {
-        $this->price = $price;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDiscountPercentage(): int
-    {
-        return $this->discountPercentage;
-    }
-
-    /**
-     * @param int $discountPercentage
-     * @return ShippingOption
-     */
-    public function setDiscountPercentage(int $discountPercentage): ShippingOption
-    {
-        $this->discountPercentage = $discountPercentage;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsPreferred(): bool
-    {
-        return $this->isPreferred;
-    }
-
-    /**
-     * @param bool $isPreferred
-     * @return ShippingOption
-     */
-    public function setIsPreferred(bool $isPreferred): ShippingOption
-    {
-        $this->isPreferred = $isPreferred;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsSustainable(): bool
-    {
-        return $this->isSustainable;
-    }
-
-    /**
-     * @param bool $isSustainable
-     * @return ShippingOption
-     */
-    public function setIsSustainable(bool $isSustainable): ShippingOption
-    {
-        $this->isSustainable = $isSustainable;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDisplayNameShort(): string
-    {
-        return $this->displayNameShort;
-    }
-
-    /**
-     * @param string $displayNameShort
-     */
-    public function setDisplayNameShort(string $displayNameShort): void
-    {
-        $this->displayNameShort = $displayNameShort;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriceFormatted(): string
-    {
-        return $this->priceFormatted;
-    }
-
-    /**
-     * @param string $priceFormatted
-     */
-    public function setPriceFormatted(string $priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDeliveryOptions(): array
+    public function getShipperOptions(): array
     {
         return $this->deliveryOptions;
     }
 
-    /**
-     * @param array $deliveryOptions
+    /** The selected Shipper Options
+     *
+     * @param string|null $onlyColumn
+     * @return array - assoc arrays of selected options (or flat array with one column)
+     */
+    public function getSelectedShipperOptions(?string $onlyColumn = null): array
+    {
+        // frontend passes the selected ShipperOptions in this property
+        $shipperOptions = $this->selectedShipperOptions;
+        return $onlyColumn ?
+            // when passed, return only one column
+            array_column($shipperOptions, $onlyColumn)
+            // otherwise return whole array
+            : $shipperOptions;
+    }
+
+    /** When this Option is selected, update its Shipper options
+     *
+     * @param array $shipperOptions
+     * @return void
+     */
+    public function setSelectedShipperOptions(array $shipperOptions): void
+    {
+        $this->selectedShipperOptions = $shipperOptions;
+    }
+
+    /** Convert stdClass from API to array of Option objects
+     *
+     * @param array $shipperOptions
      * @return ShippingOption
      */
-    public function setDeliveryOptions(array $deliveryOptions): ShippingOption
+    public function setShipperOptions(array $shipperOptions): ShippingOption
     {
+        // index array on 'code' column to remove any duplicates
+        $shipperOptions = array_column($shipperOptions, null, 'code');
         $list = [];
-        foreach ($deliveryOptions as $option) {
-            $list[] = new MontaCheckout_Option($option->code, $option->description, $option->price, $option->priceFormatted);
+        foreach ($shipperOptions as $option) {
+            // Convert into Option
+            $list[] = ShipperOption::construct((array)$option);
         }
 
         $this->deliveryOptions = $list;
@@ -336,31 +181,14 @@ class ShippingOption
     }
 
     /**
-     * @return array
+     * @param bool $includeShipperOptions - Include price of selected options
+     * @return float
      */
-    public function toArray(): array
+    public function getPrice(bool $includeShipperOptions = false): float
     {
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
-    }
-
-    /**
-     * @return array
-     */
-    public function getShipperCodes(): array
-    {
-        return $this->shipperCodes;
-    }
-
-    /**
-     * @param array $shipperCodes
-     */
-    public function setShipperCodes(array $shipperCodes): void
-    {
-        $this->shipperCodes = $shipperCodes;
+        // base shipping price
+        return $this->price
+            // if requested, add sum of all selected shipperOptions
+            + ($includeShipperOptions ? array_sum($this->getSelectedShipperOptions('price')) : 0);
     }
 }
