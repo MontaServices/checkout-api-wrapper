@@ -2,27 +2,21 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-class Order
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+
+class Order extends Objectable
 {
-    /**
-     * @var float
-     */
-    public float $total_incl;
 
     /**
-     * @var float
+     * @param float $total_incl
+     * @param float $total_excl
      */
-    public float $total_excl;
-
-    /**
-     * @param $incl
-     * @param $excl
-     */
-    public function __construct($incl, $excl)
+    public function __construct(
+        public float $total_incl,
+        public float $total_excl,
+    )
     {
-
-        $this->setIncl($incl);
-        $this->setExcl($excl);
     }
 
     /**
@@ -46,7 +40,7 @@ class Order
     }
 
     /**
-     * @return array
+     * @return float[] - Keyed on type
      */
     public function toArray(): array
     {

@@ -2,105 +2,105 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Monta\CheckoutApiWrapper\Objects\OpeningTime;
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Option as Option;
+use Monta\CheckoutApiWrapper\Traits\Packstations;
 
 /**
  * Class PickupPoint
  *
  */
-class PickupPoint
+class PickupPoint extends Option
 {
-    public string $code;
-    public float $distanceMeters;
-    public string $company;
-    public string $street;
-    public ?string $houseNumber;
-    public string $postalCode;
-    public ?string $district;
-    public string $city;
-    public ?string $state;
-    public string $countryCode;
-    public ?string $addressRemark;
-    public ?string $phone;
-    public float $longitude;
-    public float $latitude;
-    public ?string $imageUrl;
-    public float $price;
-    public string $priceFormatted;
-    public array $openingTimes;
-    public string $shipperOptionsWithValue;
-    public ?string $imageName;
+    use Packstations;
 
-    /**
+    public const string PICKUP_OPTIONS_KEY = 'PickupOptions';
+
+    public const string PICKUP_STORE_KEY = 'StoreLocation';
+
+    /** Properties must be public so they are added to JSON object
+     *
      * @param string $displayName
      * @param string $shipperCode
      * @param string $code
      * @param float $distanceMeters
      * @param string $company
      * @param string $street
-     * @param ?string $houseNumber
+     * @param string|null $houseNumber
      * @param string $postalCode
-     * @param ?string $district
+     * @param string|null $district
      * @param string $city
-     * @param ?string $state
+     * @param string|null $state
      * @param string $countryCode
-     * @param ?string $addressRemark
-     * @param ?string $phone
+     * @param string|null $addressRemark
+     * @param string|null $phone
      * @param float $longitude
      * @param float $latitude
-     * @param ?string $imageUrl
+     * @param string|bool|null $imageUrl
      * @param float $price
      * @param string $priceFormatted
-     * @param array $openingTimes
+     * @param array|null $openingTimes
      * @param string $shipperOptionsWithValue
+     * @param string|null $shipperGroupName
+     * @param string|null $imageName
+     * @param string|null $formattedAddress - Display value for address
+     * @param string[] $position - Format according to Google Maps API
      */
-    public function __construct(string $displayName, string $shipperCode, string $code, float $distanceMeters, string $company, string $street, ?string $houseNumber, string $postalCode, ?string $district, string $city, ?string $state, string $countryCode, ?string $addressRemark, ?string $phone, float $longitude, float $latitude, ?string $imageUrl, float $price, string $priceFormatted, array $openingTimes, string $shipperOptionsWithValue)
+    public function __construct(
+        string $displayName,
+        public string $shipperCode,
+        string $code,
+        public float $distanceMeters,
+        // TODO maybe replace all these values with simply an Address object
+        public string $company,
+        public string $street,
+        public ?string $houseNumber,
+        public string $postalCode,
+        public ?string $district,
+        public string $city,
+        public ?string $state,
+        public string $countryCode,
+        public ?string $addressRemark,
+        public ?string $phone,
+        public float $longitude,
+        public float $latitude,
+        string|bool|null $imageUrl,
+        float $price,
+        string $priceFormatted,
+        public ?array $openingTimes,
+        public string $shipperOptionsWithValue,
+        ?string $shipperGroupName = null,
+        public ?string $imageName = null,
+        public ?string $formattedAddress = null,
+        public array $position = [],
+    )
     {
-        $this->setDisplayName($displayName);
-        $this->setShipperCode($shipperCode);
-        $this->setCode($code);
-        $this->setDistanceMeters($distanceMeters);
-        $this->setDistrict($district);
-        $this->setCompany($company);
-        $this->setStreet($street);
-        $this->setHouseNumber($houseNumber);
-        $this->setPostalCode($postalCode);
-        $this->setCity($city);
-        $this->setState($state);
-        $this->setCountryCode($countryCode);
-        $this->setAddressRemark($addressRemark);
-        $this->setPhone($phone);
-        $this->setLongitude($longitude);
-        $this->setLatitude($latitude);
-        $this->setImageUrl($imageUrl);
-        $this->setPrice($price);
-        $this->setPriceFormatted($priceFormatted);
+        parent::__construct(
+            code: $code,
+            displayName: $displayName,
+            price: $price,
+            priceFormatted: $priceFormatted,
+            imageUrl: $imageUrl,
+            shipperGroupName: $shipperGroupName,
+        );
         $this->setOpeningTimes($openingTimes);
-		$this->set_shipper_options_with_value($shipperOptionsWithValue);
+
+        // Format address for display on frontend
+        $this->formattedAddress = $this->street . ' ' . $this->houseNumber . ', ' . $this->postalCode . ' ' . $this->city;
+
+        // Fill this property to use as Marker in Google Maps API
+        $this->position = [
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+        ];
+
+        // When image URL was not passed and not explicitly false, construct it from here
+        if ($imageUrl !== false && !$imageUrl) {
+            if ($imageKey = self::resolveShipperImageKey($this->shipperGroupName, $this->shipperCode)) {
+                $this->setImageUrl($imageKey);
+            }
+        }
     }
-
-    public string $displayName;
-
-    /**
-     * @return string
-     */
-    public function getDisplayName(): string
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * @param string $displayName
-     */
-    public function setDisplayName(string $displayName): void
-    {
-        $this->displayName = $displayName;
-    }
-
-    /**
-     * @var string
-     */
-    public string $shipperCode;
 
     /**
      * @return string
@@ -112,61 +112,15 @@ class PickupPoint
 
     /**
      * @param string $shipperCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setShipperCode(string $shipperCode): void
     {
         $this->shipperCode = $shipperCode;
     }
 
-    /**
-     * @return float
-     */
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     */
-    public function setPrice(float $price): void
-    {
-        $this->price = $price;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPriceFormatted(): string
-    {
-        return $this->priceFormatted;
-    }
-
-    /**
-     * @param string $priceFormatted
-     */
-    public function setPriceFormatted(string $priceFormatted): void
-    {
-        $this->priceFormatted = $priceFormatted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param string $code
-     */
-    public function setCode(string $code): void
-    {
-        $this->code = $code;
-    }
-
-    /**
+    /** Name is confusing, value is usually already in kilometers
+     *
      * @return float
      */
     public function getDistanceMeters(): float
@@ -176,6 +130,7 @@ class PickupPoint
 
     /**
      * @param float $distanceMeters
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setDistanceMeters(float $distanceMeters): void
     {
@@ -192,6 +147,7 @@ class PickupPoint
 
     /**
      * @param string $company
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCompany(string $company): void
     {
@@ -208,6 +164,7 @@ class PickupPoint
 
     /**
      * @param string $street
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setStreet(string $street): void
     {
@@ -223,7 +180,8 @@ class PickupPoint
     }
 
     /**
-     * @param ?string $houseNumber
+     * @param string|null $houseNumber
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setHouseNumber(?string $houseNumber): void
     {
@@ -240,6 +198,7 @@ class PickupPoint
 
     /**
      * @param string $postalCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setPostalCode(string $postalCode): void
     {
@@ -248,6 +207,7 @@ class PickupPoint
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getDistrict(): string
     {
@@ -256,6 +216,7 @@ class PickupPoint
 
     /**
      * @param string|null $district
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setDistrict(?string $district): void
     {
@@ -272,6 +233,7 @@ class PickupPoint
 
     /**
      * @param string $city
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCity(string $city): void
     {
@@ -280,6 +242,7 @@ class PickupPoint
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getState(): string
     {
@@ -288,6 +251,7 @@ class PickupPoint
 
     /**
      * @param string|null $state
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setState(?string $state): void
     {
@@ -304,6 +268,7 @@ class PickupPoint
 
     /**
      * @param string $countryCode
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setCountryCode(string $countryCode): void
     {
@@ -312,6 +277,7 @@ class PickupPoint
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getAddressRemark(): string
     {
@@ -320,6 +286,7 @@ class PickupPoint
 
     /**
      * @param string|null $addressRemark
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setAddressRemark(?string $addressRemark): void
     {
@@ -328,6 +295,7 @@ class PickupPoint
 
     /**
      * @return string
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getPhone(): string
     {
@@ -336,6 +304,7 @@ class PickupPoint
 
     /**
      * @param string|null $phone
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setPhone(?string $phone): void
     {
@@ -344,6 +313,7 @@ class PickupPoint
 
     /**
      * @return float
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getLongitude(): float
     {
@@ -352,6 +322,7 @@ class PickupPoint
 
     /**
      * @param float $longitude
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setLongitude(float $longitude): void
     {
@@ -360,6 +331,7 @@ class PickupPoint
 
     /**
      * @return float
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function getLatitude(): float
     {
@@ -368,6 +340,7 @@ class PickupPoint
 
     /**
      * @param float $latitude
+     * @deprecated - No usage anywhere, functionally done by promoted property
      */
     public function setLatitude(float $latitude): void
     {
@@ -375,72 +348,36 @@ class PickupPoint
     }
 
     /**
-     * @return string
+     * @return null|OpeningTime[]
      */
-    public function getImageUrl(): string
-    {
-        return $this->imageUrl;
-    }
-
-    /**
-     * @param ?string $imageUrl
-     */
-    public function setImageUrl(?string $imageUrl): void
-    {
-        $this->imageUrl = $imageUrl;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOpeningTimes(): array
+    public function getOpeningTimes(): ?array
     {
         return $this->openingTimes;
     }
 
-    /**
-     * @param array $openingTimes
+    /** Convert property
+     *
+     * @param array|null $openingTimes - array of stdClasses (from API) or array of arrays (from JSON)
      */
-    public function setOpeningTimes(array $openingTimes): void
+    public function setOpeningTimes(?array $openingTimes): void
     {
-        $list = [];
-        foreach ($openingTimes as $option) {
-
-            $list[] = new OpeningTime(
-                $option->day,
-                $option->from,
-                $option->to,
-            );
+        if ($openingTimes) {
+            $slots = [];
+            foreach ($openingTimes as $openingTime) {
+                $slots[] = OpeningTime::construct((array)$openingTime);
+            }
+            $this->openingTimes = $slots;
         }
-
-        $this->openingTimes = $list;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function toArray(): array
+    public function getDescription(): string
     {
-
-        $option = null;
-        foreach ($this as $key => $value) {
-            $option[$key] = $value;
-        }
-
-        return $option;
+        return $this->getDisplayName()
+            // name is misleading, distance here is kilometers
+            . ' | ' . $this->getDistanceMeters() . 'km';
     }
 
-	/**
-	 * @return string
-	 */
-	public function get_shipper_options_with_value(): string {
-		return $this->shipperOptionsWithValue;
-	}
-
-	/**
-	 * @param string $shipperOptionsWithValue
-	 */
-	public function set_shipper_options_with_value( string $shipperOptionsWithValue ): void {
-		$this->shipperOptionsWithValue = $shipperOptionsWithValue;
-	}
 }

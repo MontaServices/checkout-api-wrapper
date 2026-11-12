@@ -2,61 +2,19 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-use Exception;
-use GuzzleHttp\Client;
+// alias for sibling must remain or not all autoloading will work
 use GuzzleHttp\Exception\GuzzleException;
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+use Monta\CheckoutApiWrapper\Service\Guzzle;
+use Monta\CheckoutApiWrapper\Service\Session;
 
-class Address
+class Address extends Objectable
 {
-    /**
-     * @var string
-     */
-    public string $street;
+    /** @var float|null $longitude - Public to use on frontend */
+    public ?float $longitude = 0.0;
 
-    /**
-     * @var string|null
-     */
-    public ?string $houseNumber;
-
-    /**
-     * @var string|null
-     */
-    public ?string $houseNumberAddition;
-
-    /**
-     * @var string
-     */
-    public string $postalCode;
-
-    /**
-     * @var string
-     */
-    public string $city;
-
-    /**
-     * @var string|null
-     */
-    public ?string $state;
-
-    /**
-     * @var string
-     */
-    public string $countryCode;
-
-    /**
-     * @var string|null
-     */
-    public ?string $googleApiKey = null;
-
-    /**
-     * @var float
-     */
-    public float $longitude;
-
-    /**
-     * @var float
-     */
-    public float $latitude;
+    /** @var float|null $latitude */
+    public ?float $latitude = 0.0;
 
     /**
      * @param string $street
@@ -64,81 +22,109 @@ class Address
      * @param string|null $houseNumberAddition
      * @param string $postalCode
      * @param string $city
-     * @param ?string $state
+     * @param string|null $state
      * @param string $countryCode
-     * @param string $googleApiKey
-     * @throws GuzzleException
+     * @param string|null $googleApiKey @deprecated - duplicate with Settings.googleKey property
      */
-    public function __construct(string $street, ?string $houseNumber, ?string $houseNumberAddition, string $postalCode, string $city, ?string $state, string $countryCode, string $googleApiKey) //phpcs:ignore
+    public function __construct(
+        public string $street,
+        public ?string $houseNumber,
+        public ?string $houseNumberAddition,
+        public string $postalCode,
+        public string $city,
+        public ?string $state,
+        public string $countryCode,
+        #[\SensitiveParameter]
+        protected ?string $googleApiKey = null,
+    )
     {
-        $this->setStreet($street);
-        $this->setHouseNumber($houseNumber);
-        $this->setHouseNumberAddition($houseNumberAddition);
-        $this->setPostalCode($postalCode);
-        $this->setCity($city);
-        $this->setState($state);
-        $this->setCountry($countryCode);
+        // Constructor sets elevated properties, this specific one has custom functionality in setter
+        $this->setGoogleApiKey($googleApiKey);
+    }
 
-        if ($googleApiKey != null) {
-            $this->setGoogleApiKey(trim($googleApiKey));
+    /**
+     * @param string|null $googleApiKey
+     * @return $this
+     */
+    public function setGoogleApiKey(#[SensitiveParameter] ?string $googleApiKey): Address
+    {
+        if ($googleApiKey) {
+            $this->googleApiKey = trim($googleApiKey);
+
+            // After setting Google Key, coordinates can be calculated
+            $this->setLongLat();
         }
 
-        $this->setLongLat();
+        return $this;
     }
 
     /** Geocode address to validate and retrieve coordinates
-     *
      * @return void
-     * @throws GuzzleException
      */
     public function setLongLat(): void
     {
-        // Get lat and long by address
-        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode; // Google HQ
-        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
-        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
-        $prepAddr = $this->city . str_replace('  ', ' ', $address);
-        $prepAddr = str_replace(' ', '+', $prepAddr);
-        // TODO deprecated, use maps.googleapis.com which is the V3 standard
+        $prepAddr = $this->getPrepareAddress();
+        $sessionPath = $prepAddr . "-coordinates";
 
-        $latitude = 0;
-        $longitude = 0;
-        // If this address was geocoded before, use the cached result
-        if ($coords = Session::get($prepAddr)) {
-            // Array is simply 2 coordinates in an array, assign to variables
-            list($latitude, $longitude) = $coords;
+        // Default coordinates to zero in case the API returns no results or an error occurs
+        $coords = [0.0, 0.0];
+
+        // Get address from cache if already there
+        $cached = Session::get($sessionPath);
+        if ($this->isValidCoordinateArray($cached)) {
+            $coords = $cached;
         } else {
-            $google_maps_url = "https://maps.google.com/maps/api/geocode/json?" . http_build_query([
-                    'address' => $prepAddr,
-                    'sensor' => false,
-                    'key' => $this->googleApiKey,
-                ]);
-
+            // If not in cache, retrieve from API and write into cache
             try {
-                $client = new Client([
-                    'timeout' => 1.0
-                ]);
-                $response = $client->get($google_maps_url);
+                $response = Guzzle::call(
+                    route: "maps/api/geocode/json",
+                    baseUri: "https://maps.googleapis.com", // V3 standard
+                    httpMethod: "GET",
+                    parameters: [
+                        'address' => $prepAddr,
+                        'sensor' => false,
+                        'key' => $this->googleApiKey,
+                    ],
+                );
 
                 $output = json_decode($response->getBody());
 
+                // Pluck single result from array of one
                 $result = end($output->results);
 
-                // Without geometry, Map will not initalize. Pickup locations will be a plain list.
+                // Without geometry, Google Maps will not initalize. Pickup locations will be a plain list.
                 if (isset($result->geometry)) {
-                    $latitude = $result->geometry->location->lat;
-                    $longitude = $result->geometry->location->lng;
+                    $coords = [
+                        (float)$result->geometry->location->lat,
+                        (float)$result->geometry->location->lng,
+                    ];
 
-                    // Save this result in cache, so we don't have to load it again
-                    Session::save($prepAddr, [$latitude, $longitude]);
+                    // Save this result in cache, avoid multiple duplicate API calls
+                    Session::save($sessionPath, $coords);
                 }
-            } catch (Exception) {
-                // Catch and ignore error, coords remain zero
+            } catch (GuzzleException $ge) {
+            } catch (\Throwable $e) {
+                // Catch and ignore all errors, coordinates remain zero
             }
         }
 
-        $this->longitude = $longitude;
-        $this->latitude = $latitude;
+        // Whether retrieved from cache or from API, assign both variables here
+        [$this->latitude, $this->longitude] = $coords;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrepareAddress(): string
+    {
+        // Get lat and long by address
+        $address = $this->houseNumber . ' ' . $this->houseNumberAddition . ', ' . $this->postalCode . ' ' . $this->countryCode;
+        // Add city, or it will always return "ZERO RESULTS" for Belgian zipcodes
+        // Google appears to ignore the city for other countries, only looks at zipcode. Yet it must be in the request
+        $prepAddress = $this->city . str_replace('  ', ' ', $address);
+
+        // Replace spaces with pluses to make it Google-friendly
+        return str_replace(' ', '+', $prepAddress);
     }
 
     /**
@@ -226,18 +212,6 @@ class Address
     }
 
     /**
-     * @param $googleApiKey
-     *
-     * @return $this
-     */
-    public function setGoogleApiKey($googleApiKey): Address
-    {
-        $this->googleApiKey = $googleApiKey;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function toArray(): array
@@ -254,4 +228,14 @@ class Address
             'Address.Longitude' => $this->longitude,
         ];
     }
+
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isValidCoordinateArray(mixed $value): bool
+    {
+        return is_array($value) && count($value) === 2 && is_numeric($value[0]) && is_numeric($value[1]);
+    }
+
 }

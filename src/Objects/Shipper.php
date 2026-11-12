@@ -2,26 +2,21 @@
 
 namespace Monta\CheckoutApiWrapper\Objects;
 
-class Shipper
+// alias for sibling must remain or not all autoloading will work
+use Monta\CheckoutApiWrapper\Objects\Objectable as Objectable;
+
+class Shipper extends Objectable
 {
-    /**
-     * @var string
-     */
-    public string $name;
 
     /**
-     * @var string
+     * @param string $name
+     * @param string $code
      */
-    public string $code;
-
-    /**
-     * @param $name
-     * @param $code
-     */
-    public function __construct($name, $code)
+    public function __construct(
+        public string $name,
+        public string $code,
+    )
     {
-        $this->setName($name);
-        $this->setCode($code);
     }
 
     /**
@@ -53,7 +48,7 @@ class Shipper
     {
         return [
             'code' => $this->code,
-            'name' => $this->name
+            'name' => $this->name,
         ];
     }
 }
