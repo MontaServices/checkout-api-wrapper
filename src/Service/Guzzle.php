@@ -30,7 +30,7 @@ class Guzzle
     {
         // Merge clientData with defaults
         $clientData = [
-            'verify' => false,
+            'verify' => true,
             'base_uri' => $baseUri,
             'timeout' => 10.0,
             'headers' => $headers,
